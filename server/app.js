@@ -8,6 +8,10 @@ const usersRouter = require("./routes/v1/users");
 const mediasRouter = require("./routes/v1/medias");
 const subtitlesRouter = require("./routes/v1/subtitles");
 const languagesRouter = require("./routes/v1/languages");
+const userSchema = require("./schemas/users");
+const languageSchema = require("./schemas/languages");
+const mediaSchema = require("./schemas/media");
+const subtitleSchema = require("./schemas/subtitles");
 
 // Variables
 const mongoURI =
@@ -22,6 +26,10 @@ mongoose.connect(mongoURI).catch(function (err) {
         process.exit(1);
     }
     console.log(`Connected to MongoDB with URI: ${mongoURI}`);
+    const User = mongoose.model("users", userSchema);
+    const Language = mongoose.model("languages", languageSchema);
+    const Media = mongoose.model("medias", mediaSchema);
+    const Subtitle = mongoose.model("subtitles", subtitleSchema);
 });
 
 const app = express();
