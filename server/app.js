@@ -15,22 +15,29 @@ const subtitleSchema = require("./schemas/subtitles");
 
 // Variables
 const mongoURI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/animalDevelopmentDB";
+  process.env.MONGODB_URI || "mongodb://localhost:27017/WaSubby";
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
-mongoose.connect(mongoURI).catch(function (err) {
-    if (err) {
-        console.error(`Failed to connect to MongoDB with URI: ${mongoURI}`);
-        console.error(err.stack);
-        process.exit(1);
-    }
+mongoose.connect(mongoURI).then(function() {
     console.log(`Connected to MongoDB with URI: ${mongoURI}`);
-    const User = mongoose.model("users", userSchema);
-    const Language = mongoose.model("languages", languageSchema);
-    const Media = mongoose.model("medias", mediaSchema);
-    const Subtitle = mongoose.model("subtitles", subtitleSchema);
-});
+    const User = mongoose.model("User", userSchema);
+    const Language = mongoose.model("Language", languageSchema);
+    const Media = mongoose.model("Media", mediaSchema);
+    const Subtitle = mongoose.model("Subtitle", subtitleSchema);
+})
+    .catch(function (err) {
+        if (err) {
+            console.error(`Failed to connect to MongoDB with URI: ${mongoURI}`);
+            console.error(err.stack);
+            process.exit(1);
+        }
+        console.log(`Connected to MongoDB with URI: ${mongoURI}`);
+        const User = mongoose.model("User", userSchema);
+        const Language = mongoose.model("Language", languageSchema);
+        const Media = mongoose.model("Media", mediaSchema);
+        const Subtitle = mongoose.model("Subtitle", subtitleSchema);
+    });
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));

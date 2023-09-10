@@ -1,20 +1,17 @@
 const mongoose = require("mongoose");
-const userSchema = require("./users");
 const subtitleSchema = require("./subtitles");
 const Schema = mongoose.Schema;
 
+/**
+ * fileHash: The file hash of the media file
+ *   Only the hash is stored, as storing all media files is
+ *   unnecessary and takes up too much storage. 
+ */
 const mediaSchema = new Schema({
-    FileHash: { type: String, unique: true, required: true },
-    //Adding the uploader of the media
-    user: {
+    fileHash: { type: String, unique: true, required: [true, "File hash required"] },
+    subtitles: [{
         type: Schema.Types.ObjectId,
-        ref: userSchema,
-        required: true
-    },
-    //Referrencing the subtitle of the media
-    mediaSubtitle: [{
-        type: Schema.Types.ObjectId,
-        ref: subtitleSchema }]
+        ref: "Subtitle" }]
 }, {_id: false});
 
 
