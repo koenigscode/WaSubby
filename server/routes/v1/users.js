@@ -21,6 +21,7 @@ router.get("/:id", function (req, res) {
     res.status(501).send("TODO:");
 });
 
+//TODO: route name
 /**
  * Post /v1/users/login
  * @summary Logs in a user
@@ -31,6 +32,8 @@ router.get("/:id", function (req, res) {
 router.post("/login", function (req, res) {
     res.status(501).send("TODO:");
 });
+
+//TODO: route name
 /**
  * Post /v1/users/register
  * @summary Registers a user
@@ -42,6 +45,7 @@ router.post("/register", function (req, res) {
     res.status(501).send("TODO:");
 });
 
+//TODO: route name
 /**
  * Post /v1/users/logout
  * @summary Logs out a user
@@ -54,6 +58,7 @@ router.post("/logout", function (req, res) {
 });
 
 
+// TODO: params
 /**
  * Patch /v1/users/{id}
  * @summary Partially update a user by id
@@ -66,6 +71,7 @@ router.patch("/:id", function (req, res) {
     res.status(501).send("TODO:");
 });
 
+// TODO: params
 /**
  * Put /v1/users/{id}
  * @summary Updates a user by id
@@ -83,7 +89,6 @@ router.put("/:id", function (req, res) {
  * @summary Deletes a user by id
  * @tags users
  * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
  * @return {object} 404 - user id not found
  */
 router.delete("/:id", function (req, res) {

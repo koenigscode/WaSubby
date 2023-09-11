@@ -7,7 +7,7 @@ const router = require("express").Router();
  * @tags subtitles
  * @return {object} 200 - Success response
  * @return {object} 400 - Bad request response
- * @return {object} 404 - subtitles id not found
+ * @return {object} 404 - Subtitle ID not found
  */
 router.patch("/:id", function (req, res) {
     res.status(501).send("TODO:");
@@ -15,7 +15,7 @@ router.patch("/:id", function (req, res) {
 
 
 /**
- * Delete /v1/subtitles
+ * Delete /v1/subtitles/
  * @summary Deletes all subtitles
  * @tags subtitles
  * @return {object} 200 - Success response

@@ -16,10 +16,11 @@ router.get("/:id/subtitles", function (req, res) {
 
 /**
  * Get /v1/medias/{mediaId}/subtitles/{subtitlesId}
- * @summary Returns the id of specific subtitles of a media by id
+ * @summary Returns the specific subtitles of a media by id
  * @tags medias
  * @return {object} 200 - Success response
- * @return {object} 404 - mediaId or subtitlesId not found
+ * @return {object} 404 - mediaId not found
+ * @return {object} 404 - subtitlesId not found
  */
 router.get("/:mediaId/subtitles/:subtitlesId", function (req, res) {
     res.status(501).send("TODO:");
@@ -42,7 +43,7 @@ router.post("/:mediaId", function (req, res) {
  * Post /v1/medias/{mediaId}/subtitles
  * @summary Adds subtitles to media (not generated, but instead user-uploaded)
  * @tags medias
- * @param {File} substitles.request.body.required - subtitles file in srt format
+ * @param {File} subtitles.request.body.required - subtitles file in srt format
  * @return {object} 201 - Success response
  * @return {object} 400 - File not in srt format
  * @return {object} 404 - mediaId not found
@@ -67,7 +68,6 @@ router.delete("/", function (req, res) {
  * @summary Deletes media by id
  * @tags medias
  * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
  * @return {object} 404 - mediaId not found
  */
 router.delete("/:id", function (req, res) {
@@ -75,12 +75,12 @@ router.delete("/:id", function (req, res) {
 });
 
 /**
- * Delete /v1/medias/{mediaId}/substitles/{subtitlesId}
- * @summary Deletes subtitles by id of a specific media by id
+ * Delete /v1/medias/{mediaId}/subtitles/{subtitlesId}
+ * @summary Deletes subtitles by mediaId and subtitlesId
  * @tags medias
  * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
- * @return {object} 404 - mediaId or subitlesId not found
+ * @return {object} 404 - subtitleId not found
+ * @return {object} 404 - mediaId not found
  */
 router.delete("/:mediaId/subtitles/:subtitlesId", function (req, res) {
     res.status(501).send("TODO:");
