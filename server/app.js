@@ -8,17 +8,17 @@ const usersRouter = require("./routes/v1/users");
 const mediasRouter = require("./routes/v1/medias");
 const subtitlesRouter = require("./routes/v1/subtitles");
 const languagesRouter = require("./routes/v1/languages");
-const expressJSDocSwagger=require("express-jsdoc-swagger")
+const expressJSDocSwagger=require("express-jsdoc-swagger");
 
 
 const app = express();
+const apiDocsRoute = "/api-docs";
 
 const options={
     info:{
         version: "1.0.0",
         title: "WaSubby", 
     },
-    filesPattern: "./medias.js",
     baseDir: __dirname,
     security:{
         BasicAuth:{
@@ -26,28 +26,27 @@ const options={
             scheme: "basic",
         },
     },
-    baseDir: __dirname,
-  // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
-  filesPattern: './**/*.js',
-  // URL where SwaggerUI will be rendered. Default. /api-docs
-  swaggerUIPath: '/api-docs',
-  // Expose OpenAPI UI
-  exposeSwaggerUI: true,
-  // Expose Open API JSON Docs documentation in `apiDocsPath` path.
-  exposeApiDocs: false,
-  // Open API JSON Docs endpoint.
-  apiDocsPath: '/v3/api-docs',
-  // Set non-required fields as nullable by default
-  notRequiredAsNullable: false,
-  // You can customize your UI options.
-  // you can extend swagger-ui-express config. You can checkout an example of this
-  // in the `example/configuration/swaggerOptions.js`
-  swaggerUiOptions: {},
-  // multiple option in case you want more that one instance
-  multiple: true,
+    // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
+    filesPattern: "./**/*.js",
+    // URL where SwaggerUI will be rendered. Default. /api-docs
+    swaggerUIPath: apiDocsRoute,
+    // Expose OpenAPI UI
+    exposeSwaggerUI: true,
+    // Expose Open API JSON Docs documentation in `apiDocsPath` path.
+    exposeApiDocs: false,
+    // Open API JSON Docs endpoint.
+    apiDocsPath: "/v1/api-docs",
+    // Set non-required fields as nullable by default
+    notRequiredAsNullable: false,
+    // You can customize your UI options.
+    // you can extend swagger-ui-express config. You can checkout an example of this
+    // in the `example/configuration/swaggerOptions.js`
+    swaggerUiOptions: {},
+    // multiple option in case you want more that one instance
+    multiple: true,
 };
-expressJSDocSwagger(app)(options)
-// Variables
+expressJSDocSwagger(app)(options);
+
 const mongoURI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/animalDevelopmentDB";
 const port = process.env.PORT || 3000;
@@ -116,6 +115,7 @@ app.listen(port, function (err) {
     console.log(`Express server listening on port ${port}, in ${env} mode`);
     console.log(`Backend: http://localhost:${port}/api/`);
     console.log(`Frontend (production): http://localhost:${port}/`);
+    console.log(`API docs: http://localhost:${port}${apiDocsRoute}`);
 });
 
 module.exports = app;
