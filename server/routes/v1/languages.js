@@ -29,7 +29,7 @@ router.get("/:code", function (req, res) {
  * @summary Returns a language by display name
  * @tags languages
  * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
+ * @return {object} 404 - Not found
  */
 router.get("/:name", function (req, res) {
     res.status(501).send("TODO:");

@@ -1,22 +1,22 @@
 const router = require("express").Router();
 
 /**
- * Get /v1/users/
+ * Get /v1/users
  * @summary Returns all users
  * @tags users
  * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
+ * @return {object} 404 - Not found
  */
 router.get("/", function (req, res) {
     res.status(501).send("TODO:");
 });
 
 /**
- * Get /v1/users/:id
+ * Get /v1/users/{id}
  * @summary Returns user by id
  * @tags users
  * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
+ * @return {object} 404 - Not found
  */
 router.get("/:id", function (req, res) {
     res.status(501).send("TODO:");
@@ -56,7 +56,7 @@ router.post("/logout", function (req, res) {
 
 
 /**
- * Patch /v1/users/:id
+ * Patch /v1/users/{id}
  * @summary Partially update a user by id
  * @tags users
  * @return {object} 200 - Success response
@@ -67,7 +67,7 @@ router.patch("/:id", function (req, res) {
 });
 
 /**
- * Put /v1/users/:id
+ * Put /v1/users/{id}
  * @summary Updates a user by id
  * @tags users
  * @return {object} 200 - Success response
@@ -78,7 +78,7 @@ router.put("/:id", function (req, res) {
 });
 
 /**
- * Delete /v1/users/:id
+ * Delete /v1/users/{id}
  * @summary Deletes a user by id
  * @tags users
  * @return {object} 200 - Success response

@@ -7,7 +7,7 @@ const router = require("express").Router();
  * @summary Returns subtitles of a specific media by id of that media
  * @tags medias
  * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
+ * @return {object} 404 - Not found
  */
 router.get("/:id/subtitles", function (req, res) {
     res.status(501).send("TODO:");
@@ -19,16 +19,17 @@ router.get("/:id/subtitles", function (req, res) {
  * @summary Returns the id of specific subtitles of a media by id
  * @tags medias
  * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
+ * @return {object} 404 - Not found
  */
 router.get("/:mediaId/subtitles/:subtitlesId", function (req, res) {
     res.status(501).send("TODO:");
 });
 
 /**
- * Post /v1/medias/{mediaId}
+ * Post /v1/medias
  * @summary Adds media and generates subtitles for it
  * @tags medias
+ * @param {File} media.body.require -media for which the subtitles are generated
  * @return {object} 201 - Success response
  * @return {object} 400 - Bad request response
  */
