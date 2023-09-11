@@ -16,10 +16,7 @@ const app = express();
 const options={
     info:{
         version: "1.0.0",
-        title: "Albums store", 
-        license:{
-            name: "WaSubby",
-        },
+        title: "WaSubby", 
     },
     filesPattern: "./medias.js",
     baseDir: __dirname,
