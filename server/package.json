@@ -11,6 +11,7 @@
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
     "lint": "eslint .",
+    "fix": "eslint --fix .",
     "test": "cross-env-shell MONGODB_URI=mongodb://localhost:27017/serverTestDB \"npm run newman-server\"",
     "ci-test": "npm run newman-server",
     "newman-server": "cross-env-shell PORT=3001 \"npm run dropdb && run-p --race start newman-wait\"",
