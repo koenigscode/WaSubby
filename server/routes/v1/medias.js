@@ -7,7 +7,7 @@ const router = require("express").Router();
  * @summary Returns subtitles of a specific media by id of that media
  * @tags medias
  * @return {object} 200 - Success response
- * @return {object} 404 - Not found
+ * @return {object} 404 - mediaId not found
  */
 router.get("/:id/subtitles", function (req, res) {
     res.status(501).send("TODO:");
@@ -19,7 +19,7 @@ router.get("/:id/subtitles", function (req, res) {
  * @summary Returns the id of specific subtitles of a media by id
  * @tags medias
  * @return {object} 200 - Success response
- * @return {object} 404 - Not found
+ * @return {object} 404 - mediaId or subtitlesId not found
  */
 router.get("/:mediaId/subtitles/:subtitlesId", function (req, res) {
     res.status(501).send("TODO:");
@@ -29,7 +29,7 @@ router.get("/:mediaId/subtitles/:subtitlesId", function (req, res) {
  * Post /v1/medias
  * @summary Adds media and generates subtitles for it
  * @tags medias
- * @param {File} media.body.require -media for which the subtitles are generated
+ * @param {File} media.request.body.required - media for which the subtitles are generated
  * @return {object} 201 - Success response
  * @return {object} 400 - Bad request response
  */
@@ -42,8 +42,10 @@ router.post("/:mediaId", function (req, res) {
  * Post /v1/medias/{mediaId}/subtitles
  * @summary Adds subtitles to media (not generated, but instead user-uploaded)
  * @tags medias
+ * @param {File} substitles.request.body.required - subtitles file in srt format
  * @return {object} 201 - Success response
- * @return {object} 400 - Bad request response
+ * @return {object} 400 - File not in srt format
+ * @return {object} 404 - mediaId not found
  */
 router.post("/:id/subtitles", function (req, res) {
     res.status(501).send("TODO:");
@@ -55,7 +57,6 @@ router.post("/:id/subtitles", function (req, res) {
  * @summary Deletes all medias
  * @tags medias
  * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
  */
 router.delete("/", function (req, res) {
     res.status(501).send("TODO:");
@@ -67,6 +68,7 @@ router.delete("/", function (req, res) {
  * @tags medias
  * @return {object} 200 - Success response
  * @return {object} 400 - Bad request response
+ * @return {object} 404 - mediaId not found
  */
 router.delete("/:id", function (req, res) {
     res.status(501).send("TODO:");
@@ -78,6 +80,7 @@ router.delete("/:id", function (req, res) {
  * @tags medias
  * @return {object} 200 - Success response
  * @return {object} 400 - Bad request response
+ * @return {object} 404 - mediaId or subitlesId not found
  */
 router.delete("/:mediaId/subtitles/:subtitlesId", function (req, res) {
     res.status(501).send("TODO:");
