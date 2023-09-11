@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 
 /**
- * Patch /v1/subtitles/:id
+ * Patch /v1/subtitles/{id}
  * @summary Partially updates subtitles
  * @tags subtitles
  * @return {object} 200 - Success response
