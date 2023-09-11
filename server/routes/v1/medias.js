@@ -8,6 +8,7 @@ const router = require("express").Router();
  * @tags medias
  * @return {object} 200 - Success response
  * @return {object} 404 - mediaId not found
+ * @return {object} 401 - Not authorized
  */
 router.get("/:id/subtitles", function (req, res) {
     res.status(501).send("TODO:");
@@ -21,6 +22,7 @@ router.get("/:id/subtitles", function (req, res) {
  * @return {object} 200 - Success response
  * @return {object} 404 - mediaId not found
  * @return {object} 404 - subtitlesId not found
+ * @return {object} 401 - Not authorized
  */
 router.get("/:mediaId/subtitles/:subtitlesId", function (req, res) {
     res.status(501).send("TODO:");
@@ -33,6 +35,7 @@ router.get("/:mediaId/subtitles/:subtitlesId", function (req, res) {
  * @param {File} media.request.body.required - media for which the subtitles are generated
  * @return {object} 201 - Success response
  * @return {object} 400 - Bad request response
+ * @return {object} 401 - Not authorized
  */
 router.post("/:mediaId", function (req, res) {
     res.status(501).send("TODO:");
@@ -47,6 +50,7 @@ router.post("/:mediaId", function (req, res) {
  * @return {object} 201 - Success response
  * @return {object} 400 - File not in srt format
  * @return {object} 404 - mediaId not found
+ * @return {object} 401 - Not authorized
  */
 router.post("/:id/subtitles", function (req, res) {
     res.status(501).send("TODO:");
@@ -58,6 +62,7 @@ router.post("/:id/subtitles", function (req, res) {
  * @summary Deletes all medias
  * @tags medias
  * @return {object} 200 - Success response
+ * @return {object} 401 - not authorized
  */
 router.delete("/", function (req, res) {
     res.status(501).send("TODO:");
@@ -69,6 +74,7 @@ router.delete("/", function (req, res) {
  * @tags medias
  * @return {object} 200 - Success response
  * @return {object} 404 - mediaId not found
+ * @return {object} 401 - not authorized
  */
 router.delete("/:id", function (req, res) {
     res.status(501).send("TODO:");
@@ -81,6 +87,7 @@ router.delete("/:id", function (req, res) {
  * @return {object} 200 - Success response
  * @return {object} 404 - subtitleId not found
  * @return {object} 404 - mediaId not found
+ * @return {object} 403 - no permission
  */
 router.delete("/:mediaId/subtitles/:subtitlesId", function (req, res) {
     res.status(501).send("TODO:");

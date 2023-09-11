@@ -26,7 +26,7 @@ router.get("/:id", function (req, res) {
  * Post /v1/users/login
  * @summary Logs in a user
  * @tags users
- * @return {object} 201 - Success response
+ * @return {object} 200 - Success response
  * @return {object} 400 - Bad request response
  */
 router.post("/login", function (req, res) {
@@ -50,8 +50,9 @@ router.post("/register", function (req, res) {
  * Post /v1/users/logout
  * @summary Logs out a user
  * @tags users
- * @return {object} 201 - Success response
+ * @return {object} 200 - Success response
  * @return {object} 400 - Bad request response
+ * @return {object} 401 - not authorized
  */
 router.post("/logout", function (req, res) {
     res.status(501).send("TODO:");
@@ -66,6 +67,7 @@ router.post("/logout", function (req, res) {
  * @return {object} 200 - Success response
  * @return {object} 400 - Bad request response
  * @return {object} 404 - user id not found
+ * @return {object} 401 - not authorized
  */
 router.patch("/:id", function (req, res) {
     res.status(501).send("TODO:");
@@ -90,6 +92,7 @@ router.put("/:id", function (req, res) {
  * @tags users
  * @return {object} 200 - Success response
  * @return {object} 404 - user id not found
+ * @return {object} 403 - no permission
  */
 router.delete("/:id", function (req, res) {
     res.status(501).send("TODO:");

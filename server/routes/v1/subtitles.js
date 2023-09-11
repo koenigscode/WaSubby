@@ -8,6 +8,7 @@ const router = require("express").Router();
  * @return {object} 200 - Success response
  * @return {object} 400 - Bad request response
  * @return {object} 404 - Subtitle ID not found
+ * @return {object} 403 - no permission
  */
 router.patch("/:id", function (req, res) {
     res.status(501).send("TODO:");
@@ -19,6 +20,7 @@ router.patch("/:id", function (req, res) {
  * @summary Deletes all subtitles
  * @tags subtitles
  * @return {object} 200 - Success response
+ * @return {object} 403 - no permission
  */
 router.delete("/", function (req, res) {
     res.status(501).send("TODO:");

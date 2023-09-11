@@ -41,6 +41,7 @@ router.get("/:name", function (req, res) {
  * @tags languages
  * @param {string} newName.request.body.required - new display name
  * @return {object} 200 - Success response
+ * @return {object} 403 - No permission
  * @return {object} 404 - Language code not found 
  */
 router.put("/:code", function (req, res) {
