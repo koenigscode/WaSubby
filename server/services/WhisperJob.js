@@ -102,8 +102,8 @@ class WhisperJob {
    * @param {boolean} translate whether to translate the media file to english
    */
     _getWhisperArgs(translate) {
-        const whisperModel = process.env.whisperModel || "large-v2";
-
+        const whisperModel = process.env.WHISPER_MODEL || "large-v2";
+        console.log(`Using whisper model ${whisperModel}`)
         let args = [
             "--output_format",
             "srt",
