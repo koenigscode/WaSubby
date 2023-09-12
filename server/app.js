@@ -77,7 +77,7 @@ mongoose.connect(mongoURI).then(function() {
         
         //Compiling languageSchema into a model and creating the language instances
         const Language = mongoose.model("Language", languageSchema);
-        const English = new Language({ code: "EN", name: "Enlgish" });
+        const English = new Language({ code: "EN", name: "English" });
         const Swedish = new Language({ code: "SE", name: "Swedish" });
         const Korean = new Language({ code: "KR", name: "Korean" });
         const German = new Language({ code: "DE", name: "German" });
