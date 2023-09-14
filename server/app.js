@@ -70,11 +70,6 @@ mongoose.connect(mongoURI).then(function() {
             process.exit(1);
         }
         console.log(`Connected to MongoDB with URI: ${mongoURI}`);
-        
-        const User = mongoose.model("User", userSchema);
-        const Language = mongoose.model("Language", languageSchema);
-        const Media = mongoose.model("Media", mediaSchema);
-        const Subtitle = mongoose.model("Subtitle", subtitleSchema);
     });
 
 

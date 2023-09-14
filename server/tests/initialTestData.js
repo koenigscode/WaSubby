@@ -10,14 +10,7 @@ const subtitleSchema = require("../schemas/subtitles");
 // Connect to MongoDB
 mongoose.connect(mongoURI).then(function() {
     console.log(`Connected to MongoDB with URI: ${mongoURI}`);
-    const User = mongoose.model("User", userSchema);
-    const Language = mongoose.model("Language", languageSchema);
-    const Media = mongoose.model("Media", mediaSchema);
-    const Subtitle = mongoose.model("Subtitle", subtitleSchema);
-
     mongoose.connection.dropDatabase();
-    
-
 })
     .catch(function (err) {
         if (err) {
@@ -25,11 +18,11 @@ mongoose.connect(mongoURI).then(function() {
             console.error(err.stack);
             process.exit(1);
         }
-
+    }).then(function() {
         //Compiling userSchema into a model and creating the user instances
         const User = mongoose.model("User", userSchema);
         const admin = new User({ email: "example@example.com", password: "12345678", theme: "dark" });
-        
+     
         //Compiling languageSchema into a model and creating the language instances
         const Language = mongoose.model("Language", languageSchema);
         const English = new Language({ code: "EN", name: "English" });
@@ -40,4 +33,5 @@ mongoose.connect(mongoURI).then(function() {
 
         const Media = mongoose.model("Media", mediaSchema);
         const Subtitle = mongoose.model("Subtitle", subtitleSchema);
+
     });
