@@ -16,16 +16,7 @@ mongoose.connect(mongoURI).then(function() {
     const Subtitle = mongoose.model("Subtitle", subtitleSchema);
 
     mongoose.connection.dropDatabase();
-
-    //Compiling userSchema into a model and creating the user instances
-    const admin = new User({ email: "example@example.com", password: "12345678", theme: "dark" });
     
-    //Compiling languageSchema into a model and creating the language instances
-    const English = new Language({ code: "EN", name: "English" });
-    const Swedish = new Language({ code: "SE", name: "Swedish" });
-    const Korean = new Language({ code: "KR", name: "Korean" });
-    const German = new Language({ code: "DE", name: "German" });
-    const Russian = new Language({ code: "RU", name: "Russian" });
 
 })
     .catch(function (err) {
@@ -34,6 +25,19 @@ mongoose.connect(mongoURI).then(function() {
             console.error(err.stack);
             process.exit(1);
         }
+
+        //Compiling userSchema into a model and creating the user instances
+        const User = mongoose.model("User", userSchema);
+        const admin = new User({ email: "example@example.com", password: "12345678", theme: "dark" });
         
-        
+        //Compiling languageSchema into a model and creating the language instances
+        const Language = mongoose.model("Language", languageSchema);
+        const English = new Language({ code: "EN", name: "English" });
+        const Swedish = new Language({ code: "SE", name: "Swedish" });
+        const Korean = new Language({ code: "KO", name: "Korean" });
+        const German = new Language({ code: "DE", name: "German" });
+        const Russian = new Language({ code: "RU", name: "Russian" });
+
+        const Media = mongoose.model("Media", mediaSchema);
+        const Subtitle = mongoose.model("Subtitle", subtitleSchema);
     });
