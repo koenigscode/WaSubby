@@ -1,4 +1,8 @@
+const { default: mongoose } = require("mongoose");
+
 const router = require("express").Router();
+const Language = mongoose.model("Language",  require("../../schemas/languages.js"));
+
 
 /**
  * Get /v1/languages
@@ -8,8 +12,10 @@ const router = require("express").Router();
  * @param {string} sort.query - asc / desc
  * @return {object} 200 - Success response
  */
-router.get("/", function (req, res) {
-    res.status(501).send("TODO:");
+router.get("/", async (req, res) => {
+    console.log("hi")
+    const languages = await Language.find()
+    res.send(languages)
 });
 
 /**
@@ -19,19 +25,9 @@ router.get("/", function (req, res) {
  * @return {object} 200 - Success response
  * @return {object} 404 - language code not found
  */
-router.get("/:code", function (req, res) {
-    res.status(501).send("TODO:");
-});
-
-/**
- * Get /v1/languages/{name}
- * @summary Returns a language by display name
- * @tags languages
- * @return {object} 200 - Success response
- * @return {object} 404 - language name not found
- */
-router.get("/:name", function (req, res) {
-    res.status(501).send("TODO:");
+router.get("/:code", async (req, res) => {
+    const language = await Language.findOne({code: req.params.code});
+    res.send(language)
 });
 
 
@@ -44,8 +40,20 @@ router.get("/:name", function (req, res) {
  * @return {object} 403 - No permission
  * @return {object} 404 - Language code not found 
  */
-router.put("/:code", function (req, res) {
-    res.status(501).send("TODO:");
+router.put("/:code", async (req, res) => {
+    try {
+        const language = await Language.findOne({code: req.params.code})
+
+        if (req.body.name){
+            language.name = req.body.name
+        }
+
+        await language.save();
+        res.send(language)
+    } catch{
+        res.status(404);
+        res.send({error: "Langauge with code " + req.params.code + " does not exist"})
+    }
 });
 
 module.exports = router;

@@ -52,7 +52,7 @@ const options={
 expressJSDocSwagger(app)(options);
 
 const mongoURI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/WaSubby";
+  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/WaSubby";
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
