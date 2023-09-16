@@ -2,10 +2,10 @@ const mongoURI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/WaSubby";
 
 const mongoose = require("mongoose");
-const userSchema = require("../schemas/users");
-const languageSchema = require("../schemas/languages");
-const mediaSchema = require("../schemas/media");
-const subtitleSchema = require("../schemas/subtitles");
+const User = require("../schemas/users");
+const Language = require("../schemas/languages");
+const Media = require("../schemas/media");
+const Subtitle = require("../schemas/subtitles");
 
 async function insertData() {
     await mongoose.connect(mongoURI);
@@ -13,11 +13,6 @@ async function insertData() {
 
     await mongoose.connection.dropDatabase();
     console.log("dropped DB");
-
-    const User = mongoose.model("User", userSchema);
-    const Language = mongoose.model("Language", languageSchema);
-    const Media = mongoose.model("Media", mediaSchema);
-    const Subtitle = mongoose.model("Subtitle", subtitleSchema);
 
     await new Language({ code: "en", name: "English" }).save();
     await new Language({ code: "se", name: "Swedish" }).save();
