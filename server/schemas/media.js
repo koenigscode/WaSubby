@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const subtitleSchema = require("./subtitles");
 const Schema = mongoose.Schema;
 
 /**
@@ -15,4 +14,4 @@ const mediaSchema = new Schema({
 }, {_id: false});
 
 
-module.exports = mediaSchema;
+module.exports = mongoose.model("Medias", mediaSchema);

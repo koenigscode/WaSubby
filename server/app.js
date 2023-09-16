@@ -8,25 +8,27 @@ const usersRouter = require("./routes/v1/users");
 const mediasRouter = require("./routes/v1/medias");
 const subtitlesRouter = require("./routes/v1/subtitles");
 const languagesRouter = require("./routes/v1/languages");
-const userSchema = require("./schemas/users");
-const languageSchema = require("./schemas/languages");
-const mediaSchema = require("./schemas/media");
-const subtitleSchema = require("./schemas/subtitles");
-const expressJSDocSwagger=require("express-jsdoc-swagger");
-
+const authRouter = require("./routes/v1/auth");
+const User = require("./schemas/users");
+const Language = require("./schemas/languages");
+const Media = require("./schemas/media");
+const Subtitle = require("./schemas/subtitles");
+const expressJSDocSwagger = require("express-jsdoc-swagger");
+const passport = require("passport");
+require("./passport.js"); // local passport config
 
 const app = express();
 const apiDocsRoute = "/api-docs";
 
-const options={
-    info:{
+const options = {
+    info: {
         version: "1.0.0",
-        title: "WaSubby", 
+        title: "WaSubby",
     },
     baseDir: __dirname,
-    security:{
-        BasicAuth:{
-            type:"http",
+    security: {
+        BasicAuth: {
+            type: "http",
             scheme: "basic",
         },
     },
@@ -56,12 +58,8 @@ const mongoURI =
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
-mongoose.connect(mongoURI).then(function() {
+mongoose.connect(mongoURI).then(function () {
     console.log(`Connected to MongoDB with URI: ${mongoURI}`);
-    const User = mongoose.model("User", userSchema);
-    const Language = mongoose.model("Language", languageSchema);
-    const Media = mongoose.model("Media", mediaSchema);
-    const Subtitle = mongoose.model("Subtitle", subtitleSchema);
 })
     .catch(function (err) {
         if (err) {
@@ -70,10 +68,6 @@ mongoose.connect(mongoURI).then(function() {
             process.exit(1);
         }
         console.log(`Connected to MongoDB with URI: ${mongoURI}`);
-        const User = mongoose.model("User", userSchema);
-        const Language = mongoose.model("Language", languageSchema);
-        const Media = mongoose.model("Media", mediaSchema);
-        const Subtitle = mongoose.model("Subtitle", subtitleSchema);
     });
 
 
@@ -91,9 +85,10 @@ app.get("/api", function (req, res) {
 });
 
 app.use("/v1/users", usersRouter);
-app.use("/v1/medias", mediasRouter);
-app.use("/v1/subtitles", subtitlesRouter);
+app.use("/v1/medias", passport.authenticate("jwt", { session: false }), mediasRouter);
+app.use("/v1/subtitles", passport.authenticate("jwt", { session: false }), subtitlesRouter);
 app.use("/v1/languages", languagesRouter);
+app.use("/v1/auth", authRouter);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use("/api/*", function (req, res) {
@@ -118,12 +113,13 @@ app.use(function (err, req, res, next) {
         error: {},
     };
     if (env === "development") {
-    // Return sensitive stack trace only in dev mode
+        // Return sensitive stack trace only in dev mode
         err_res["error"] = err.stack;
     }
     res.status(err.status || 500);
     res.json(err_res);
 });
+
 
 app.listen(port, function (err) {
     if (err) throw err;

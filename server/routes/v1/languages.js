@@ -1,7 +1,5 @@
-const { default: mongoose } = require("mongoose");
-
 const router = require("express").Router();
-const Language = mongoose.model("Language",  require("../../schemas/languages.js"));
+const Language = require("../../schemas/languages.js")
 
 
 /**
@@ -13,7 +11,7 @@ const Language = mongoose.model("Language",  require("../../schemas/languages.js
  * @return {object} 200 - Success response
  */
 router.get("/", async (req, res) => {
-    console.log("hi")
+    // TODO: only return fields that make sense (e.g. no ID or __v)
     const languages = await Language.find()
     res.send(languages)
 });
@@ -40,7 +38,7 @@ router.get("/:code", async (req, res) => {
  * @return {object} 403 - No permission
  * @return {object} 404 - Language code not found 
  */
-router.put("/:code", async (req, res) => {
+router.put("/:code", async function (req, res) {
     try {
         const language = await Language.findOne({code: req.params.code})
 
@@ -50,10 +48,10 @@ router.put("/:code", async (req, res) => {
 
         await language.save();
         res.send(language)
-    } catch{
+    } catch {
         res.status(404);
-        res.send({error: "Langauge with code " + req.params.code + " does not exist"})
-    }
+        res.send({error: "Langauge with code " + req.params.code + " does not exist"});
+    } 
 });
 
 module.exports = router;

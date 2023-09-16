@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const mediaSchema = require("./media");
 const Schema = mongoose.Schema;
+const bcrypt = require("bcrypt");
 
 /**
  * email: User email
@@ -11,10 +11,27 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     email: { type: String, required: [true, "Email must be set"], unique: true },
     password: { type: String, required: [true, "Password must be set"] },
+    admin : {type: Boolean, default: false}, 
     theme: { type: String, enum: ["light", "dark"], default: "light" },
     uploadedMedias: [{
         type: Schema.Types.ObjectId,
         ref: "Media"  }]
 });
+userSchema.pre(
+    "save",
+    async function(next) {
+        const hash = await bcrypt.hash(this.password, 10);
+  
+        this.password = hash;
+        next();
+    }
+);
 
-module.exports = userSchema;
+userSchema.methods.isValidPassword = async function(password) {
+    const user = this;
+    const compare = await bcrypt.compare(password, user.password);
+  
+    return compare;
+};
+
+module.exports = mongoose.model("Users", userSchema);
