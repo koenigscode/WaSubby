@@ -1,4 +1,7 @@
 const router = require("express").Router();
+const Media = require("../../schemas/media.js");
+const path = require("path");
+
 
 
 
@@ -37,8 +40,28 @@ router.get("/:mediaId/subtitles/:subtitlesId", function (req, res) {
  * @return {object} 400 - Bad request response
  * @return {object} 401 - Not authorized
  */
-router.post("/:mediaId", function (req, res) {
-    res.status(501).send("TODO:");
+router.post("/", function (req, res) {
+    if (!req.files || !req.files.media){
+        return res.status(400).send("No file uploaded");
+    } 
+    const media = req.files.media;
+    console.log(media);
+    let fileType = media.name.split(".");
+    if(fileType.length < 2)
+        return res.status(400).send("File doesn't have a file extension");
+
+    fileType = fileType[fileType.length - 1];
+
+    const filePath = path.join("__dirname", "..", "/tmp", "/uploaded", `${media.md5}.${fileType}`);
+
+    media.mv(filePath, err => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        // TODO: generate subs
+        return res.status(201).send("File uploaded");
+    });
 });
 
 

@@ -15,9 +15,11 @@ const Media = require("./schemas/media");
 const Subtitle = require("./schemas/subtitles");
 const expressJSDocSwagger = require("express-jsdoc-swagger");
 const passport = require("passport");
+const fileUpload = require("express-fileupload");
 require("./passport.js"); // local passport config
 
 const app = express();
+app.use(fileUpload());
 const apiDocsRoute = "/api-docs";
 
 const options = {
@@ -85,7 +87,7 @@ app.get("/api", function (req, res) {
 });
 
 app.use("/v1/users", usersRouter);
-app.use("/v1/medias", passport.authenticate("jwt", { session: false }), mediasRouter);
+app.use("/v1/medias", /*passport.authenticate("jwt", { session: false }),*/ mediasRouter);
 app.use("/v1/subtitles", passport.authenticate("jwt", { session: false }), subtitlesRouter);
 app.use("/v1/languages", languagesRouter);
 app.use("/v1/auth", authRouter);
