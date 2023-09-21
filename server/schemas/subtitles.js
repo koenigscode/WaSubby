@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const mediaSchema = require("./media");
 const Schema = mongoose.Schema;
 
 /**
@@ -25,4 +24,4 @@ const subtitleSchema = new Schema({
 // Enforce that the language-media combination is unique
 subtitleSchema.index({language: 1, media: 1}, {unique: true});
 
-module.exports = subtitleSchema;
+module.exports = mongoose.model("Subtitles", subtitleSchema);
