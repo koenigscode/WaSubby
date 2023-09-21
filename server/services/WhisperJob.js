@@ -103,7 +103,7 @@ class WhisperJob {
    */
     _getWhisperArgs(translate) {
         const whisperModel = process.env.WHISPER_MODEL || "large-v2";
-        console.log(`Using whisper model ${whisperModel}`)
+        console.log(`Using whisper model ${whisperModel}`);
         let args = [
             "--output_format",
             "srt",

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Language = require("../../schemas/languages.js")
+const Language = require("../../schemas/languages.js");
 
 
 /**
@@ -11,9 +11,8 @@ const Language = require("../../schemas/languages.js")
  * @return {object} 200 - Success response
  */
 router.get("/", async (req, res) => {
-    // TODO: only return fields that make sense (e.g. no ID or __v)
-    const languages = await Language.find()
-    res.send(languages)
+    const languages = await Language.find().select("-__v");
+    res.send(languages);
 });
 
 /**
@@ -24,8 +23,8 @@ router.get("/", async (req, res) => {
  * @return {object} 404 - language code not found
  */
 router.get("/:code", async (req, res) => {
-    const language = await Language.findOne({code: req.params.code});
-    res.send(language)
+    const language = await Language.findOne({code: req.params.code}).select("-__v");
+    res.send(language);
 });
 
 
@@ -40,18 +39,21 @@ router.get("/:code", async (req, res) => {
  */
 router.put("/:code", async function (req, res) {
     try {
-        const language = await Language.findOne({code: req.params.code})
-
-        if (req.body.name){
-            language.name = req.body.name
+        const language = await Language.findOne({code: req.params.code});
+        if (language === null) {
+            res.status(404);
+            res.send({ error: "Language with code " + req.params.code + " does not exist" });
         }
 
-        await language.save();
-        res.send(language)
-    } catch {
-        res.status(404);
-        res.send({error: "Langauge with code " + req.params.code + " does not exist"});
-    } 
+        const newLanguageData = req.body;
+        const id = req.params._id;
+        await Language.updateOne({...newLanguageData, id });
+        res.send(await Language.findOne({code: req.params.code}).select("-__v"));
+    } catch (e) {
+        console.log(e);
+        res.status(400);
+        res.send();
+    }
 });
 
 module.exports = router;

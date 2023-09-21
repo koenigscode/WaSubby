@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const User = require("../../schemas/users.js");
 
 /**
  * Get /v1/users
@@ -6,8 +7,9 @@ const router = require("express").Router();
  * @tags users
  * @return {object} 200 - Success response
  */
-router.get("/", function (req, res) {
-    res.status(501).send("TODO:");
+router.get("/", async (req, res) => {
+    const users = await User.find().select("email admin theme");
+    res.send(users);
 });
 
 /**
@@ -17,8 +19,11 @@ router.get("/", function (req, res) {
  * @return {object} 200 - Success response
  * @return {object} 404 - user id not found
  */
-router.get("/:id", function (req, res) {
-    res.status(501).send("TODO:");
+router.get("/:id", async (req, res) => {
+    const user = await User.findOne({ id: req.params._id }).select(
+        "email admin theme"
+    );
+    res.send(user);
 });
 
 //TODO: route name
@@ -45,20 +50,6 @@ router.post("/register", function (req, res) {
     res.status(501).send("TODO:");
 });
 
-//TODO: route name
-/**
- * Post /v1/users/logout
- * @summary Logs out a user
- * @tags users
- * @return {object} 200 - Success response
- * @return {object} 400 - Bad request response
- * @return {object} 401 - not authorized
- */
-router.post("/logout", function (req, res) {
-    res.status(501).send("TODO:");
-});
-
-
 // TODO: params
 /**
  * Patch /v1/users/{id}
@@ -69,8 +60,25 @@ router.post("/logout", function (req, res) {
  * @return {object} 404 - user id not found
  * @return {object} 401 - not authorized
  */
-router.patch("/:id", function (req, res) {
-    res.status(501).send("TODO:");
+router.patch("/:id", async function (req, res) {// TODO: only for admins
+    try {
+        const user = await User.findById(req.params.id);
+        if (user === null) {
+            res.status(404);
+            res.send({ error: "User with ID " + req.params.id + " does not exist" });
+        }
+
+        const oldUser = user.toObject();
+        const newUserData = req.body;
+        const id = req.params._id;
+
+        await User.updateOne({...oldUser, ...newUserData, id });
+        res.send(await User.findById(req.params.id).select("email admin theme"));
+    } catch (e) {
+        console.log(e);
+        res.status(400);
+        res.send();
+    }
 });
 
 // TODO: params
@@ -82,8 +90,23 @@ router.patch("/:id", function (req, res) {
  * @return {object} 400 - Bad request response
  * @return {object} 404 - user id not found
  */
-router.put("/:id", function (req, res) {
-    res.status(501).send("TODO:");
+router.put("/:id", async (req, res) => {
+    // TODO: only for admins
+    try {
+        const user = await User.findById(req.params.id);
+        if (user === null) {
+            res.status(404);
+            res.send({ error: "User with ID " + req.params.id + " does not exist" });
+        }
+        const newUserData = req.body;
+        const id = req.params._id;
+        await User.updateOne({...newUserData, id });
+        res.send(await User.findById(req.params.id).select("email admin theme"));
+    } catch (e) {
+        console.log(e);
+        res.status(400);
+        res.send();
+    }
 });
 
 /**
@@ -94,8 +117,17 @@ router.put("/:id", function (req, res) {
  * @return {object} 404 - user id not found
  * @return {object} 403 - no permission
  */
-router.delete("/:id", function (req, res) {
-    res.status(501).send("TODO:");
+router.delete("/:id", async (req, res) => {
+    // TODO: only admin can delete any user, other users only themselves
+    const user = await User.findByIdAndDelete(req.params.id).select("-uploadedMedias -__v");
+    console.log(user);
+
+    if (user === null){
+        res.status(404);
+        res.send ({error: "User with ID " + req.params.id + " does not exist"});
+    }
+    
+    res.send(user);
 });
 
 module.exports = router;
