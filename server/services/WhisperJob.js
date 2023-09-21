@@ -30,7 +30,7 @@ class WhisperJob {
    * @returns {Promise<{transcribedLanguage: string, translated: boolean}>} object containing the transcribed language and whether the media was translated
    */
     async execute() {
-        const whisperCommand = process.env.whisperCommand || "whisper-ctranslate2";
+        const whisperCommand = process.env.WHISPER_COMMAND || "whisper-ctranslate2";
 
         const transcriptionJob = await spawn(
             whisperCommand,
@@ -102,8 +102,11 @@ class WhisperJob {
    * @param {boolean} translate whether to translate the media file to english
    */
     _getWhisperArgs(translate) {
-        const whisperModel = process.env.whisperModel || "large-v2";
+        const whisperModel = process.env.WHISPER_MODEL || "large-v2";
+        const whisperDevice = process.env.WHISPER_DEVICE || "auto";
 
+        console.log(`Using whisper model ${whisperModel}, device ${whisperDevice}`);
+        
         let args = [
             "--output_format",
             "srt",
@@ -113,8 +116,10 @@ class WhisperJob {
             "True",
             "--condition_on_previous_text",
             "False",
+            "--device",
+            whisperDevice,
             "--output_dir",
-            path.join(dataDir, this.mediaId, "tmp"),
+            path.resolve(path.join(dataDir, this.mediaId, "tmp")),
             this.filePath,
         ];
         if (translate === true) {
