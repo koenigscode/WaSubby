@@ -90,9 +90,6 @@ section .text-container .text-box h3{
   margin-bottom: 10px;
 }
 
-.planet {
-  border-radius: 50px;
-}
   
 @media (max-width: 900px){
   section h1{
