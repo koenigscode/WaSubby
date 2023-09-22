@@ -10,7 +10,6 @@
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
-    "cdev": "npm run clean-dev",
     "clean-dev": "npm run test-data && rm -rf ./data && nodemon ./app.js",
     "lint": "eslint .",
     "fix": "eslint --fix .",

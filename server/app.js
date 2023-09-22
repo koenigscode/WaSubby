@@ -87,7 +87,7 @@ app.get("/api", function (req, res) {
 });
 
 app.use("/v1/users", usersRouter);
-app.use("/v1/medias", /*passport.authenticate("jwt", { session: false }),*/ mediasRouter);
+app.use("/v1/medias", passport.authenticate("jwt", { session: false }), mediasRouter);
 app.use("/v1/subtitles", passport.authenticate("jwt", { session: false }), subtitlesRouter);
 app.use("/v1/languages", languagesRouter);
 app.use("/v1/auth", authRouter);
