@@ -17,7 +17,7 @@ class WhisperJob {
     /**
    * Creates a new whisper job.
    * @param {string} filePath path to media file
-   * @param {number} mediaId id of media file
+   * @param {number|string} mediaId id of media file
    */
     constructor(filePath, mediaId) {
         this.filePath = filePath;

@@ -1,9 +1,8 @@
 const router = require("express").Router();
 const Media = require("../../schemas/media.js");
 const path = require("path");
-
-
-
+const WhisperJob = require("../../services/WhisperJob.js");
+const fs = require("fs").promises;
 
 /**
  * Get /v1/medias/{mediaId}/subtitles
@@ -45,7 +44,6 @@ router.post("/", function (req, res) {
         return res.status(400).send("No file uploaded");
     } 
     const media = req.files.media;
-    console.log(media);
     let fileType = media.name.split(".");
     if(fileType.length < 2)
         return res.status(400).send("File doesn't have a file extension");
@@ -59,8 +57,12 @@ router.post("/", function (req, res) {
             return res.status(500).send(err);
         }
 
-        // TODO: generate subs
-        return res.status(201).send("File uploaded");
+        const job = new WhisperJob(filePath, media.md5);
+        job.execute().then(async () => {console.log(`Subtitle generation for ${media.md5} done`);
+            await fs.unlink(filePath);
+        });
+
+        return res.status(201).send(`Subtitle generation for media ${media.md5} started`);
     });
 });
 
