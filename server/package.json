@@ -10,6 +10,8 @@
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
+    "cdev": "npm run clean-dev",
+    "clean-dev": "npm run test-data && rm -rf ./data && nodemon ./app.js",
     "lint": "eslint .",
     "fix": "eslint --fix .",
     "test-data": "cross-env-shell MONGODB_URI=mongodb://127.0.0.1:27017/WaSubby node ./tests/initialTestData.js",
