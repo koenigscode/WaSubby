@@ -7,6 +7,9 @@
   "private": true,
   "description": "Template for ExpressJS API with Mongoose for Web and Mobile Engineering (DIT342)",
   "main": "./app.js",
+  "_moduleAliases": {
+    "@": "."
+  },
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
@@ -19,7 +22,8 @@
     "newman-server": "cross-env-shell PORT=3001 \"npm run dropdb && run-p --race start newman-wait\"",
     "newman-wait": "wait-on http://localhost:3001/api && npm run newman",
     "newman": "newman run ./tests/server.postman_collection.json --env-var host=http://localhost:3001",
-    "dropdb": "node ./tests/dropdb.js"
+    "dropdb": "node ./tests/dropdb.js",
+    "postinstall": "link-module-alias"
   },
   "repository": {
     "type": "git",
@@ -35,6 +39,7 @@
     "express-fileupload": "^1.4.0",
     "express-jsdoc-swagger": "^1.8.0",
     "jsonwebtoken": "^9.0.2",
+    "link-module-alias": "^1.2.0",
     "mongoose": "^7.4.4",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",

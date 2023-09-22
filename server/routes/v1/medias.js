@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Media = require("../../schemas/media.js");
 const path = require("path");
+const assertAdmin = require("@/services/assert-admin");
 const WhisperJob = require("../../services/WhisperJob.js");
 const fs = require("fs").promises;
 
@@ -89,9 +90,11 @@ router.post("/:id/subtitles", function (req, res) {
  * @return {object} 200 - Success response
  * @return {object} 401 - not authorized
  */
-router.delete("/", function (req, res) {
-    res.status(501).send("TODO:");
-});
+router.delete("/",
+    assertAdmin,
+    function (req, res) {
+        res.status(501).send("TODO:");
+    });
 
 /**
  * Delete /v1/medias/{mediaId}
@@ -102,6 +105,7 @@ router.delete("/", function (req, res) {
  * @return {object} 401 - not authorized
  */
 router.delete("/:id", function (req, res) {
+    // TODO: only allow if user owns media or is admin
     res.status(501).send("TODO:");
 });
 
@@ -115,6 +119,7 @@ router.delete("/:id", function (req, res) {
  * @return {object} 403 - no permission
  */
 router.delete("/:mediaId/subtitles/:subtitlesId", function (req, res) {
+    // TODO: only allow if user owns media or is admin
     res.status(501).send("TODO:");
 });
 

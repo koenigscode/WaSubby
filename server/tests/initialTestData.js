@@ -22,7 +22,7 @@ async function insertData() {
     console.log("inserted languages");
     
     // TODO: hash password
-    await new User({ email: "example@example.com", password: "12345678", admin: true, theme: "dark" }).save();
+    await new User({ email: "admin@admin.com", password: "admin", admin: true, theme: "dark" }).save();
     console.log("inserted test user");
     await mongoose.disconnect();
 }

@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const assertAdmin = require("@/services/assert-admin");
 
 
 /**
@@ -11,6 +12,7 @@ const router = require("express").Router();
  * @return {object} 403 - no permission
  */
 router.patch("/:id", function (req, res) {
+    // TODO: only allow if user owns media or is admin
     res.status(501).send("TODO:");
 });
 
@@ -22,7 +24,7 @@ router.patch("/:id", function (req, res) {
  * @return {object} 200 - Success response
  * @return {object} 403 - no permission
  */
-router.delete("/", function (req, res) {
+router.delete("/", assertAdmin, function (req, res) {
     res.status(501).send("TODO:");
 });
 
