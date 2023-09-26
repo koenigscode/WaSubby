@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Media = require("../../schemas/media.js");
 const path = require("path");
+const assertAdmin = require("@/services/assert-admin");
 const Subtitle = require("../../schemas/subtitles.js");
 const WhisperJob = require("../../services/WhisperJob.js");
 const fs = require("fs").promises;
@@ -153,6 +154,7 @@ router.delete("/:id", async (req, res) => {
  * @return {object} 403 - no permission
  */
 router.delete("/:mediaId/subtitles/:subtitlesId", function (req, res) {
+    // TODO: only allow if user owns media or is admin
     res.status(501).send("TODO:");
 });
 

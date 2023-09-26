@@ -1,5 +1,8 @@
 const router = require("express").Router();
 const Language = require("../../schemas/languages.js");
+const passport = require("passport");
+const assertAdmin = require("@/services/assert-admin");
+
 
 /**
  * Get /v1/languages
@@ -37,25 +40,26 @@ router.get("/:code", async (req, res) => {
  * @return {object} 403 - No permission
  * @return {object} 404 - Language code not found
  */
-router.put("/:code", async function (req, res) {
-    try {
-        const language = await Language.findOne({ code: req.params.code });
-        if (language === null) {
-            res.status(404);
-            res.send({
-                error: "Language with code " + req.params.code + " does not exist",
-            });
-        }
+router.put("/:code", 
+    passport.authenticate("jwt", { session: false }),
+    assertAdmin,
+    async function (req, res) {
+        try {
+            const language = await Language.findOne({code: req.params.code});
+            if (language === null) {
+                res.status(404);
+                res.send({ error: "Language with code " + req.params.code + " does not exist" });
+            }
 
-        const newLanguageData = req.body;
-        const id = req.params._id;
-        await Language.updateOne({ ...newLanguageData, id });
-        res.send(await Language.findOne({ code: req.params.code }).select("-__v"));
-    } catch (e) {
-        console.log(e);
-        res.status(400);
-        res.send();
-    }
-});
+            const newLanguageData = req.body;
+            const id = req.params._id;
+            await Language.updateOne({...newLanguageData, id });
+            res.send(await Language.findOne({code: req.params.code}).select("-__v"));
+        } catch (e) {
+            console.log(e);
+            res.status(400);
+            res.send();
+        }
+    });
 
 module.exports = router;

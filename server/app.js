@@ -8,7 +8,6 @@ const usersRouter = require("./routes/v1/users");
 const mediasRouter = require("./routes/v1/medias");
 const subtitlesRouter = require("./routes/v1/subtitles");
 const languagesRouter = require("./routes/v1/languages");
-const authRouter = require("./routes/v1/auth");
 const User = require("./schemas/users");
 const Language = require("./schemas/languages");
 const Media = require("./schemas/media");
@@ -87,17 +86,9 @@ app.get("/api", function (req, res) {
 });
 
 app.use("/v1/users", usersRouter);
-app.use(
-    "/v1/medias",
-    /*passport.authenticate("jwt", { session: false }),*/ mediasRouter,
-);
-app.use(
-    "/v1/subtitles",
-    passport.authenticate("jwt", { session: false }),
-    subtitlesRouter,
-);
+app.use("/v1/medias", passport.authenticate("jwt", { session: false }), mediasRouter);
+app.use("/v1/subtitles", passport.authenticate("jwt", { session: false }), subtitlesRouter);
 app.use("/v1/languages", languagesRouter);
-app.use("/v1/auth", authRouter);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use("/api/*", function (req, res) {
