@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
  */
 router.get("/:id", async (req, res) => {
     const user = await User.findOne({ id: req.params._id }).select(
-        "email admin theme"
+        "email admin theme",
     );
     res.send(user);
 });
@@ -60,7 +60,8 @@ router.post("/register", function (req, res) {
  * @return {object} 404 - user id not found
  * @return {object} 401 - not authorized
  */
-router.patch("/:id", async function (req, res) {// TODO: only for admins
+router.patch("/:id", async function (req, res) {
+    // TODO: only for admins
     try {
         const user = await User.findById(req.params.id);
         if (user === null) {
@@ -72,7 +73,7 @@ router.patch("/:id", async function (req, res) {// TODO: only for admins
         const newUserData = req.body;
         const id = req.params._id;
 
-        await User.updateOne({...oldUser, ...newUserData, id });
+        await User.updateOne({ ...oldUser, ...newUserData, id });
         res.send(await User.findById(req.params.id).select("email admin theme"));
     } catch (e) {
         console.log(e);
@@ -100,7 +101,7 @@ router.put("/:id", async (req, res) => {
         }
         const newUserData = req.body;
         const id = req.params._id;
-        await User.updateOne({...newUserData, id });
+        await User.updateOne({ ...newUserData, id });
         res.send(await User.findById(req.params.id).select("email admin theme"));
     } catch (e) {
         console.log(e);
@@ -119,14 +120,16 @@ router.put("/:id", async (req, res) => {
  */
 router.delete("/:id", async (req, res) => {
     // TODO: only admin can delete any user, other users only themselves
-    const user = await User.findByIdAndDelete(req.params.id).select("-uploadedMedias -__v");
+    const user = await User.findByIdAndDelete(req.params.id).select(
+        "-uploadedMedias -__v",
+    );
     console.log(user);
 
-    if (user === null){
+    if (user === null) {
         res.status(404);
-        res.send ({error: "User with ID " + req.params.id + " does not exist"});
+        res.send({ error: "User with ID " + req.params.id + " does not exist" });
     }
-    
+
     res.send(user);
 });
 

@@ -55,14 +55,15 @@ const options = {
 };
 expressJSDocSwagger(app)(options);
 
-const mongoURI =
-  process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/WaSubby";
+const mongoURI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/WaSubby";
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
-mongoose.connect(mongoURI).then(function () {
-    console.log(`Connected to MongoDB with URI: ${mongoURI}`);
-})
+mongoose
+    .connect(mongoURI)
+    .then(function () {
+        console.log(`Connected to MongoDB with URI: ${mongoURI}`);
+    })
     .catch(function (err) {
         if (err) {
             console.error(`Failed to connect to MongoDB with URI: ${mongoURI}`);
@@ -71,7 +72,6 @@ mongoose.connect(mongoURI).then(function () {
         }
         console.log(`Connected to MongoDB with URI: ${mongoURI}`);
     });
-
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -87,8 +87,15 @@ app.get("/api", function (req, res) {
 });
 
 app.use("/v1/users", usersRouter);
-app.use("/v1/medias", /*passport.authenticate("jwt", { session: false }),*/ mediasRouter);
-app.use("/v1/subtitles", passport.authenticate("jwt", { session: false }), subtitlesRouter);
+app.use(
+    "/v1/medias",
+    /*passport.authenticate("jwt", { session: false }),*/ mediasRouter,
+);
+app.use(
+    "/v1/subtitles",
+    passport.authenticate("jwt", { session: false }),
+    subtitlesRouter,
+);
 app.use("/v1/languages", languagesRouter);
 app.use("/v1/auth", authRouter);
 
@@ -115,13 +122,12 @@ app.use(function (err, req, res, next) {
         error: {},
     };
     if (env === "development") {
-        // Return sensitive stack trace only in dev mode
+    // Return sensitive stack trace only in dev mode
         err_res["error"] = err.stack;
     }
     res.status(err.status || 500);
     res.json(err_res);
 });
-
 
 app.listen(port, function (err) {
     if (err) throw err;

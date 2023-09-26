@@ -10,11 +10,12 @@
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
+    "fast-dev": "cross-env-shell WHISPER_MODEL=small nodemon ./app.js",
     "cdev": "npm run clean-dev",
     "clean-dev": "npm run test-data && rm -rf ./data && nodemon ./app.js",
     "lint": "eslint .",
     "fix": "eslint --fix .",
-    "test-data": "cross-env-shell MONGODB_URI=mongodb://127.0.0.1:27017/WaSubby node ./tests/initialTestData.js",
+    "test-data": "cross-env-shell node ./tests/initialTestData.js",
     "test": "cross-env-shell MONGODB_URI=mongodb://localhost:27017/serverTestDB \"npm run newman-server\"",
     "ci-test": "npm run newman-server",
     "newman-server": "cross-env-shell PORT=3001 \"npm run dropdb && run-p --race start newman-wait\"",

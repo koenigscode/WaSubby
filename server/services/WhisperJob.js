@@ -26,7 +26,7 @@ class WhisperJob {
 
     /**
    * Executes the whisper cli with the given media file, await both transcription and (if done) translation.
-   * 
+   *
    * @returns {Promise<{transcribedLanguage: string, translated: boolean}>} object containing the transcribed language and whether the media was translated
    */
     async execute() {
@@ -34,7 +34,7 @@ class WhisperJob {
 
         const transcriptionJob = await spawn(
             whisperCommand,
-            this._getWhisperArgs(false)
+            this._getWhisperArgs(false),
         );
 
         const regexPattern = /Detected language '([^']+)'/gm;
@@ -49,9 +49,9 @@ class WhisperJob {
                     dataDir,
                     this.mediaId,
                     "tmp",
-                    path.parse(path.basename(this.filePath)).name + ".srt"
+                    path.parse(path.basename(this.filePath)).name + ".srt",
                 ),
-                path.join(dataDir, this.mediaId, `${this.language}.srt`)
+                path.join(dataDir, this.mediaId, `${this.language}.srt`),
             );
         } else {
             // if no language was detected, remove the tmp folder and throw an error
@@ -79,9 +79,9 @@ class WhisperJob {
                 dataDir,
                 this.mediaId,
                 "tmp",
-                path.parse(path.basename(this.filePath)).name + ".srt"
+                path.parse(path.basename(this.filePath)).name + ".srt",
             ),
-            path.join(dataDir, this.mediaId, "English.srt")
+            path.join(dataDir, this.mediaId, "English.srt"),
         );
 
         fs.rmSync(path.join(dataDir, this.mediaId, "tmp"), {
@@ -90,14 +90,15 @@ class WhisperJob {
         });
         // TODO: delete source file
 
-        return {
-            transcribedLanguage: this.language,
-            translated: true,
-        };
+        return [{
+            language: this.language, path: path.join(dataDir, this.mediaId, `${this.language}.srt`), 
+        }, {
+            language: "English", path: path.join(dataDir, this.mediaId, "English.srt"),
+        },];
     }
 
     /**
-     * Internal helper to get the whisper cli arguments for the given media file.
+   * Internal helper to get the whisper cli arguments for the given media file.
    *
    * @param {boolean} translate whether to translate the media file to english
    */
