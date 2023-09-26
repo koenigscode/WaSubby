@@ -1,29 +1,51 @@
 <template>
-    <div class="login">
-      <div class="main">
-        <label>Login</label>
-        <input type="text" v-model="email" placeholder="Enter E-Mail" />
-        <input type="password" v-model="password" placeholder="Enter password" />
-        <button v-on:click="Login">Login</button>
-      </div>
+    <div> <b-alert variant="danger" :show="alert !== null">{{ alert }}</b-alert>
+        <div class="login">
+            <div class="main">
+                <form @submit.prevent="login()">
+                    <label>Login</label>
+                    <input type="text" v-model="email" placeholder="Enter E-Mail" />
+                    <input type="password" v-model="password" placeholder="Enter password" />
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Login',
-  data() {
+  data: function () {
     return {
+      alert: null,
       email: '',
       password: ''
     }
   },
   methods: {
+    login: async function () {
+      try {
+        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/auth/login`, {
+          email: this.email,
+          password: this.password
+        })
+        if (response.data.token) {
+          console.log('logged in')
+          axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` }
+          this.$router.push({ name: 'home' })
+        }
+      } catch (err) {
+        this.alert = err.response.data.message
+      }
+    }
   }
 }
 </script>
 <style scoped>
-.login{
+.login {
     margin: 0;
     padding: 0;
     display: flex;
@@ -32,14 +54,14 @@ export default {
     min-height: 100vh;
     font-family: "Jost", sans-serif;
     background: linear-gradient(to bottom, #000428, #004e92);
-  }
+}
 
 .main {
-  width: 200%;
-  height: 500px;
-  overflow: hidden;
-  border-radius: 10px;
-  box-shadow: 5px 20px 50px #00072D;
+    width: 200%;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 5px 20px 50px #00072D;
 }
 
 .main input {
