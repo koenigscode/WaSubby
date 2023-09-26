@@ -43,11 +43,11 @@ router.patch("/:id", async (req, res) => {
  */
 router.delete("/", async (req, res) => {
     try {
+        const deletedSubtitles = await Subtitle.find({}).lean();
         const result = await Subtitle.deleteMany({});
         const deletedCount = result.deletedCount;
 
         if (deletedCount > 0) {
-            const deletedSubtitles = await Subtitle.find({}).lean();
             res.status(200).json(deletedSubtitles);
         } else {
             res.status(200).json({ message: "No subtitles to delete" });
