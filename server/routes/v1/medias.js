@@ -73,7 +73,7 @@ router.post("/", async (req, res) => {
             const subtitlePath = subs[0].path;
             const language = subs[0].language;
             const newMedia = new Media({fileHash: media.md5});
-            const newSubtitles = new Subtitle({filePath: subtitlePath, langauge: language, media: newMedia});
+            const newSubtitles = new Subtitle({filePath: subtitlePath, language: language, media: newMedia});
             newMedia.subtitles = newSubtitles;
             newMedia.save();
             newSubtitles.save();
