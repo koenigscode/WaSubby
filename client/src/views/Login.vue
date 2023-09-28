@@ -28,7 +28,7 @@ export default {
   methods: {
     login: async function () {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/auth/login`, {
+        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/login`, {
           email: this.email,
           password: this.password
         })

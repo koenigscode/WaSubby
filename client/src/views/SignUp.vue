@@ -30,7 +30,7 @@ export default {
   methods: {
     signup: async function () {
       try {
-        const res = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/auth/signup`, {
+        const res = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/signup`, {
           email: this.email,
           password: this.password
         })

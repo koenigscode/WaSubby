@@ -48,7 +48,7 @@ router.put("/:code",
             const language = await Language.findOne({code: req.params.code});
             if (language === null) {
                 res.status(404);
-                res.send({ error: "Language with code " + req.params.code + " does not exist" });
+                res.send({ message: "Language with code " + req.params.code + " does not exist" });
             }
 
             const newLanguageData = req.body;
