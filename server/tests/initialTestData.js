@@ -22,8 +22,8 @@ async function insertData() {
 
     // TODO: hash password
     await new User({
-        email: "example@example.com",
-        password: "12345678",
+        email: "admin@admin.com",
+        password: "admin",
         admin: true,
         theme: "dark",
     }).save();

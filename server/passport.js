@@ -5,7 +5,7 @@ const JWTstrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 const secret = process.env.JWT_SECRET || "TESTING";
 
-passport.use("register", new LocalStrategy({
+passport.use("signup", new LocalStrategy({
     usernameField: "email",
     passwordField: "password"
 }, 
