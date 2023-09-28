@@ -178,4 +178,5 @@ $RECYCLE.BIN/
 
 server/data/
 server/tmp/uploaded/*
+server/.node_modules** 
 !server/tmp/uploaded/.gitkeep
