@@ -7,7 +7,7 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item href="#">Home</b-nav-item>
+            <b-nav-item href="/">Home</b-nav-item>
             <b-nav-item href="#">Video Player</b-nav-item>
           </b-navbar-nav>
 
@@ -19,8 +19,9 @@
               <template #button-content>
                 <em>Account</em>
               </template>
-              <b-dropdown-item href="#">Log In</b-dropdown-item>
-              <b-dropdown-item href="#">Sign Up</b-dropdown-item>
+              <b-dropdown-item href="login">Log In</b-dropdown-item>
+              <b-dropdown-item href="sign-up">Sign Up</b-dropdown-item>
+              <b-dropdown-item href="my-page">My Page</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
