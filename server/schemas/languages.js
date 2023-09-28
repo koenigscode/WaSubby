@@ -8,9 +8,16 @@ const Schema = mongoose.Schema;
  *   so we have to map name -> code
  */
 const languageSchema = new Schema({
-    code: { type: String, unique: true, required: [true, "Language code required"] },
-    name: { type: String, unique: true, required: [true, "Language name required"] },
+    code: {
+        type: String,
+        unique: true,
+        required: [true, "Language code required"],
+    },
+    name: {
+        type: String,
+        unique: true,
+        required: [true, "Language name required"],
+    },
 });
-
 
 module.exports = mongoose.model("Languages", languageSchema);

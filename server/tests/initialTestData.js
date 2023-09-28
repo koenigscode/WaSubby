@@ -1,5 +1,4 @@
-const mongoURI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/WaSubby";
+const mongoURI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/WaSubby";
 
 const mongoose = require("mongoose");
 const User = require("../schemas/users");
@@ -20,31 +19,33 @@ async function insertData() {
     await new Language({ code: "de", name: "German" }).save();
     await new Language({ code: "ru", name: "Russian" }).save();
     console.log("inserted languages");
-    
+
     // TODO: hash password
-    await new User({ email: "example@example.com", password: "12345678", admin: true, theme: "dark" }).save();
+    await new User({
+        email: "admin@admin.com",
+        password: "admin",
+        admin: true,
+        theme: "dark",
+    }).save();
     console.log("inserted test user");
     await mongoose.disconnect();
 }
 
-(async function() {
-
+(async function () {
     try {
         await insertData();
-    }
-    catch(err) {
+    } catch (err) {
         console.error(`Failed to connect to MongoDB with URI: ${mongoURI}`);
         console.error(err.stack);
         process.exit(1);
     }
 })();
 
-
 // mongoose.connect(mongoURI).then(async function() {
 
 // })
 //     .catch(function (err) {
 //         if (err) {
-//            
+//
 //         }
 //     });

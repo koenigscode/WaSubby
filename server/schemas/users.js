@@ -11,26 +11,26 @@ const bcrypt = require("bcrypt");
 const userSchema = new Schema({
     email: { type: String, required: [true, "Email must be set"], unique: true },
     password: { type: String, required: [true, "Password must be set"] },
-    admin : {type: Boolean, default: false}, 
+    admin: { type: Boolean, default: false },
     theme: { type: String, enum: ["light", "dark"], default: "light" },
-    uploadedMedias: [{
-        type: Schema.Types.ObjectId,
-        ref: "Media"  }]
+    uploadedMedias: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Media",
+        },
+    ],
 });
-userSchema.pre(
-    "save",
-    async function(next) {
-        const hash = await bcrypt.hash(this.password, 10);
-  
-        this.password = hash;
-        next();
-    }
-);
+userSchema.pre("save", async function (next) {
+    const hash = await bcrypt.hash(this.password, 10);
 
-userSchema.methods.isValidPassword = async function(password) {
+    this.password = hash;
+    next();
+});
+
+userSchema.methods.isValidPassword = async function (password) {
     const user = this;
     const compare = await bcrypt.compare(password, user.password);
-  
+
     return compare;
 };
 

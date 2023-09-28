@@ -7,31 +7,42 @@
   "private": true,
   "description": "Template for ExpressJS API with Mongoose for Web and Mobile Engineering (DIT342)",
   "main": "./app.js",
+  "_moduleAliases": {
+    "@": "."
+  },
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
+    "fast-dev": "cross-env-shell WHISPER_MODEL=small nodemon ./app.js",
+    "cdev": "npm run clean-dev",
+    "clean-dev": "npm run test-data && rm -rf ./data && nodemon ./app.js",
     "lint": "eslint .",
     "fix": "eslint --fix .",
-    "test-data": "MONGODB_URI=mongodb://localhost:27017/WaSubby node ./tests/initialTestData.js",
+    "test-data": "cross-env-shell node ./tests/initialTestData.js",
     "test": "cross-env-shell MONGODB_URI=mongodb://localhost:27017/serverTestDB \"npm run newman-server\"",
     "ci-test": "npm run newman-server",
     "newman-server": "cross-env-shell PORT=3001 \"npm run dropdb && run-p --race start newman-wait\"",
     "newman-wait": "wait-on http://localhost:3001/api && npm run newman",
     "newman": "newman run ./tests/server.postman_collection.json --env-var host=http://localhost:3001",
-    "dropdb": "node ./tests/dropdb.js"
+    "dropdb": "node ./tests/dropdb.js",
+    "preinstall": "which link-module-alias && link-module-alias clean || echo",
+    "postinstall": "link-module-alias"
   },
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/dit342/group-00-web.git"
   },
   "dependencies": {
+    "await-spawn": "^4.0.2",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "connect-history-api-fallback": "^1.6.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-fileupload": "^1.4.0",
     "express-jsdoc-swagger": "^1.8.0",
     "jsonwebtoken": "^9.0.2",
+    "link-module-alias": "^1.2.0",
     "mongoose": "^7.4.4",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
