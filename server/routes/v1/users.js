@@ -124,14 +124,14 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
             const newUserData = req.body;
             const id = req.params._id;
 
-        await User.updateOne({ ...oldUser, ...newUserData, id });
-        res.send(await User.findById(req.params.id).select("email admin theme"));
-    } catch (e) {
-        console.log(e);
-        res.status(400);
-        res.send();
-    }
-});
+            await User.updateOne({ ...oldUser, ...newUserData, id });
+            res.send(await User.findById(req.params.id).select("email admin theme"));
+        } catch (e) {
+            console.log(e);
+            res.status(400);
+            res.send();
+        }
+    });
 
 // TODO: params
 /**
@@ -179,8 +179,8 @@ router.delete("/:id",
             return res.status(403).send();
 
         const user = await User.findByIdAndDelete(req.params.id).select(
-        "-uploadedMedias -__v",
-    );
+            "-uploadedMedias -__v",
+        );
         console.log(user);
 
         if (user === null) {

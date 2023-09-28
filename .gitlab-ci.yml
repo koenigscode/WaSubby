@@ -17,7 +17,7 @@ build:
     - docker
   script:
     - cd server
-    - npm install
+    - npm install --unsafe-perm
 
 test:
   stage: test
