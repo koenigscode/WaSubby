@@ -17,14 +17,7 @@ async (email, password, done) => {
         done(error);
     }
 }
-
-                return done(null, user);
-            } catch (error) {
-                done(error);
-            }
-        },
-    ),
-);
+));
 
 passport.use(
     "login",
