@@ -106,7 +106,7 @@ router.post("/:id/subtitles", function (req, res) {
  * @return {object} 200 - Success response
  * @return {object} 401 - not authorized
  */
-router.delete("/", async (req, res) => {
+router.delete("/", assertAdmin, async (req, res) => {
     try {
         const deletedMedias = await Media.find({}).lean();
         const result = await Media.deleteMany({});
@@ -153,9 +153,24 @@ router.delete("/:id", async (req, res) => {
  * @return {object} 404 - mediaId not found
  * @return {object} 403 - no permission
  */
-router.delete("/:mediaId/subtitles/:subtitlesId", function (req, res) {
+router.delete("/:mediaId/subtitles/:subtitlesId", async (req, res) => {
     // TODO: only allow if user owns media or is admin
-    res.status(501).send("TODO:");
+    const media = await Media.findById(req.params.mediaId);
+    if (media==null){
+        res.status(404);
+        return res.send({error: "Media with ID " + req.params.mediaId + " does not exist"});
+    }
+    const subtitle = await Subtitle.findById(req.params.subtitlesId);
+    if (subtitle==null){
+        res.status(404);
+        return res.send({error: "Subtitles with ID " + req.params.subtitlesId + " do not exist"});
+    }
+    if (subtitle.media!=req.params.mediaId){
+        res.status(400);
+        return res.send("Subtitles with ID " + req.params.subtitlesId + " do not belong to the media with ID " + req.params.mediaId);
+    }
+    Subtitle.findByIdAndDelete(req.params.subtitlesId);
+    return res.send(subtitle.lean());
 });
 
 module.exports = router;

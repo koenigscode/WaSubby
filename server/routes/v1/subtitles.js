@@ -11,7 +11,7 @@ const Subtitle = require("../../schemas/subtitles.js");
  * @return {object} 404 - Subtitle ID not found
  * @return {object} 403 - no permission
  */
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", assertAdmin, async (req, res) => {
     try {
         const subtitle = await Subtitle.findById(req.params.id);
         if (subtitle === null) {
@@ -41,20 +41,15 @@ router.patch("/:id", async (req, res) => {
  * @return {object} 200 - Success response
  * @return {object} 403 - no permission
  */
-router.delete("/", async (req, res) => {
-    try {
-        const deletedSubtitles = await Subtitle.find({}).lean();
-        const result = await Subtitle.deleteMany({});
-        const deletedCount = result.deletedCount;
+router.delete("/", assertAdmin, async (req, res) => { 
+    const deletedSubtitles = await Subtitle.find({}).lean();
+    const result = await Subtitle.deleteMany({});
+    const deletedCount = result.deletedCount;
 
-        if (deletedCount > 0) {
-            res.status(200).json(deletedSubtitles);
-        } else {
-            res.status(200).json({ message: "No subtitles to delete" });
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(401).json({ error: "Not authorized" });
+    if (deletedCount > 0) {
+        res.status(200).json(deletedSubtitles);
+    } else {
+        res.status(200).json({ message: "No subtitles to delete" });
     }
 });
 
