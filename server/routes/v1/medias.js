@@ -44,9 +44,10 @@ router.post("/", async (req, res) => {
     if (!req.files || !req.files.media) {
         return res.status(400).json({message: "No file uploaded"});
     }
+
     const media = req.files.media;
 
-    if(Media.findOne({fileHash: media.md5}) != null) {
+    if(Media.findOne({fileHash: media.md5}).length > 0) {
         return res.status(200).json({media: media.md5, message: "Subtitles for this media already exist"});
     }
 
@@ -94,9 +95,9 @@ router.post("/", async (req, res) => {
  * Post /v1/medias/{mediaId}/subtitles
  * @summary Adds subtitles to media (not generated, but instead user-uploaded)
  * @tags medias
- * @param {File} subtitles.request.body.required - subtitles file in srt format
+ * @param {File} subtitles.request.body.required - subtitles file in vtt format
  * @return {object} 201 - Success response
- * @return {object} 400 - File not in srt format
+ * @return {object} 400 - File not in vtt format
  * @return {object} 404 - mediaId not found
  * @return {object} 401 - Not authorized
  */

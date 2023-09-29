@@ -1,5 +1,6 @@
 <template>
     <div>
+
         <b-alert variant="danger" :show="alert !== null">{{ alert }}</b-alert>
         <div class="mt-5">
             <b-form v-if="!media" @submit="submitFile">
@@ -11,10 +12,10 @@
                 <track kind="captions" src="TODO:" srclang="en" label="English">
                 <track kind="captions" src="TODO:" srclang="de" label="German">
             </audio>
-            <video v-show="media && mediaType === 'video'" controls ref="videoplayer" height="300px" crossorigin="anonymous"
+            <video id="video" v-show="media && mediaType === 'video'" controls ref="videoplayer" height="600px" crossorigin="anonymous"
   preload="metadata" >
-                <track kind="captions" src="subs.vtt" srclang="en" label="English">
-                <track kind="captions" src="subs copy.vtt" srclang="de" label="German">
+                <track kind="captions" src="English.vtt" srclang="en" label="English">
+                <track kind="captions" src="German.vtt" srclang="de" label="German">
             </video>
         </div>
     </div>
@@ -28,36 +29,26 @@ video::cue {
     background-color: transparent;
     text-shadow: 1px 1px 2px #666666;
   }
-  video::cue:first {
-    top:0;
-    position: relative;
-  }
 
   /* fix cue overlap for Chrome */
   video::-webkit-media-text-track-display {
     position: relative !important;
     transform: none !important;
   }
-  video::-webkit-media-text-track-display:first {
-    top: 0;
-  }
 </style>
 
 <script>
+import fixSubs from '@/subtitle-fix'
 export default {
   data: () => ({ mediaHash: null, media: null, mediaType: null, alert: null }),
   async mounted() {
     await this.$nextTick() // wait for DOM to render
-
-    for (const textTrack of this.$refs.videoplayer.textTracks) {
-      textTrack.mode = 'showing'
-    }
-
-    /* fix cue overlap for Chrome */
-    if (this.$isChrome) {
-      console.log('Chrome detected')
-    }
+    fixSubs()
   },
+  //   async updated() {
+  //     await this.$nextTick() // wait for DOM to render
+  //     fixSubs()
+  //   },
   methods: {
     async submitFile() {
       console.log(this.$refs.file.files[0])
