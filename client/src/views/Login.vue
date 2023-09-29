@@ -14,8 +14,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'Login',
   data: function () {
@@ -28,16 +26,17 @@ export default {
   methods: {
     login: async function () {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/login`, {
+        const response = await this.$httpClient.post('/users/login', {
           email: this.email,
           password: this.password
         })
         if (response.data.token) {
           console.log('logged in')
-          axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` }
+          localStorage.setItem('Authorization', response.data.token)
           this.$router.push({ name: 'home' })
         }
       } catch (err) {
+        console.log(err)
         this.alert = err.response.data.message
       }
     }

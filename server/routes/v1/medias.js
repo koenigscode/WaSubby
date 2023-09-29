@@ -45,6 +45,11 @@ router.post("/", async (req, res) => {
         return res.status(400).json({message: "No file uploaded"});
     }
     const media = req.files.media;
+
+    if(Media.findOne({fileHash: media.md5}) != null) {
+        return res.status(200).json({media: media.md5, message: "Subtitles for this media already exist"});
+    }
+
     let fileType = media.name.split(".");
     if (fileType.length < 2)
         return res.status(400).json({message: "File doesn't have a file extension"});
@@ -64,7 +69,7 @@ router.post("/", async (req, res) => {
 
     media.mv(filePath, (err) => {
         if (err) {
-            return res.status(500).send({message: err});
+            return res.status(500).json({message: err});
         }
         
         const job = new WhisperJob(filePath, media.md5);
@@ -81,7 +86,7 @@ router.post("/", async (req, res) => {
         
         return res
             .status(201)
-            .send(`Subtitle generation for media ${media.md5} started`);
+            .json({media: media.md5, message: "Subtitle generation started"});
     });
 });
 

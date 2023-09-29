@@ -51,6 +51,8 @@ cd client && npm install
 npm run serve
 ```
 
+You also need to have whisper-ctranslate2 installed. (see [backend readme](./server/README.md))
+
 > Check out the detailed instructions for [backend](./server/README.md) and [frontend](./client/README.md).
 
 ## Visual Studio Code (VSCode)
