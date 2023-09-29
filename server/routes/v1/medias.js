@@ -4,6 +4,8 @@ const path = require("path");
 const assertAdmin = require("@/services/assert-admin");
 const Subtitle = require("../../schemas/subtitles.js");
 const WhisperJob = require("../../services/WhisperJob.js");
+const { findById } = require("@/schemas/users.js");
+const subtitles = require("../../schemas/subtitles.js");
 const fs = require("fs").promises;
 
 /**
@@ -14,8 +16,34 @@ const fs = require("fs").promises;
  * @return {object} 404 - mediaId not found
  * @return {object} 401 - Not authorized
  */
-router.get("/:id/subtitles", function (req, res) {
-    res.status(501).send("TODO:");
+router.get("/:fileHash/subtitles", async (req, res) => {
+    const media = await Media.findOne({fileHash: req.params.fileHash});
+    if (media == null) {
+        res.status(404);
+        return res.send({ message: "Media with fileHash " + req.params.fileHash + " does not exist" });
+    }
+
+    if (media.subtitles != null) {
+        for (let i=0; i<subtitles.length; i++){
+            const subtitleIdObject = media.subtitles[i];
+            console.log(subtitleIdObject);
+            const id = subtitleIdObject.toString();
+            console.log(id);
+            const subtitle = await Subtitle.findById(id);
+            console.log(subtitle);
+            const filePath = subtitle.filePath;
+            console.log(filePath);
+            // Use Express's res.sendFile() method to send the file
+            // Need to serve static files
+            // return res.sendFile(filePath, (err) => {
+            //     if (err) {
+            //     // Handle errors, such as if the file doesn't exist
+            //         return res.status(500).send({ message: "Error sending file" });
+            //     }
+            // });
+            return res.send(filePath);
+        }
+    }
 });
 
 /**
@@ -27,8 +55,18 @@ router.get("/:id/subtitles", function (req, res) {
  * @return {object} 404 - subtitlesId not found
  * @return {object} 401 - Not authorized
  */
-router.get("/:mediaId/subtitles/:subtitlesId", function (req, res) {
-    res.status(501).send("TODO:");
+router.get("/:mediaId/subtitles/:subtitlesId", async (req, res) => {
+    const media = await Media.findById(req.params.mediaId);
+    if (media==null){
+        res.status(404);
+        return res.send({error: "Media with ID " + req.params.mediaId + " does not exist"});
+    }
+    const subtitle = await Subtitle.findById(req.params.subtitlesId);
+    if (subtitle==null){
+        res.status(404);
+        return res.send({error: "Subtitles with ID " + req.params.subtitlesId + " does not exist"});
+    }
+    return res.send(subtitle);
 });
 
 /**
@@ -124,16 +162,17 @@ router.delete("/", assertAdmin, async (req, res) => {
 });
 
 /**
- * Delete /v1/medias/{mediaId}
+ * Delete /v1/medias/{fileHash}
  * @summary Deletes media by id
  * @tags medias
  * @return {object} 200 - Success response
  * @return {object} 404 - mediaId not found
  * @return {object} 401 - not authorized
  */
-router.delete("/:id", async (req, res) => {
+router.delete("/:fileHash", async (req, res) => {
     //it deletes by id, but we want to delete by hash? or both?
-    const media = await Media.findByIdAndDelete(req.params.id);
+    const media = await Media.findOne({fileHash: req.params.fileHash});
+    Media.deleteOne({fileHash: req.params.fileHash});
     console.log(media);
 
     if (Media === null) {
