@@ -4,8 +4,8 @@
             <div class="main">
                 <form @submit.prevent="login()">
                     <label>Login</label>
-                    <input type="text" v-model="email" placeholder="Enter E-Mail" />
-                    <input type="password" v-model="password" placeholder="Enter password" />
+                    <input type="text" v-model="email" required placeholder="Enter E-Mail" />
+                    <input type="password" v-model="password" required placeholder="Enter password" />
                     <button type="submit">Login</button>
                 </form>
             </div>

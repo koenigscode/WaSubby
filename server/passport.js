@@ -14,7 +14,13 @@ async (email, password, done) => {
         const user = await User.create({ email, password });
         return done(null, user);
     } catch (error) {
-        done(error);
+        console.log("error:");
+        console.log(error);
+        if(error.code === 11000)
+            return done({message: "User with this E-Mail already exists"});
+        if(error.errors.email)
+            return done({message: error.errors.email.message });
+        return done({message: {error}});
     }
 }
 ));
