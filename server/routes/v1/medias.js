@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
 
     const media = req.files.media;
 
-    if(Media.findOne({fileHash: media.md5}).length > 0) {
+    if(Media.exists({fileHash: media.md5}) === null) {
         return res.status(200).json({media: media.md5, message: "Subtitles for this media already exist"});
     }
 
