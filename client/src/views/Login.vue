@@ -26,7 +26,7 @@ export default {
   methods: {
     login: async function () {
       try {
-        const response = await this.$httpClient.post('/users/login', {
+        const response = await this.$httpClient.post('/v1/users/login', {
           email: this.email,
           password: this.password
         })

@@ -4,9 +4,13 @@ const path = require("path");
 const assertAdmin = require("@/services/assert-admin");
 const Subtitle = require("../../schemas/subtitles.js");
 const WhisperJob = require("../../services/WhisperJob.js");
-const { findById } = require("@/schemas/users.js");
 const Language = require("../../schemas/languages.js");
 const fs = require("fs").promises;
+
+router.get("/:fileHash", async (req, res) => {
+    const media = await Media.findOne({fileHash: req.params.fileHash});
+    return res.send(media);
+});
 
 /**
  * Get /v1/medias/{mediaId}/subtitles
@@ -76,8 +80,8 @@ router.post("/", async (req, res) => {
 
     const media = req.files.media;
 
-    if(Media.exists({fileHash: media.md5}) === null) {
-        return res.status(200).json({media: media.md5, message: "Subtitles for this media already exist"});
+    if(await Media.exists({fileHash: media.md5})) {
+        return res.send(await Media.findOne({fileHash: media.md5}).lean());
     }
 
     let fileType = media.name.split(".");
@@ -102,20 +106,26 @@ router.post("/", async (req, res) => {
             return res.status(500).json({message: err});
         }
         
-        const job = new WhisperJob(filePath, media.md5, function(detectedLanguage) {
-            return res.status(201).send({message: `Subtitle generation for media ${media.md5} started`, media: media.md5, detectedLanguage});
+        const job = new WhisperJob(filePath, media.md5, async function() {
+            const newMedia = new Media({fileHash: media.md5, processing: true});
+            await newMedia.save();
+            return res.status(201).send(newMedia);
         });
         job.execute().then(async (subs) => {
             console.log(`Subtitle generation for ${media.md5} done`);
+            const newMedia = await Media.findOne({fileHash: media.md5});
+
             await fs.unlink(filePath);
-            const newMedia = new Media({fileHash: media.md5});
+
             for (const sub of subs){
                 const language = await Language.findOne({name: sub.language});
                 const newSubtitles = new Subtitle({filePath: sub.path, language: language._id});
                 await newSubtitles.save();
                 await newMedia.subtitles.push(newSubtitles);
             }
+            newMedia.processing = false;
             await newMedia.save();
+            console.log("saved media " + media.md5);
 
         }).catch((err) => {
             console.log(err);

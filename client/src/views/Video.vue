@@ -8,22 +8,22 @@
                 <div class="mt-3"> <b-button @click="submitFile">Upload!</b-button></div>
             </b-form>
 
-            <div v-if="loadingSubtitles">
+            <div v-if="processing">
                 <b-spinner />
                 <p>Subtitles are being generated...<br />
-                    Depending on the size of the media, this might take up several minutes</p>
+                    Depending on the size of the media, this might take several minutes</p>
             </div>
 
-            <audio v-show="media && mediaType === 'audio' && !loadingSubtitles" controls ref="audioplayer">
-                <track v-for="subtitle in subtitles" :key="subtitle.id" :src="subtitle.path"
-                    :srclang="subtitle.languageCode" :label="subtitle.languageName">
+            <audio v-show="media && mediaType === 'audio' && !processing" controls ref="audioplayer">
+                <track kind="captions" v-for="subtitle in subtitles" :key="subtitle.id" :src="subtitle.path"
+                    :srclang="subtitle.language.code" :label="subtitle.language.name">
                 <!-- <track kind="captions" src="TODO:" srclang="en" label="English">
                 <track kind="captions" src="TODO:" srclang="de" label="German"> -->
             </audio>
-            <video id="video" v-show="media && mediaType === 'video' && !loadingSubtitles" controls ref="videoplayer"
+            <video id="video" v-show="media && mediaType === 'video' && !processing" controls ref="videoplayer"
                 height="600px" crossorigin="anonymous" preload="metadata">
-                <track v-for="subtitle in subtitles" :key="subtitle.id" :src="subtitle.path"
-                    :srclang="subtitle.languageCode" :label="subtitle.languageName">
+                <track kind="captions" v-for="subtitle in subtitles" :key="subtitle.id" :src="subtitle.path"
+                    :srclang="subtitle.language.code" :label="subtitle.language.name">
                 <!-- <track kind="captions" src="English.vtt" srclang="en" label="English">
                 <track kind="captions" src="German.vtt" srclang="de" label="German"> -->
             </video>
@@ -34,14 +34,17 @@
 <script>
 import fixSubs from '@/subtitle-fix'
 export default {
-  data: () => ({ mediaHash: null, media: null, mediaType: null, subtitles: [], loadingSubtitles: false }),
+  data: () => ({ mediaHash: null, media: null, mediaType: null, subtitles: [], processing: false }),
   async mounted() {
     await this.$nextTick() // wait for DOM to render
     fixSubs()
   },
+  updated: function () {
+    fixSubs()
+    this.showAllSubs()
+  },
   methods: {
     async submitFile() {
-      console.log(this.$refs.file.files[0])
       this.media = this.$refs.file.files[0]
 
       if (this.media.type.startsWith('video')) {
@@ -63,18 +66,19 @@ export default {
       formData.append('media', this.media)
       const headers = { 'Content-Type': 'multipart/form-data' }
 
-      const res = await this.$httpClient.post('/medias', formData, { headers })
-      this.mediaHash = res.data.media
-      console.log(res.data.media)
+      this.processing = true
+      const res = await this.$httpClient.post('/v1/medias', formData, { headers })
+      this.mediaHash = res.data.fileHash
+      console.log('mediaHash:')
+      console.log(this.mediaHash)
 
       const reader = new FileReader()
       reader.readAsDataURL(this.media)
       reader.addEventListener('load', () => {
-        console.log(reader.result)
         if (this.mediaType === 'video') { this.$refs.videoplayer.src = reader.result }
         if (this.mediaType === 'audio') { this.$refs.audioplayer.src = reader.result }
 
-        console.log(this.mediaType)
+        console.log('detected mediaType: ' + this.mediaType)
       })
       this.loadSubtitles()
     },
@@ -85,10 +89,10 @@ export default {
     },
     async loadSubtitles() {
       let res
-      do { // wait while subtitle generation ongoing
-        this.loadingSubtitles = true
+      while (this.processing) {
         try {
-          res = await this.$httpClient.get(`/medias/${this.mediaHash}`)
+          res = await this.$httpClient.get(`/v1/medias/${this.mediaHash}`)
+          this.processing = res.data.processing
         } catch (err) {
           this.$bvToast.toast(err.message, {
             title: 'Error',
@@ -97,17 +101,21 @@ export default {
             appendToast: true
           })
         }
-
-        // wait before checking again
         await new Promise(resolve => setTimeout(resolve, 2000))
-      } while (res.data.processing)
-      this.loadingSubtitles = false
+      }
+
+      // wait before checking again
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      this.processing = false
 
       // get subtitles URLs
-      res = await this.$httpClient.get(`/medias/${this.mediaHash}/subtitles`)
-      console.log(res.data)
-      this.subtitles = res.data
-      this.showAllSubs()
+      res = await this.$httpClient.get(`/v1/medias/${this.mediaHash}/subtitles`)
+      const subs = res.data
+      for (const sub of subs) {
+        sub.path = `${process.env.VUE_APP_API_ENDPOINT}${sub.path}`
+      }
+      this.subtitles = subs
+      //   this.$forceUpdate()
       fixSubs(this.subtitles.length)
     }
   }
