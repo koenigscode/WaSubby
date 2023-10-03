@@ -71,12 +71,12 @@ router.get("/:mediaId/subtitles/:subtitlesId", async (req, res) => {
  */
 router.post("/", async (req, res) => {
     if (!req.files || !req.files.media) {
-        return res.status(400).send("No file uploaded");
+        return res.status(400).json({message: "No file uploaded"});
     }
     const media = req.files.media;
     let fileType = media.name.split(".");
     if (fileType.length < 2)
-        return res.status(400).send("File doesn't have a file extension");
+        return res.status(400).json({message: "File doesn't have a file extension"});
 
     fileType = fileType[fileType.length - 1];
 
@@ -93,7 +93,7 @@ router.post("/", async (req, res) => {
 
     media.mv(filePath, (err) => {
         if (err) {
-            return res.status(500).send(err);
+            return res.status(500).send({message: err});
         }
         
         const job = new WhisperJob(filePath, media.md5, function(detectedLanguage) {
@@ -153,7 +153,7 @@ router.delete("/", assertAdmin, async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(401).json({ error: "Not authorized" });
+        res.status(401);
     }
 });
 
@@ -173,7 +173,7 @@ router.delete("/:fileHash", async (req, res) => {
 
     if (Media === null) {
         res.status(404);
-        res.send({ error: "Media with ID " + req.params.id + " does not exist" });
+        res.send({ message: "Media with ID " + req.params.id + " does not exist" });
     }
 
     res.send(media);
@@ -193,12 +193,12 @@ router.delete("/:mediaId/subtitles/:subtitlesId", async (req, res) => {
     const media = await Media.findById(req.params.mediaId);
     if (media==null){
         res.status(404);
-        return res.send({error: "Media with ID " + req.params.mediaId + " does not exist"});
+        return res.send({message: "Media with ID " + req.params.mediaId + " does not exist"});
     }
     const subtitle = await Subtitle.findById(req.params.subtitlesId);
     if (subtitle==null){
         res.status(404);
-        return res.send({error: "Subtitles with ID " + req.params.subtitlesId + " do not exist"});
+        return res.send({message: "Subtitles with ID " + req.params.subtitlesId + " do not exist"});
     }
     if (subtitle.media!=req.params.mediaId){
         res.status(400);
