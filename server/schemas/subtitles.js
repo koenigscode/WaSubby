@@ -9,15 +9,15 @@ const Schema = mongoose.Schema;
 const subtitleSchema = new Schema({
     filePath: { type: String, required: [true, "File path is required"] },
     language: {
-        type: Schema.Types.String,
-        ref: "Language",
+        type: Schema.Types.ObjectId,
+        ref: "Languages",
         required: [true, "Language is required"],
     },
-    media: {
-        type: Schema.Types.ObjectId,
-        ref: "Media",
-        required: [true, "Media is required"],
-    },
+    // media: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Media",
+    //     required: [true, "Media is required"],
+    // },
 });
 
 // Enforce that the language-media combination is unique
