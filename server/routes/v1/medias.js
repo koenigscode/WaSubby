@@ -5,7 +5,7 @@ const assertAdmin = require("@/services/assert-admin");
 const Subtitle = require("../../schemas/subtitles.js");
 const WhisperJob = require("../../services/WhisperJob.js");
 const { findById } = require("@/schemas/users.js");
-const subtitles = require("../../schemas/subtitles.js");
+const Language = require("../../schemas/languages.js");
 const fs = require("fs").promises;
 
 /**
@@ -17,32 +17,26 @@ const fs = require("fs").promises;
  * @return {object} 401 - Not authorized
  */
 router.get("/:fileHash/subtitles", async (req, res) => {
-    const media = await Media.findOne({fileHash: req.params.fileHash});
-    if (media == null) {
+    const media = await Media.findOne({fileHash: req.params.fileHash}).populate("subtitles");
+    if (media === null) {
         res.status(404);
         return res.send({ message: "Media with fileHash " + req.params.fileHash + " does not exist" });
     }
 
-    if (media.subtitles != null) {
-        for (let i=0; i<subtitles.length; i++){
-            const subtitleIdObject = media.subtitles[i];
-            console.log(subtitleIdObject);
-            const id = subtitleIdObject.toString();
-            console.log(id);
-            const subtitle = await Subtitle.findById(id);
-            console.log(subtitle);
+    if (media.subtitles !== null) {
+        const result=[];
+        for (let subtitle of media.subtitles){
+            // const id = subtitle.valueOf();
+            subtitle.populate("language");
+            // subtitle = await Subtitle.findById(id).populate("language").lean();
             const filePath = subtitle.filePath;
-            console.log(filePath);
-            // Use Express's res.sendFile() method to send the file
-            // Need to serve static files
-            // return res.sendFile(filePath, (err) => {
-            //     if (err) {
-            //     // Handle errors, such as if the file doesn't exist
-            //         return res.status(500).send({ message: "Error sending file" });
-            //     }
-            // });
-            return res.send(filePath);
+            // const language = await Language.findOne({name: languageName});
+            // const languageCode = language.code;
+            // result.push({filePath, languageName, languageCode});
+            result.push({path: {filePath}, language: {name: subtitle.language, code: subtitle.language.code}});
+            
         }
+        return res.send({paths: result});
     }
 });
 
@@ -106,20 +100,26 @@ router.post("/", async (req, res) => {
         }
         
         const job = new WhisperJob(filePath, media.md5);
-        job.execute().then(async (subs) => {console.log(`Subtitle generation for ${media.md5} done`);
+        let result = job.execute().then(async (subs) => {console.log(`Subtitle generation for ${media.md5} done`);
             await fs.unlink(filePath);
-            const subtitlePath = subs[0].path;
-            const language = subs[0].language;
-            const newMedia = new Media({fileHash: media.md5});
-            const newSubtitles = new Subtitle({filePath: subtitlePath, language: language, media: newMedia});
-            newMedia.subtitles = newSubtitles;
-            newMedia.save();
-            newSubtitles.save();
+            for (const sub of subs){
+                const newMedia = new Media({fileHash: media.md5});
+                console.log(result);
+                const language = Language.findOne({name: result.language});
+                const newSubtitles = new Subtitle({filePath: sub.path, language: language, media: newMedia});
+                newMedia.subtitles = newSubtitles;
+                newMedia.save();
+                newSubtitles.save();
+            }
+            return res
+                .status(201)
+                .send({message: `Subtitle generation for media ${media.md5} started`, media: media.md5});
+
+        }).catch((err) => {
+            console.log(err);
+            res.status(400);
+            return res.send({message: "Can't process file"});
         });
-        
-        return res
-            .status(201)
-            .send(`Subtitle generation for media ${media.md5} started`);
     });
 });
 
@@ -127,9 +127,9 @@ router.post("/", async (req, res) => {
  * Post /v1/medias/{mediaId}/subtitles
  * @summary Adds subtitles to media (not generated, but instead user-uploaded)
  * @tags medias
- * @param {File} subtitles.request.body.required - subtitles file in srt format
+ * @param {File} subtitles.request.body.required - subtitles file in vtt format
  * @return {object} 201 - Success response
- * @return {object} 400 - File not in srt format
+ * @return {object} 400 - File not in vtt format
  * @return {object} 404 - mediaId not found
  * @return {object} 401 - Not authorized
  */

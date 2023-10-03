@@ -16,7 +16,7 @@ const mediaSchema = new Schema(
         subtitles: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "Subtitle",
+                ref: "Subtitles",
             },
         ],
     },

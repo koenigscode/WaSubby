@@ -13,8 +13,32 @@ const assertAdmin = require("@/services/assert-admin");
  * @return {object} 200 - Success response
  */
 router.get("/", async (req, res) => {
-    const languages = await Language.find().select("-__v");
-    res.send(languages);
+    console.log(req.query);
+    if (req.query.limit && req.query.page){
+        const page = parseInt(req.query.page);
+        const limit = parseInt(req.query.limit);
+        const totalCount = await Language.countDocuments();
+        const languages = await Language.find().select("-__v").skip((page-1)*limit).limit(limit);
+        return res.send(languages);
+    }
+
+    if (req.query.filter) {
+        let languages = await Language.find()
+            .select("-__v")
+            .where("name", { $regex: req.query.filter, $options: "i" }) 
+            .exec(); 
+        return res.send(languages);
+    }
+    if (req.query.sort==="asc"){
+        let languages = await Language.find().select("-__v").sort({name: 1});
+        return res.send(languages);
+    } else if (req.query.sort==="desc"){
+        let languages = await Language.find().select("-__v").sort({name: -1});
+        return res.send(languages);
+    }
+
+    let languages = await Language.find().select("-__v");
+    return res.send(languages);
 });
 
 /**

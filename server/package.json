@@ -13,9 +13,9 @@
   "scripts": {
     "start": "node ./app.js",
     "dev": "nodemon ./app.js",
-    "fast-dev": "cross-env-shell WHISPER_MODEL=small nodemon ./app.js",
     "cdev": "npm run clean-dev",
     "clean-dev": "npm run test-data && rm -rf ./data && nodemon ./app.js",
+    "fast-dev": "cross-env-shell WHISPER_MODEL=tiny npm run dev",
     "lint": "eslint .",
     "fix": "eslint --fix .",
     "test-data": "cross-env-shell node ./tests/initialTestData.js",

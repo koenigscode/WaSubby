@@ -37,22 +37,25 @@ class WhisperJob {
             this._getWhisperArgs(false),
         );
 
+        const result = []; 
+
         const regexPattern = /Detected language '([^']+)'/gm;
         const match = regexPattern.exec(transcriptionJob.toString());
 
         if (match) {
             this.language = match[1];
 
-            // move and rename file to [language].srt
+            // move and rename file to [language].vtt
             fs.renameSync(
                 path.join(
                     dataDir,
                     this.mediaId,
                     "tmp",
-                    path.parse(path.basename(this.filePath)).name + ".srt",
+                    path.parse(path.basename(this.filePath)).name + ".vtt",
                 ),
-                path.join(dataDir, this.mediaId, `${this.language}.srt`),
+                path.join(dataDir, this.mediaId, `${this.language}.vtt`),
             );
+            result.push({language: this.language, path: `/static/${this.mediaId}/${this.language}.vtt`,});
         } else {
             // if no language was detected, remove the tmp folder and throw an error
             fs.rmSync(path.join(dataDir, this.mediaId, "tmp"), {
@@ -63,13 +66,15 @@ class WhisperJob {
         }
 
         // no translation to english needed when the source file is already in english
-        if (this.language == "English") {
+        if (this.language === "English") {
             fs.rmSync(path.join(dataDir, this.mediaId, "tmp"), {
                 recursive: true,
                 force: true,
             });
+            result.push({language: "English", path: `/static/${this.mediaId}/English.vtt`,});
+
             // TODO: delete source file
-            return;
+            return result;
         }
 
         await spawn(whisperCommand, this._getWhisperArgs(true));
@@ -79,9 +84,9 @@ class WhisperJob {
                 dataDir,
                 this.mediaId,
                 "tmp",
-                path.parse(path.basename(this.filePath)).name + ".srt",
+                path.parse(path.basename(this.filePath)).name + ".vtt",
             ),
-            path.join(dataDir, this.mediaId, "English.srt"),
+            path.join(dataDir, this.mediaId, "English.vtt"),
         );
 
         fs.rmSync(path.join(dataDir, this.mediaId, "tmp"), {
@@ -90,11 +95,7 @@ class WhisperJob {
         });
         // TODO: delete source file
 
-        return [{
-            language: this.language, path: path.join(dataDir, this.mediaId, `${this.language}.srt`), 
-        }, {
-            language: "English", path: path.join(dataDir, this.mediaId, "English.srt"),
-        },];
+        return result;
     }
 
     /**
@@ -110,7 +111,7 @@ class WhisperJob {
         
         let args = [
             "--output_format",
-            "srt",
+            "vtt",
             "--model",
             whisperModel,
             "--vad_filter",
