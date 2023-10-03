@@ -102,6 +102,7 @@ app.use(history());
 const root = path.normalize(__dirname + "/..");
 const client = path.join(root, "client", "dist");
 app.use(express.static(client));
+app.use("/static", express.static("data"));
 
 // Error handler (i.e., when exception is thrown) must be registered last
 const env = app.get("env");

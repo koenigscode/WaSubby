@@ -4,6 +4,8 @@ const path = require("path");
 const assertAdmin = require("@/services/assert-admin");
 const Subtitle = require("../../schemas/subtitles.js");
 const WhisperJob = require("../../services/WhisperJob.js");
+const { findById } = require("@/schemas/users.js");
+const Language = require("../../schemas/languages.js");
 const fs = require("fs").promises;
 
 /**
@@ -14,8 +16,25 @@ const fs = require("fs").promises;
  * @return {object} 404 - mediaId not found
  * @return {object} 401 - Not authorized
  */
-router.get("/:id/subtitles", function (req, res) {
-    res.status(501).send("TODO:");
+router.get("/:fileHash/subtitles", async (req, res) => {
+    const media = await Media.findOne({fileHash: req.params.fileHash}).populate("subtitles");
+    if (media === null) {
+        res.status(404);
+        return res.send({ message: "Media with fileHash " + req.params.fileHash + " does not exist" });
+    }
+
+    if (media.subtitles !== null) {
+        const result=[];
+        for (let subtitle of media.subtitles){
+            await subtitle.populate("language");
+            console.log(subtitle);
+            console.log(subtitle.language);
+            const filePath = subtitle.filePath;
+            await result.push({path: filePath, language: {name: subtitle.language.name, code: subtitle.language.code}});
+            
+        }
+        return res.send(result);
+    }
 });
 
 /**
@@ -27,8 +46,18 @@ router.get("/:id/subtitles", function (req, res) {
  * @return {object} 404 - subtitlesId not found
  * @return {object} 401 - Not authorized
  */
-router.get("/:mediaId/subtitles/:subtitlesId", function (req, res) {
-    res.status(501).send("TODO:");
+router.get("/:mediaId/subtitles/:subtitlesId", async (req, res) => {
+    const media = await Media.findById(req.params.mediaId);
+    if (media==null){
+        res.status(404);
+        return res.send({error: "Media with ID " + req.params.mediaId + " does not exist"});
+    }
+    const subtitle = await Subtitle.findById(req.params.subtitlesId);
+    if (subtitle==null){
+        res.status(404);
+        return res.send({error: "Subtitles with ID " + req.params.subtitlesId + " does not exist"});
+    }
+    return res.send(subtitle);
 });
 
 /**
@@ -73,21 +102,26 @@ router.post("/", async (req, res) => {
             return res.status(500).json({message: err});
         }
         
-        const job = new WhisperJob(filePath, media.md5);
-        job.execute().then(async (subs) => {console.log(`Subtitle generation for ${media.md5} done`);
-            await fs.unlink(filePath);
-            const subtitlePath = subs[0].path;
-            const language = subs[0].language;
-            const newMedia = new Media({fileHash: media.md5});
-            const newSubtitles = new Subtitle({filePath: subtitlePath, language: language, media: newMedia});
-            newMedia.subtitles = newSubtitles;
-            newMedia.save();
-            newSubtitles.save();
+        const job = new WhisperJob(filePath, media.md5, function(detectedLanguage) {
+            return res.status(201).send({message: `Subtitle generation for media ${media.md5} started`, media: media.md5, detectedLanguage});
         });
-        
-        return res
-            .status(201)
-            .json({media: media.md5, message: "Subtitle generation started"});
+        job.execute().then(async (subs) => {
+            console.log(`Subtitle generation for ${media.md5} done`);
+            await fs.unlink(filePath);
+            const newMedia = new Media({fileHash: media.md5});
+            for (const sub of subs){
+                const language = await Language.findOne({name: sub.language});
+                const newSubtitles = new Subtitle({filePath: sub.path, language: language._id});
+                await newSubtitles.save();
+                await newMedia.subtitles.push(newSubtitles);
+            }
+            await newMedia.save();
+
+        }).catch((err) => {
+            console.log(err);
+            res.status(400);
+            return res.send({message: "Can't process file"});
+        });
     });
 });
 
@@ -130,16 +164,17 @@ router.delete("/", assertAdmin, async (req, res) => {
 });
 
 /**
- * Delete /v1/medias/{mediaId}
+ * Delete /v1/medias/{fileHash}
  * @summary Deletes media by id
  * @tags medias
  * @return {object} 200 - Success response
  * @return {object} 404 - mediaId not found
  * @return {object} 401 - not authorized
  */
-router.delete("/:id", async (req, res) => {
+router.delete("/:fileHash", async (req, res) => {
     //it deletes by id, but we want to delete by hash? or both?
-    const media = await Media.findByIdAndDelete(req.params.id);
+    const media = await Media.findOne({fileHash: req.params.fileHash});
+    Media.deleteOne({fileHash: req.params.fileHash});
     console.log(media);
 
     if (Media === null) {
