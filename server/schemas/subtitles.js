@@ -13,11 +13,11 @@ const subtitleSchema = new Schema({
         ref: "Languages",
         required: [true, "Language is required"],
     },
-    media: {
-        type: Schema.Types.ObjectId,
-        ref: "Media",
-        required: [true, "Media is required"],
-    },
+    // media: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Media",
+    //     required: [true, "Media is required"],
+    // },
 });
 
 // Enforce that the language-media combination is unique

@@ -18,16 +18,17 @@ class WhisperJob {
    * Creates a new whisper job.
    * @param {string} filePath path to media file
    * @param {number|string} mediaId id of media file
+   * @param {function} languageRecognizedCallback callback function to be called when the source language is recognized
    */
-    constructor(filePath, mediaId) {
+    constructor(filePath, mediaId, languageRecognizedCallback) {
         this.filePath = filePath;
         this.mediaId = `${mediaId}`;
+        this.languageRecognizedCallback = languageRecognizedCallback;
     }
 
     /**
    * Executes the whisper cli with the given media file, await both transcription and (if done) translation.
    *
-   * @returns {Promise<{transcribedLanguage: string, translated: boolean}>} object containing the transcribed language and whether the media was translated
    */
     async execute() {
         const whisperCommand = process.env.WHISPER_COMMAND || "whisper-ctranslate2";
@@ -44,6 +45,7 @@ class WhisperJob {
 
         if (match) {
             this.language = match[1];
+            this.languageRecognizedCallback(this.language);
 
             // move and rename file to [language].vtt
             fs.renameSync(
@@ -95,6 +97,7 @@ class WhisperJob {
         });
         // TODO: delete source file
 
+        result.push({language: "English", path: `/static/${this.mediaId}/English.vtt`,});
         return result;
     }
 

@@ -26,17 +26,14 @@ router.get("/:fileHash/subtitles", async (req, res) => {
     if (media.subtitles !== null) {
         const result=[];
         for (let subtitle of media.subtitles){
-            // const id = subtitle.valueOf();
-            subtitle.populate("language");
-            // subtitle = await Subtitle.findById(id).populate("language").lean();
+            await subtitle.populate("language");
+            console.log(subtitle);
+            console.log(subtitle.language);
             const filePath = subtitle.filePath;
-            // const language = await Language.findOne({name: languageName});
-            // const languageCode = language.code;
-            // result.push({filePath, languageName, languageCode});
-            result.push({path: {filePath}, language: {name: subtitle.language, code: subtitle.language.code}});
+            await result.push({path: filePath, language: {name: subtitle.language.name, code: subtitle.language.code}});
             
         }
-        return res.send({paths: result});
+        return res.send(result);
     }
 });
 
@@ -99,21 +96,20 @@ router.post("/", async (req, res) => {
             return res.status(500).send(err);
         }
         
-        const job = new WhisperJob(filePath, media.md5);
-        let result = job.execute().then(async (subs) => {console.log(`Subtitle generation for ${media.md5} done`);
+        const job = new WhisperJob(filePath, media.md5, function(detectedLanguage) {
+            return res.status(201).send({message: `Subtitle generation for media ${media.md5} started`, media: media.md5, detectedLanguage});
+        });
+        job.execute().then(async (subs) => {
+            console.log(`Subtitle generation for ${media.md5} done`);
             await fs.unlink(filePath);
+            const newMedia = new Media({fileHash: media.md5});
             for (const sub of subs){
-                const newMedia = new Media({fileHash: media.md5});
-                console.log(result);
-                const language = Language.findOne({name: result.language});
-                const newSubtitles = new Subtitle({filePath: sub.path, language: language, media: newMedia});
-                newMedia.subtitles = newSubtitles;
-                newMedia.save();
-                newSubtitles.save();
+                const language = await Language.findOne({name: sub.language});
+                const newSubtitles = new Subtitle({filePath: sub.path, language: language._id});
+                await newSubtitles.save();
+                await newMedia.subtitles.push(newSubtitles);
             }
-            return res
-                .status(201)
-                .send({message: `Subtitle generation for media ${media.md5} started`, media: media.md5});
+            await newMedia.save();
 
         }).catch((err) => {
             console.log(err);
