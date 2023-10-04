@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import SignUp from './views/SignUp.vue'
 import Login from './views/Login.vue'
-import Video from './views/Video.vue'
+import MediaPlayer from './views/MediaPlayer.vue'
 
 Vue.use(Router)
 
@@ -16,9 +16,9 @@ export default new Router({
       name: 'home',
       component: Home
     }, {
-      path: '/video',
-      name: 'video',
-      component: Video
+      path: '/media',
+      name: 'Media',
+      component: MediaPlayer
     },
     {
       path: '/sign-up',
