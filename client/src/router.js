@@ -7,6 +7,14 @@ import MediaPlayer from './views/MediaPlayer.vue'
 
 Vue.use(Router)
 
+function loginGuard(to, from, next) {
+  if (localStorage.getItem('Authorization') === null) {
+    console.log('not logged in; redirecting to login')
+    return next('/login')
+  }
+  next()
+}
+
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -15,9 +23,11 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home
-    }, {
+    },
+    {
       path: '/media',
       name: 'Media',
+      beforeEnter: loginGuard,
       component: MediaPlayer
     },
     {
@@ -29,6 +39,14 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/logout',
+      name: 'Logout',
+      beforeEnter: function (to, from, next) {
+        localStorage.removeItem('Authorization')
+        next('/login')
+      }
     }
   ]
 })
