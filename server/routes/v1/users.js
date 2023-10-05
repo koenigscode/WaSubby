@@ -174,18 +174,24 @@ router.put("/:id",
 router.delete("/:id", 
     passport.authenticate("jwt", { session: false }),
     async (req, res) => {
-    // TODO: only admin can delete any user, other users only themselves
-        if(!req.user.admin || req.user._id !== req.params.id)
+        
+        // TODO: only admin can delete any user, other users only themselves
+        if(!req.user.admin && req.user._id !== req.params.id)
             return res.status(403).send();
 
-        const user = await User.findByIdAndDelete(req.params.id).select(
-            "-uploadedMedias -__v",
-        );
+        let user = null;
+        try {
+            user = await User.findByIdAndDelete(req.params.id).select(
+                "-uploadedMedias -__v",
+            );
+        } catch(err) {
+            return res.status(404).send({message: `User with ID ${req.params.id} not found`});
+        }
         console.log(user);
 
         if (user === null) {
             res.status(404);
-            res.send({ error: "User with ID " + req.params.id + " does not exist" });
+            return res.send({ error: "User with ID " + req.params.id + " does not exist" });
         }
 
         res.send(user);
