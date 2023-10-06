@@ -1,10 +1,10 @@
 const router = require("express").Router();
-const Media = require("../../schemas/media.js");
+const Media = require("@/schemas/media.js");
 const path = require("path");
 const assertAdmin = require("@/services/assert-admin");
-const Subtitle = require("../../schemas/subtitles.js");
-const WhisperJob = require("../../services/WhisperJob.js");
-const Language = require("../../schemas/languages.js");
+const Subtitle = require("@/schemas/subtitles.js");
+const WhisperJob = require("@/services/WhisperJob.js");
+const Language = require("@/schemas/languages.js");
 const fs = require("fs").promises;
 
 router.get("/:fileHash", async (req, res) => {

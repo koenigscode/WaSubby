@@ -4,10 +4,10 @@ const morgan = require("morgan");
 const path = require("path");
 const cors = require("cors");
 const history = require("connect-history-api-fallback");
-const usersRouter = require("./routes/v1/users");
-const mediasRouter = require("./routes/v1/medias");
-const subtitlesRouter = require("./routes/v1/subtitles");
-const languagesRouter = require("./routes/v1/languages");
+const usersRouter = require("./controllers/v1/users");
+const mediasRouter = require("./controllers/v1/medias");
+const subtitlesRouter = require("./controllers/v1/subtitles");
+const languagesRouter = require("./controllers/v1/languages");
 const User = require("./schemas/users");
 const Language = require("./schemas/languages");
 const Media = require("./schemas/media");
@@ -82,7 +82,7 @@ app.use(cors());
 
 // Import routes
 app.get("/api", function (req, res) {
-    res.json({ message: "Welcome to your DIT342 backend ExpressJS project!" });
+    res.json({ message: "WaSubby API is running!"});
 });
 
 app.use("/v1/users", usersRouter);
