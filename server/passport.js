@@ -1,6 +1,6 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const User = require("./schemas/users");
+const Users = require("./schemas/users");
 const JWTstrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 const secret = process.env.JWT_SECRET || "TESTING";
@@ -11,8 +11,8 @@ passport.use("signup", new LocalStrategy({
 }, 
 async (email, password, next) => {
     try {
-        let user = await User.create({ email, password });
-        user = await User.findById(user._id).select("-__v -password").lean();
+        let user = await Users.create({ email, password });
+        user = await Users.findById(user._id).select("-__v -password").lean();
         return next(null, user);
     } catch (error) {
         let err = Error();
@@ -39,7 +39,7 @@ passport.use(
         },
         async (email, password, next) => {
             try {
-                let user = await User.findOne({ email });
+                let user = await Users.findOne({ email });
 
                 if (!user) {
                     return next(null, false, { message: "User not found" });
@@ -67,7 +67,17 @@ passport.use(
         },
         async (token, done) => {
             try {
+                // The token might be valid, but the user might not exist anymore
+                // Therefore, we have to check that the user is actually in the DB
+                const user = await Users.findOne({ _id: token.user._id });     
+                if(user === null) {
+                    const err = Error("Invalid token, user does not exist");
+                    err.status = 401;
+                    return done(err);
+                }
+
                 return done(null, token.user);
+
             } catch (error) {
                 done(error);
             }
