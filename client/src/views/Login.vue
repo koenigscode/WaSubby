@@ -31,7 +31,6 @@ export default {
           password: this.password
         })
         if (response.data.token) {
-          console.log('logged in')
           localStorage.setItem('Authorization', response.data.token)
           this.$router.push({ name: 'home' })
         }

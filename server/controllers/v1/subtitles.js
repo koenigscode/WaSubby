@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const assertAdmin = require("@/services/assert-admin");
+const {assertAdmin} = require("@/services/route-guards");
 const Subtitle = require("../../schemas/subtitles.js");
 
 /**

@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const User = require("@/schemas/users.js");
+const Users = require("@/schemas/users.js");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const secret = process.env.JWT_SECRET || "TESTING";
-const assertAdmin = require("@/services/assert-admin");
+const {assertAdmin, assertAdminOrSelf} = require("@/services/route-guards");
 
 
 /**
@@ -16,11 +16,7 @@ router.get("/",
     passport.authenticate("jwt", { session: false }),
     assertAdmin,
     async (req, res) => {
-        // if(!req.user.admin)
-        //     return res.status(403).send();
-
-        console.log(req.user);
-        const users = await User.find().select("email admin theme");
+        const users = await Users.find().select("-__v -password");
         return res.send(users);
     });
 
@@ -35,8 +31,8 @@ router.get("/:id",
     passport.authenticate("jwt", { session: false }),
     assertAdmin,
     async (req, res) => {
-        const user = await User.findOne({ id: req.params._id }).select(
-            "email admin theme"
+        const user = await Users.findOne({ id: req.params._id }).select(
+            "-__v -password"
         );
         res.send(user);
     });
@@ -115,7 +111,7 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
     async function (req, res) {
     
         try {
-            const user = await User.findById(req.params.id);
+            const user = await Users.findById(req.params.id);
             if (user === null) {
                 res.status(404);
                 res.send({ message: "User with ID " + req.params.id + " does not exist" });
@@ -125,8 +121,8 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
             const newUserData = req.body;
             const id = req.params._id;
 
-            await User.updateOne({ ...oldUser, ...newUserData, id });
-            res.send(await User.findById(req.params.id).select("email admin theme"));
+            await Users.updateOne({ ...oldUser, ...newUserData, id });
+            res.send(await Users.findById(req.params.id).select("email admin theme"));
         } catch (e) {
             console.log(e);
             res.status(400);
@@ -148,15 +144,15 @@ router.put("/:id",
     assertAdmin,
     async (req, res) => {
         try {
-            const user = await User.findById(req.params.id);
+            const user = await Users.findById(req.params.id);
             if (user === null) {
                 res.status(404);
                 res.send({ message: "User with ID " + req.params.id + " does not exist" });
             }
             const newUserData = req.body;
             const id = req.params._id;
-            await User.updateOne({ ...newUserData, id });
-            res.send(await User.findById(req.params.id).select("email admin theme"));
+            await Users.updateOne({ ...newUserData, id });
+            res.send(await Users.findById(req.params.id).select("email admin theme"));
         } catch (e) {
             console.log(e);
             res.status(400);
@@ -174,22 +170,23 @@ router.put("/:id",
  */
 router.delete("/:id", 
     passport.authenticate("jwt", { session: false }),
+    assertAdminOrSelf,
     async (req, res) => {
-    // TODO: only admin can delete any user, other users only themselves
-        if(!req.user.admin || req.user._id !== req.params.id)
-            return res.status(403).send();
 
-        const user = await User.findByIdAndDelete(req.params.id).select(
-            "-uploadedMedias -__v",
-        );
-        console.log(user);
+        const user = await Users.findById(req.params.id);
+        // await Users.deleteOne({ _id: req.params.id });
+        user.deleteOne();
+
+        // const user = await Users.findOneAndDelete({_id: req.params.id}).select(
+        //     "-uploadedMedias -__v",
+        // );
 
         if (user === null) {
             res.status(404);
-            res.send({ message: "User with ID " + req.params.id + " does not exist" });
+            return res.send({ message: "User with ID " + req.params.id + " does not exist" });
         }
 
-        res.send(user);
+        return res.send(user);
     });
 
 module.exports = router;

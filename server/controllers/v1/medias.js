@@ -1,10 +1,11 @@
 const router = require("express").Router();
-const Media = require("@/schemas/media.js");
+const Media = require("@/schemas/medias.js");
 const path = require("path");
-const assertAdmin = require("@/services/assert-admin");
+const {assertAdmin} = require("@/services/route-guards");
 const Subtitle = require("@/schemas/subtitles.js");
 const WhisperJob = require("@/services/WhisperJob.js");
 const Language = require("@/schemas/languages.js");
+const Users = require("@/schemas/users.js");
 const fs = require("fs").promises;
 
 router.get("/:fileHash", async (req, res) => {
@@ -31,8 +32,6 @@ router.get("/:fileHash/subtitles", async (req, res) => {
         const result=[];
         for (let subtitle of media.subtitles){
             await subtitle.populate("language");
-            console.log(subtitle);
-            console.log(subtitle.language);
             const filePath = subtitle.filePath;
             await result.push({path: filePath, language: {name: subtitle.language.name, code: subtitle.language.code}});
             
@@ -126,6 +125,9 @@ router.post("/", async (req, res) => {
             newMedia.processing = false;
             await newMedia.save();
             console.log("saved media " + media.md5);
+            const user = await Users.findOne({_id: req.user._id});
+            await user.uploadedMedias.push(newMedia);
+            await user.save();
 
         }).catch((err) => {
             console.log(err);
@@ -185,7 +187,6 @@ router.delete("/:fileHash", async (req, res) => {
     //it deletes by id, but we want to delete by hash? or both?
     const media = await Media.findOne({fileHash: req.params.fileHash});
     Media.deleteOne({fileHash: req.params.fileHash});
-    console.log(media);
 
     if (Media === null) {
         res.status(404);

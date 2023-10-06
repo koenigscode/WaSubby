@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Subtitles = require("./subtitles.js");
 
 /**
  * fileHash: The file hash of the media file
@@ -26,5 +27,13 @@ const mediaSchema = new Schema(
         
     },
 );
+
+mediaSchema.pre("deleteOne", { document: true }, async function (next) {
+    for (let subtitle of this.subtitles) {
+        subtitle = await Subtitles.findOne({ _id: subtitle._id });
+        await subtitle.deleteOne({ _id: subtitle._id });
+    }
+    next();
+});
 
 module.exports = mongoose.model("Medias", mediaSchema);

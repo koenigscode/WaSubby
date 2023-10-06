@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Language = require("../../schemas/languages.js");
 const passport = require("passport");
-const assertAdmin = require("@/services/assert-admin");
+const {assertAdmin} = require("@/services/route-guards");
 
 
 /**

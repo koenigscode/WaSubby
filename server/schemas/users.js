@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
+const Medias = require("./medias.js");
 
 /**
  * email: User email
@@ -22,7 +23,7 @@ const userSchema = new Schema({
     uploadedMedias: [
         {
             type: Schema.Types.ObjectId,
-            ref: "Media",
+            ref: "Medias",
         },
     ],
 });
@@ -30,6 +31,16 @@ userSchema.pre("save", async function (next) {
     const hash = await bcrypt.hash(this.password, 10);
 
     this.password = hash;
+    next();
+});
+
+userSchema.pre("deleteOne", { document: true }, async function (next) {
+    // can't just use Media.deleteMany, because we need a document method call
+    // so that the pre hook is called
+    for (let media of this.uploadedMedias) {
+        media = await Medias.findOne({ _id: media._id });
+        await media.deleteOne({ _id: media._id });
+    }
     next();
 });
 
