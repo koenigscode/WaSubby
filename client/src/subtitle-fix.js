@@ -22,7 +22,7 @@ function fixSubs(maxCueLines = 2) {
         console.log('updated subtitle fix')
         const height = entries[0].contentRect.height
         const controlsHeight = 72
-        const maxCueLines = 2
+        const maxCueLines = 4
         rule.style.setProperty(
           'top',
             `calc(${Math.floor(

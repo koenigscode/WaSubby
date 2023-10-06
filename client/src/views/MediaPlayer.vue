@@ -1,8 +1,9 @@
 <template>
     <div>
 
-        <div class="mt-5">
-
+    <div class="mt-5">
+<h1 class="mb-3">Play media</h1>
+        <p v-if="languages.length > 0" class="mb-5"> Supported languages are {{ languages }}</p>
             <b-form v-if="!media" @submit="submitFile">
                 <input type="file" ref="file" />
                 <div class="mt-3"> <b-button @click="submitFile">Upload!</b-button></div>
@@ -32,9 +33,11 @@
 <script>
 import fixSubs from '@/subtitle-fix'
 export default {
-  data: () => ({ mediaHash: null, media: null, mediaType: null, subtitles: [], processing: false }),
+  data: () => ({ mediaHash: null, media: null, mediaType: null, subtitles: [], processing: false, languages: '' }),
   async mounted() {
     fixSubs()
+    const res = await this.$httpClient.get('/v1/languages')
+    this.languages = res.data.map(lang => lang.name).join(', ')
   },
   updated: function () {
     fixSubs()
