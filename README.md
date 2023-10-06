@@ -10,7 +10,7 @@
 
 ## Known limitations
 
-- Sometimes, especially when using the "tiny" whisper model (`npm run fast-dev`, `npm run clean-fast-dev`), the subtitles have some issues, e.g. some words are very repeated multiple times.
+- Sometimes, especially when using the "tiny" whisper model (`npm run fast-dev`), the subtitles have some issues, e.g. some words are very repeated multiple times.
   This is a common issue with whisper
 - When showing multiple subtitle tracks, the order of the subtitles might switch around.
   This is because we're using the browser `<video>`, which natively doesn't support showing multiple subtitles at all,
@@ -36,11 +36,13 @@ cd group-22-web
 
 # Setup backend
 cd server && npm install
+# delete all data (optional)
+npm run clean
+
+# start server in dev mode
 npm run dev
 # or
 npm run fast-dev # uses tiny whisper model
-# or
-npm run clean-dev # resets database + subtitle directory (server/data)
 
 # Setup frontend
 cd client && npm install

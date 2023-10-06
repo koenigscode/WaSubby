@@ -50,7 +50,7 @@ Automatically restarts your server if you save any changes to local files.
 npm run dev
 ```
 
-You can also run `npm run clean-dev` to start with a clean database + no generated subtitle files. Or `npm run fast-dev`, which is which is faster, but less accurate.
+You can also run `npm run fast-dev`, which is which is faster, but less accurate.
 
 ## Start the server
 

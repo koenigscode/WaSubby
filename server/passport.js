@@ -9,18 +9,23 @@ passport.use("signup", new LocalStrategy({
     usernameField: "email",
     passwordField: "password"
 }, 
-async (email, password, done) => {
+async (email, password, next) => {
     try {
-        const user = await User.create({ email, password });
-        return done(null, user);
+        let user = await User.create({ email, password });
+        user = await User.findById(user._id).select("-__v -password").lean();
+        return next(null, user);
     } catch (error) {
-        console.log("error:");
-        console.log(error);
-        if(error.code === 11000)
-            return done({message: "User with this E-Mail already exists"});
-        if(error.errors.email)
-            return done({message: error.errors.email.message });
-        return done({message: {error}});
+        let err = Error();
+
+        if(error.code === 11000) {
+            err = Error("User with this E-Mail already exists");
+        }
+        else if(error.errors && error.errors.email) {
+            err = Error(error.errors.email.message);
+        }
+
+        err.status = 400;
+        next(err);
     }
 }
 ));
@@ -32,23 +37,23 @@ passport.use(
             usernameField: "email",
             passwordField: "password",
         },
-        async (email, password, done) => {
+        async (email, password, next) => {
             try {
-                const user = await User.findOne({ email });
+                let user = await User.findOne({ email });
 
                 if (!user) {
-                    return done(null, false, { message: "User not found" });
+                    return next(null, false, { message: "User not found" });
                 }
 
                 const validate = await user.isValidPassword(password);
 
                 if (!validate) {
-                    return done(null, false, { message: "Wrong Password" });
+                    return next(null, false, { message: "Wrong Password" });
                 }
 
-                return done(null, user, { message: "Logged in Successfully" });
+                return next(null, user, { message: "Logged in Successfully" });
             } catch (error) {
-                return done(error);
+                return next(error);
             }
         },
     ),

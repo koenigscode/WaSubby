@@ -68,7 +68,10 @@ router.post(
                             const body = { _id: user._id, email: user.email, admin: user.admin, theme: user.theme };
                             const token = jwt.sign({ user: body }, secret);
   
-                            return res.json({ token });
+                            let reponseUser = {...req.user.toObject()};
+                            delete reponseUser.password;
+                            delete reponseUser.__v;
+                            return res.json({ token, user: reponseUser });
                         }
                     );
                 } catch (error) {
@@ -79,23 +82,21 @@ router.post(
     }
 );
 
-//TODO: route name
 /**
- * Post /v1/users/signup
+ * Post /v1/users
  * @summary Registers a user
  * @tags users
  * @return {object} 201 - Success response
  * @return {object} 400 - Bad request response
  */
 router.post(
-    "/signup",
+    "/",
     passport.authenticate("signup", { session: false }),
     async (req, res, next) => {
 
-        res.json({
-            message: "Signup successful",
-            user: req.user
-        });
+        return res.json(
+            req.user
+        );
     }
 );
 

@@ -91,7 +91,7 @@ app.use("/v1/subtitles", passport.authenticate("jwt", { session: false }), subti
 app.use("/v1/languages", languagesRouter);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
-app.use("/api/*", function (req, res) {
+app.use("/*", function (req, res) {
     res.status(404).json({ message: "Not Found" });
 });
 
