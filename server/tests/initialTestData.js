@@ -20,7 +20,6 @@ async function insertData() {
     await new Language({ code: "ru", name: "Russian" }).save();
     console.log("inserted languages");
 
-    // TODO: hash password
     await new User({
         email: "admin@admin.com",
         password: "admin",
