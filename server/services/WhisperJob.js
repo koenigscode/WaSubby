@@ -124,7 +124,7 @@ class WhisperJob {
             "--word_timestamps",
             "True",
             "--max_line_width",
-            "50",
+            "35",
             "--max_line_count",
             "1",
             "--device",
