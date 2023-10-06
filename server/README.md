@@ -8,7 +8,7 @@ This [ExpressJS](https://expressjs.com/) template provides the basic infrastruct
 | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------- |
 | [README.md](./README.md)                                                     | Everything about the server                                                             | **READ ME** carefully!                             |
 | [app.js](./app.js)                                                           | JavaScript entry point for Express application                                          | Import new routes/controllers                      |
-| `controllers/`                                                               | Implementation of Express endpoints                                                     | Define new route handlers                          |
+| `routes/`                                                                    | Implementation of Express endpoints                                                     | Define new route handlers                          |
 | `models/`                                                                    | [Mongoose](https://mongoosejs.com/) models                                              | Define data schema                                 |
 | [tests/server.postman_collection.json](tests/server.postman_collection.json) | [Postman test scripts](https://learning.postman.com/docs/postman/scripts/test-scripts/) | Replace with your exported Postman test collection |
 | [docs/FAQ.md](docs/FAQ.md)                                                   | List of FAQs                                                                            | Find answers to common questions                   |
@@ -32,6 +32,8 @@ You need [whisper-ctranslate2](https://github.com/Softcatala/whisper-ctranslate2
 
 We encountered some issues with this on Windows. If you are using Windows, we recommend using the Windows Subsystem for Linux and installing whisper-ctranslate2, this project and the other requirments there.
 
+The first video transcription will take longer, as the language model needs to be downloaded.
+
 Then, make **sure** you are in the server directory `cd server`
 
 Installs all project dependencies specified in [package.json](./package.json).
@@ -47,6 +49,8 @@ Automatically restarts your server if you save any changes to local files.
 ```bash
 npm run dev
 ```
+
+You can also run `npm run clean-dev` to start with a clean database + no generated subtitle files. Or `npm run fast-dev`, which is which is faster, but less accurate.
 
 ## Start the server
 
