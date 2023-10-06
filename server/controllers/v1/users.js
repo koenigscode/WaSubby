@@ -29,7 +29,7 @@ router.get("/",
  */
 router.get("/:id",
     passport.authenticate("jwt", { session: false }),
-    assertAdmin,
+    assertAdminOrSelf,
     async (req, res) => {
         const user = await Users.findOne({ id: req.params._id }).select(
             "-__v -password"
