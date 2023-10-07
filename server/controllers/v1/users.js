@@ -34,7 +34,36 @@ router.get("/:id",
         const user = await Users.findOne({ id: req.params._id }).select(
             "-__v -password"
         );
-        res.send(user);
+        const _links = {
+            "self": {
+                href: `/v1/users/${user._id}`,
+                method: "GET"
+            },
+            "all-users": {
+                href: "/v1/users",
+                method: "GET"
+            },
+            "delete-account": {
+                href: `/v1/users${user._id}`,
+                method: "DELETE"
+            },
+            "udpate": {href: `/v1/users/${user._id}`,
+                method: "UPDATE"
+            },
+            "patch": {
+                href: `/v1/users/${user._id}`,
+                method: "PATCH"
+            },
+            "login": {
+                href: "/v1/users/login",
+                method: "POST"
+            },
+            "signup": {
+                href: "/v1/users",
+                method: "POST"
+            }
+        };
+        res.send({...user.toObject(), _links });
     });
 
 /**
