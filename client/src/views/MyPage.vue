@@ -57,7 +57,7 @@ export default {
     },
     updateAccount: async function () {
       try {
-        const res = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/signup`, {
+        const res = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/change-info`, {
           email: this.email,
           password: this.password
         })
