@@ -17,7 +17,7 @@ router.patch("/:id", assertAdmin, async (req, res) => {
         if (subtitle === null) {
             res.status(404);
             res.send({
-                error: "Subtitles with ID " + req.params.id + " do not exist",
+                message: "Subtitles with ID " + req.params.id + " do not exist",
             });
         }
 
@@ -30,7 +30,7 @@ router.patch("/:id", assertAdmin, async (req, res) => {
     } catch (e) {
         console.log(e);
         res.status(400);
-        res.send({ error: "Bad request" });
+        res.send();
     }
 });
 

@@ -56,7 +56,7 @@ router.post(
             async (err, user, info) => {
                 try {
                     if (err || !user) {
-                        return res.status(400).send("Invalid password or user not found");
+                        return res.status(400).json({message: "Invalid password or user not found"});
                     }
   
                     req.login(
@@ -81,15 +81,15 @@ router.post(
 
 //TODO: route name
 /**
- * Post /v1/users/register
+ * Post /v1/users/signup
  * @summary Registers a user
  * @tags users
  * @return {object} 201 - Success response
  * @return {object} 400 - Bad request response
  */
 router.post(
-    "/register",
-    passport.authenticate("register", { session: false }),
+    "/signup",
+    passport.authenticate("signup", { session: false }),
     async (req, res, next) => {
 
         res.json({
@@ -117,7 +117,7 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
             const user = await User.findById(req.params.id);
             if (user === null) {
                 res.status(404);
-                res.send({ error: "User with ID " + req.params.id + " does not exist" });
+                res.send({ message: "User with ID " + req.params.id + " does not exist" });
             }
 
             const oldUser = user.toObject();
@@ -132,6 +132,7 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
             res.send();
         }
     });
+
 
 // TODO: params
 /**
@@ -150,7 +151,7 @@ router.put("/:id",
             const user = await User.findById(req.params.id);
             if (user === null) {
                 res.status(404);
-                res.send({ error: "User with ID " + req.params.id + " does not exist" });
+                res.send({ message: "User with ID " + req.params.id + " does not exist" });
             }
             const newUserData = req.body;
             const id = req.params._id;
@@ -191,10 +192,12 @@ router.delete("/:id",
 
         if (user === null) {
             res.status(404);
-            return res.send({ error: "User with ID " + req.params.id + " does not exist" });
+            res.send({ message: "User with ID " + req.params.id + " does not exist" });
         }
 
         res.send(user);
     });
+
+
 
 module.exports = router;

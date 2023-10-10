@@ -19,6 +19,11 @@ const mediaSchema = new Schema(
                 ref: "Subtitles",
             },
         ],
+        processing: {
+            type: Boolean,
+            default: true, 
+        },
+        
     },
 );
 

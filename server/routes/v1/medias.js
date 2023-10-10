@@ -4,9 +4,13 @@ const path = require("path");
 const assertAdmin = require("../../services/assert-admin");
 const Subtitle = require("../../schemas/subtitles.js");
 const WhisperJob = require("../../services/WhisperJob.js");
-const { findById } = require("../../schemas/users.js");
 const Language = require("../../schemas/languages.js");
 const fs = require("fs").promises;
+
+router.get("/:fileHash", async (req, res) => {
+    const media = await Media.findOne({fileHash: req.params.fileHash});
+    return res.send(media);
+});
 
 /**
  * Get /v1/medias/{mediaId}/subtitles
@@ -71,12 +75,18 @@ router.get("/:mediaId/subtitles/:subtitlesId", async (req, res) => {
  */
 router.post("/", async (req, res) => {
     if (!req.files || !req.files.media) {
-        return res.status(400).send("No file uploaded");
+        return res.status(400).json({message: "No file uploaded"});
     }
+
     const media = req.files.media;
+
+    if(await Media.exists({fileHash: media.md5})) {
+        return res.send(await Media.findOne({fileHash: media.md5}).lean());
+    }
+
     let fileType = media.name.split(".");
     if (fileType.length < 2)
-        return res.status(400).send("File doesn't have a file extension");
+        return res.status(400).json({message: "File doesn't have a file extension"});
 
     fileType = fileType[fileType.length - 1];
 
@@ -93,23 +103,29 @@ router.post("/", async (req, res) => {
 
     media.mv(filePath, (err) => {
         if (err) {
-            return res.status(500).send(err);
+            return res.status(500).json({message: err});
         }
         
-        const job = new WhisperJob(filePath, media.md5, function(detectedLanguage) {
-            return res.status(201).send({message: `Subtitle generation for media ${media.md5} started`, media: media.md5, detectedLanguage});
+        const job = new WhisperJob(filePath, media.md5, async function() {
+            const newMedia = new Media({fileHash: media.md5, processing: true});
+            await newMedia.save();
+            return res.status(201).send(newMedia);
         });
         job.execute().then(async (subs) => {
             console.log(`Subtitle generation for ${media.md5} done`);
+            const newMedia = await Media.findOne({fileHash: media.md5});
+
             await fs.unlink(filePath);
-            const newMedia = new Media({fileHash: media.md5});
+
             for (const sub of subs){
                 const language = await Language.findOne({name: sub.language});
                 const newSubtitles = new Subtitle({filePath: sub.path, language: language._id});
                 await newSubtitles.save();
                 await newMedia.subtitles.push(newSubtitles);
             }
+            newMedia.processing = false;
             await newMedia.save();
+            console.log("saved media " + media.md5);
 
         }).catch((err) => {
             console.log(err);
@@ -153,7 +169,7 @@ router.delete("/", assertAdmin, async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(401).json({ error: "Not authorized" });
+        res.status(401);
     }
 });
 
@@ -173,7 +189,7 @@ router.delete("/:fileHash", async (req, res) => {
 
     if (Media === null) {
         res.status(404);
-        res.send({ error: "Media with ID " + req.params.id + " does not exist" });
+        res.send({ message: "Media with ID " + req.params.id + " does not exist" });
     }
 
     res.send(media);
@@ -193,12 +209,12 @@ router.delete("/:mediaId/subtitles/:subtitlesId", async (req, res) => {
     const media = await Media.findById(req.params.mediaId);
     if (media==null){
         res.status(404);
-        return res.send({error: "Media with ID " + req.params.mediaId + " does not exist"});
+        return res.send({message: "Media with ID " + req.params.mediaId + " does not exist"});
     }
     const subtitle = await Subtitle.findById(req.params.subtitlesId);
     if (subtitle==null){
         res.status(404);
-        return res.send({error: "Subtitles with ID " + req.params.subtitlesId + " do not exist"});
+        return res.send({message: "Subtitles with ID " + req.params.subtitlesId + " do not exist"});
     }
     if (subtitle.media!=req.params.mediaId){
         res.status(400);
