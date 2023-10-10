@@ -109,7 +109,7 @@ router.post(
  * @return {object} 404 - user id not found
  * @return {object} 401 - not authorized
  */
-router.patch("/:id", "/change-info", passport.authenticate("jwt", { session: false }),
+router.patch("/:id", passport.authenticate("jwt", { session: false }),
     assertAdmin, 
     async function (req, res) {
     
@@ -132,6 +132,7 @@ router.patch("/:id", "/change-info", passport.authenticate("jwt", { session: fal
             res.send();
         }
     });
+
 
 // TODO: params
 /**
