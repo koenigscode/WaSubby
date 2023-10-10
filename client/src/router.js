@@ -4,8 +4,17 @@ import Home from './views/Home.vue'
 import SignUp from './views/SignUp.vue'
 import Login from './views/Login.vue'
 import MyPage from './views/MyPage.vue'
+import MediaPlayer from './views/MediaPlayer.vue'
 
 Vue.use(Router)
+
+function loginGuard(to, from, next) {
+  if (localStorage.getItem('Authorization') === null) {
+    console.log('not logged in; redirecting to login')
+    return next('/login')
+  }
+  next()
+}
 
 export default new Router({
   mode: 'history',
@@ -15,6 +24,12 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/media',
+      name: 'Media',
+      beforeEnter: loginGuard,
+      component: MediaPlayer
     },
     {
       path: '/sign-up',
@@ -30,6 +45,14 @@ export default new Router({
       path: '/my-page',
       name: 'MyPage',
       component: MyPage
+    },
+    {
+      path: '/logout',
+      name: 'Logout',
+      beforeEnter: function (to, from, next) {
+        localStorage.removeItem('Authorization')
+        next('/login')
+      }
     }
   ]
 })

@@ -4,8 +4,8 @@
             <div class="main">
                 <form @submit.prevent="login()">
                     <label>Login</label>
-                    <input type="text" v-model="email" placeholder="Enter E-Mail" />
-                    <input type="password" v-model="password" placeholder="Enter password" />
+                    <input type="text" v-model="email" required placeholder="Enter E-Mail" />
+                    <input type="password" v-model="password" required placeholder="Enter password" />
                     <button type="submit">Login</button>
                 </form>
             </div>
@@ -14,8 +14,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'Login',
   data: function () {
@@ -28,16 +26,17 @@ export default {
   methods: {
     login: async function () {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/login`, {
+        const response = await this.$httpClient.post('/v1/users/login', {
           email: this.email,
           password: this.password
         })
         if (response.data.token) {
           console.log('logged in')
-          axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` }
+          localStorage.setItem('Authorization', response.data.token)
           this.$router.push({ name: 'home' })
         }
       } catch (err) {
+        console.log(err)
         this.alert = err.response.data.message
       }
     }

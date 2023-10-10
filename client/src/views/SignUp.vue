@@ -6,8 +6,8 @@
                 <form @submit.prevent="signup()">
                     <label>Sign Up</label>
                     <!-- <input type="text" v-model="name" placeholder="Enter Name" /> -->
-                    <input type="text" v-model="email" placeholder="Enter E-Mail" />
-                    <input type="password" v-model="password" placeholder="Enter password" />
+                    <input type="text" v-model="email" required placeholder="Enter E-Mail" />
+                    <input type="password" v-model="password" required placeholder="Enter password" />
                     <button type="submit">Sign Up</button>
                 </form>
             </div>
@@ -35,12 +35,17 @@ export default {
           password: this.password
         })
         if (res.status === 200) {
-          this.$router.push({ name: 'Login' })
+          this.$bvToast.toast('You can login now.', {
+            title: 'Sign-up successful',
+            autoHideDelay: 5000,
+            variant: 'success',
+            appendToast: true
+          })
+          this.alert = null
         }
       } catch (err) {
         this.alert = err.response.data.message
       }
-      // TODO: show error/success message
     }
   }
 }

@@ -9,7 +9,13 @@ const bcrypt = require("bcrypt");
  * uploadedMedia: Medias this user has uploaded
  */
 const userSchema = new Schema({
-    email: { type: String, required: [true, "Email must be set"], unique: true },
+    email: {
+        type: String,
+        required: [true, "Email must be set"],
+        unique: true,
+        // regex source: https://regexr.com/3e48o
+        match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "This is not a valid email address"],
+    },
     password: { type: String, required: [true, "Password must be set"] },
     admin: { type: Boolean, default: false },
     theme: { type: String, enum: ["light", "dark"], default: "light" },
