@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const User = require("@/schemas/users.js");
+const User = require("../../schemas/users.js");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const secret = process.env.JWT_SECRET || "TESTING";
-const assertAdmin = require("@/services/assert-admin");
+const assertAdmin = require("../../services/assert-admin");
 
 
 /**
