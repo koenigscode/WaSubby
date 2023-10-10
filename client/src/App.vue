@@ -42,7 +42,7 @@ export default {
 :root {
   --account-dark: #000428;
   --account-light: #004e92;
-  --button: #436998;
+
 }
 :root.light-theme {
   --account-dark: #ff855b;
