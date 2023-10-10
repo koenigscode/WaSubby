@@ -53,7 +53,7 @@ export default {
     align-items: center;
     min-height: 100vh;
     font-family: "Jost", sans-serif;
-    background: linear-gradient(to bottom, #000428, #004e92);
+    background: linear-gradient(to bottom, var(--account-dark), var(--account-light));
 }
 
 .main {
@@ -84,7 +84,7 @@ export default {
     justify-content: center;
     display: block;
     color: #fff;
-    background: #436998;
+    background: var(--button);
     font-size: 1em;
     font-weight: bold;
     margin-top: 20px;

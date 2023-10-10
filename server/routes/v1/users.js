@@ -172,6 +172,7 @@ router.put("/:id",
  * @return {object} 403 - no permission
  */
 router.delete("/:id", 
+    "/delete-accoount",
     passport.authenticate("jwt", { session: false }),
     async (req, res) => {
     // TODO: only admin can delete any user, other users only themselves
