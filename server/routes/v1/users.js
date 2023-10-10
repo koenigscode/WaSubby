@@ -133,6 +133,7 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
         }
     });
 
+
 // TODO: params
 /**
  * Put /v1/users/{id}
@@ -190,5 +191,7 @@ router.delete("/:id",
 
         res.send(user);
     });
+
+
 
 module.exports = router;
