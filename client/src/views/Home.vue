@@ -36,7 +36,7 @@ export default {
         {
           variantId: 2001,
           languageName: 'Korean',
-          videoSource: '../source/KoreanExample.mp4'
+          videoSource: 'client/src/source/KoreanExample.mp4'
         },
         {
           variantId: 2002,

@@ -9,9 +9,15 @@
               <button type="submit">Delete Account</button>
             </div>
             </form>
-            <div class="row">
-              <b-button size="lg" variant="primary">DELETE ALL</b-button>
-            </div>
+              <form @submit.prevent="deleteAllAccounts()">
+              <b-button v-b-toggle.collapse-1 size="lg" variant="danger">DELETE ALL</b-button>
+              <b-collapse id="collapse-1" class="mt-2">
+                <b-card>
+                  <p class="card-text">Now I Am Become Death, the Destroyer of Worlds</p>
+                  <button class="terminate-button">Terminate</button>
+                </b-card>
+             </b-collapse>
+              </form>
             </div>
         </div>
     </div>
@@ -42,14 +48,14 @@ export default {
         this.alert = err.response.data.message
       }
     },
-    updateAccount: async function () {
+    deleteAllAccounts: async function () {
       try {
-        const res = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/change-info`, {
-          email: this.email,
-          password: this.password
+        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/delete-all-accounts`, {
         })
-        if (res.status === 200) {
-          this.$router.push({ name: 'Login' })
+        if (response.data.token) {
+          console.log('Deleted Account')
+          axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` }
+          this.$router.push({ name: 'home' })
         }
       } catch (err) {
         this.alert = err.response.data.message
@@ -96,7 +102,6 @@ export default {
     width: 30%;
     height: 40px;
     margin: 10px auto;
-    justify-content: center;
     display: block;
     color: #fff;
     font-size: 1em;
@@ -105,6 +110,19 @@ export default {
     border-radius: 5px;
     transition: 0.5s;
     cursor: pointer;
+    background: black;
+}
+
+.terminate-button {
+  width: auto;
+    background: yellow; /* Set the background color to yellow for the Terminate button */
+    color: black; /* You can set the text color to black for better visibility */
+    font-size: 1em;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+    /* Add any other styles specific to the Terminate button */
 }
 
 label {
