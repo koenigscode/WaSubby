@@ -12,8 +12,8 @@
                 </form>
                 </b-card>
              </b-collapse>
-             <form @submit.prevent="deleteAllSubtitles()">
-             <b-button size="lg" variant="danger">DELETE ALL SUBTITLES</b-button>
+             <form @submit.prevent="deleteAllMedias()">
+             <b-button size="lg" variant="danger">DELETE ALL MEDIAS</b-button>
              </form>
             </div>
         </div>
@@ -33,25 +33,19 @@ export default {
   methods: {
     deleteAllAccounts: async function () {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/delete-all-accounts`, {
-        })
-        if (response.data.token) {
-          console.log('Deleted Account')
-          axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` }
-          this.$router.push({ name: 'home' })
+        const response = await axios.delete(`${process.env.VUE_APP_API_ENDPOINT}/delete-all-users`)
+        if (response.status === 200) {
+          console.log('Deleted all accounts')
         }
       } catch (err) {
         this.alert = err.response.data.message
       }
     },
-    deleteAllSubtitles: async function () {
+    deleteAllMedias: async function () {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/delete-all-accounts`, {
-        })
-        if (response.data.token) {
-          console.log('Deleted Account')
-          axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` }
-          this.$router.push({ name: 'home' })
+        const response = await axios.delete(`${process.env.VUE_APP_API_ENDPOINT}/medias/delete-all-media`)
+        if (response.status === 200) {
+          console.log('Deleted all medias')
         }
       } catch (err) {
         this.alert = err.response.data.message
