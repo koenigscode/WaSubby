@@ -4,10 +4,11 @@ const morgan = require("morgan");
 const path = require("path");
 const cors = require("cors");
 const history = require("connect-history-api-fallback");
-const usersRouter = require("./controllers/v1/users");
-const mediasRouter = require("./controllers/v1/medias");
-const subtitlesRouter = require("./controllers/v1/subtitles");
-const languagesRouter = require("./controllers/v1/languages");
+const usersController = require("./controllers/v1/users");
+const usersControllerV2 = require("./controllers/v2/users");
+const mediasController = require("./controllers/v1/medias");
+const subtitlesController = require("./controllers/v1/subtitles");
+const languagesController = require("./controllers/v1/languages");
 const expressJSDocSwagger = require("express-jsdoc-swagger");
 const passport = require("passport");
 const fileUpload = require("express-fileupload");
@@ -81,10 +82,11 @@ app.get("/api", function (req, res) {
     res.json({ message: "WaSubby API is running!"});
 });
 
-app.use("/v1/users", usersRouter);
-app.use("/v1/medias", passport.authenticate("jwt", { session: false }), mediasRouter);
-app.use("/v1/subtitles", passport.authenticate("jwt", { session: false }), subtitlesRouter);
-app.use("/v1/languages", languagesRouter);
+app.use("/v1/users", usersController);
+app.use("/v2/users", usersControllerV2);
+app.use("/v1/medias", passport.authenticate("jwt", { session: false }), mediasController);
+app.use("/v1/subtitles", passport.authenticate("jwt", { session: false }), subtitlesController);
+app.use("/v1/languages", languagesController);
 
 // Catch all non-error handler for api (i.e., 404 Not Found)
 app.use("/*", function (req, res) {
