@@ -1,23 +1,20 @@
 <template>
     <div> <b-alert variant="danger" :show="alert !== null">{{ alert }}</b-alert>
-        <div class="admin-page">
-            <div class="main">
+        <div class="admin-page" :class="{ 'terminated-background': isTerminated }">
+            <div class="admin-main">
             <label>Admin Page</label>
-            <form @submit.prevent="deleteAccount()">
-              <div class="align-next">
-              <input type="text" v-model="email" required placeholder="Email to delete" />
-              <button type="submit">Delete Account</button>
-            </div>
-            </form>
-              <form @submit.prevent="deleteAllAccounts()">
-              <b-button v-b-toggle.collapse-1 size="lg" variant="danger">DELETE ALL</b-button>
+              <b-button v-b-toggle.collapse-1 size="lg" variant="danger">DELETE ALL USERS</b-button>
               <b-collapse id="collapse-1" class="mt-2">
                 <b-card>
                   <p class="card-text">Now I Am Become Death, the Destroyer of Worlds</p>
-                  <button class="terminate-button">Terminate</button>
+                  <form @submit.prevent="deleteAllAccounts()">
+                  <button class="terminate-button" @click="toggleTerminated">Terminate</button>
+                </form>
                 </b-card>
              </b-collapse>
-              </form>
+             <form @submit.prevent="deleteAllSubtitles()">
+             <b-button size="lg" variant="danger">DELETE ALL SUBTITLES</b-button>
+             </form>
             </div>
         </div>
     </div>
@@ -29,25 +26,11 @@ export default {
   name: 'AdminPage',
   data: function () {
     return {
-      alert: null
+      alert: null,
+      isTerminated: false
     }
   },
   methods: {
-    deleteAccount: async function () {
-      try {
-        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/delete-account`, {
-          email: this.email,
-          password: this.password
-        })
-        if (response.data.token) {
-          console.log('Deleted Account')
-          axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` }
-          this.$router.push({ name: 'home' })
-        }
-      } catch (err) {
-        this.alert = err.response.data.message
-      }
-    },
     deleteAllAccounts: async function () {
       try {
         const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/delete-all-accounts`, {
@@ -60,6 +43,23 @@ export default {
       } catch (err) {
         this.alert = err.response.data.message
       }
+    },
+    deleteAllSubtitles: async function () {
+      try {
+        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/delete-all-accounts`, {
+        })
+        if (response.data.token) {
+          console.log('Deleted Account')
+          axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` }
+          this.$router.push({ name: 'home' })
+        }
+      } catch (err) {
+        this.alert = err.response.data.message
+      }
+    },
+
+    toggleTerminated() {
+      this.isTerminated = !this.isTerminated
     }
   }
 }
@@ -76,16 +76,17 @@ export default {
     background: linear-gradient(to bottom, var(--account-dark), var(--account-light));
 }
 
-.main {
+.admin-main {
     width: 48%;
     height: 500px;
     overflow: hidden;
     margin-right: 10px;
     border-radius: 10px;
     box-shadow: 5px 20px 50px #00072D;
+    background-image: url("../assets/nuclear.jpg");
 }
 
-.main input {
+.admin-main input {
     width: 40%;
     height: 40px;
     background: #fbfaf5;
@@ -98,7 +99,7 @@ export default {
     border-radius: 5px;
 }
 
-.main button {
+.admin-main button {
     width: 30%;
     height: 40px;
     margin: 10px auto;
@@ -115,14 +116,13 @@ export default {
 
 .terminate-button {
   width: auto;
-    background: yellow; /* Set the background color to yellow for the Terminate button */
-    color: black; /* You can set the text color to black for better visibility */
+    background: yellow;
+    color: black;
     font-size: 1em;
     font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
     transition: 0.5s;
-    /* Add any other styles specific to the Terminate button */
 }
 
 label {
@@ -151,6 +151,10 @@ label {
 
 .align-next button {
   width: auto;
+}
+
+.terminated-background {
+  background-image: url('../assets/nuclearBg.jpg');
 }
 
 </style>
