@@ -27,6 +27,15 @@ Vue.prototype.$httpClient.interceptors.request.use(
 
 Vue.prototype.$isChrome = window.chrome !== undefined
 
+Vue.config.errorHandler = function (err, vm, info) {
+  console.log(err)
+  console.log(err.response.status)
+  if (err.response && err.response.status === 401) {
+    localStorage.removeItem('Authorization')
+    router.push('/login')
+  }
+}
+
 new Vue({
   router,
   render: function (h) { return h(App) }

@@ -19,7 +19,6 @@ function fixSubs(maxCueLines = 2) {
 
     for (const element of elementsToFix) {
       const observer = new ResizeObserver((entries) => {
-        console.log('updated subtitle fix')
         const height = entries[0].contentRect.height
         const controlsHeight = 72
         const maxCueLines = 4
