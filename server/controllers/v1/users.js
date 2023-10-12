@@ -96,7 +96,6 @@ router.post(
     }
 );
 
-// TODO: params
 /**
  * Patch /v1/users/{id}
  * @summary Partially update a user by id
@@ -107,7 +106,7 @@ router.post(
  * @return {object} 401 - not authorized
  */
 router.patch("/:id", passport.authenticate("jwt", { session: false }),
-    assertAdmin,
+    assertAdminOrSelf,
     async function (req, res) {
 
         try {
@@ -119,10 +118,17 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
 
             const oldUser = user.toObject();
             const newUserData = req.body;
-            const id = req.params._id;
+            if(!oldUser.admin) {
+                delete req.body.admin; // don't allow user to make himself admin
+            }
+            delete oldUser._id;
+            delete newUserData._id;
 
-            await Users.updateOne({ ...oldUser, ...newUserData, id });
-            res.send(await Users.findById(req.params.id).select("email admin theme"));
+            console.log(oldUser);
+            console.log(newUserData);
+            await Users.findByIdAndUpdate(req.params.id, { ...oldUser, ...newUserData});
+
+            res.send(await Users.findById(req.params.id).select("-__v -password"));
         } catch (e) {
             console.log(e);
             res.status(400);
