@@ -200,7 +200,7 @@ router.delete("/:id",
  * @return {object} 403 - no permission
  */
 // Probably needs to be fixed!!
-router.delete("/delete-all-users", 
+router.delete("/", 
     passport.authenticate("jwt", { session: false }),
     async (req, res) => {
         if(!req.user.admin)
