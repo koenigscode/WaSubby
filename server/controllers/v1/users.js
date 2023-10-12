@@ -219,6 +219,34 @@ router.delete("/",
         res.send(user);
     });
 
+/**
+ * Delete /v1/users/
+ * @summary Delete every users
+ * @tags users
+ * @return {object} 200 - Success response
+ * @return {object} 404 - user id not found
+ * @return {object} 403 - no permission
+ */
+// Probably needs to be fixed!!
+router.delete("/", 
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        if(!req.user.admin)
+            return res.status(403).send();
+
+        const user = await User.deleteAllUsers(req.params.id).select(
+            "-uploadedMedias -__v",
+        );
+        console.log(user);
+
+        if (user === null) {
+            res.status(404);
+            res.send({ message: "There are no users" });
+        }
+
+        res.send(user);
+    });
+
     
 
 
