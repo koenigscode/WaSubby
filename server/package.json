@@ -23,9 +23,7 @@
     "newman-server": "cross-env-shell PORT=3001 \"npm run dropdb && run-p --race start newman-wait\"",
     "newman-wait": "wait-on http://localhost:3001/api && npm run newman",
     "newman": "newman run ./tests/server.postman_collection.json --env-var host=http://localhost:3001",
-    "dropdb": "node ./tests/dropdb.js",
-    "preinstall": "which link-module-alias && link-module-alias clean || echo",
-    "postinstall": "link-module-alias"
+    "dropdb": "node ./tests/dropdb.js"
   },
   "repository": {
     "type": "git",
@@ -41,7 +39,7 @@
     "express-fileupload": "^1.4.0",
     "express-jsdoc-swagger": "^1.8.0",
     "jsonwebtoken": "^9.0.2",
-    "link-module-alias": "^1.2.0",
+    "method-override": "^3.0.0",
     "mongoose": "^7.4.4",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",

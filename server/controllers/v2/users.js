@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const Users = require("@/schemas/users.js");
+const Users = require("../../schemas/users.js");
 const passport = require("passport");
-const { assertAdminOrSelf } = require("@/services/route-guards");
+const { assertAdminOrSelf } = require("../../services/route-guards");
 
 /**
  * Get /v2/users/{id}

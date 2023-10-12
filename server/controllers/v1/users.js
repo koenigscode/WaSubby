@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const Users = require("@/schemas/users.js");
+const Users = require("../../schemas/users.js");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const secret = process.env.JWT_SECRET || "TESTING";
-const { assertAdmin, assertAdminOrSelf } = require("@/services/route-guards");
+const { assertAdmin, assertAdminOrSelf } = require("../../services/route-guards");
 
 
 /**
@@ -181,12 +181,7 @@ router.delete("/:id",
     async (req, res) => {
 
         const user = await Users.findById(req.params.id);
-        // await Users.deleteOne({ _id: req.params.id });
         user.deleteOne();
-
-        // const user = await Users.findOneAndDelete({_id: req.params.id}).select(
-        //     "-uploadedMedias -__v",
-        // );
 
         if (user === null) {
             res.status(404);
