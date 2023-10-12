@@ -33,7 +33,7 @@ export default {
   methods: {
     deleteAllAccounts: async function () {
       try {
-        const response = await axios.delete(`${process.env.VUE_APP_API_ENDPOINT}/delete-all-users`)
+        const response = await axios.delete(`${process.env.VUE_APP_API_ENDPOINT}DELETE /v1//users`)
         if (response.status === 200) {
           console.log('Deleted all accounts')
         }
@@ -43,7 +43,7 @@ export default {
     },
     deleteAllMedias: async function () {
       try {
-        const response = await axios.delete(`${process.env.VUE_APP_API_ENDPOINT}/medias/delete-all-media`)
+        const response = await axios.delete(`${process.env.VUE_APP_API_ENDPOINT}DELETE /v1/medias`)
         if (response.status === 200) {
           console.log('Deleted all medias')
         }
