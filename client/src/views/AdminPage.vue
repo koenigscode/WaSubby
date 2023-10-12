@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
   name: 'AdminPage',
   data: function () {
@@ -33,7 +32,7 @@ export default {
   methods: {
     deleteAllAccounts: async function () {
       try {
-        const response = await axios.delete(`${process.env.VUE_APP_API_ENDPOINT}DELETE /v1//users`)
+        const response = await this.$httpClient.delete('/v1/users/')
         if (response.status === 200) {
           console.log('Deleted all accounts')
         }
@@ -43,7 +42,7 @@ export default {
     },
     deleteAllMedias: async function () {
       try {
-        const response = await axios.delete(`${process.env.VUE_APP_API_ENDPOINT}DELETE /v1/medias`)
+        const response = await this.$httpClient.delete('/v1/medias/')
         if (response.status === 200) {
           console.log('Deleted all medias')
         }
