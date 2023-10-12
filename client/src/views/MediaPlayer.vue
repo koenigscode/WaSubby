@@ -117,7 +117,6 @@ export default {
       //   this.$forceUpdate()
       fixSubs(this.subtitles.length)
       this.processing = false
-      console.log('processing finished')
     }
   }
 }

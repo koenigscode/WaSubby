@@ -43,7 +43,6 @@ export default {
   methods: {
     logout: function () {
       localStorage.setItem('Authorization', null)
-      console.log('logged out')
       this.$router.push({ name: 'Login' })
     },
     isLoggedIn: function () {

@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const User = require("@/schemas/users.js");
+const Users = require("@/schemas/users.js");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const secret = process.env.JWT_SECRET || "TESTING";
-const assertAdmin = require("@/services/assert-admin");
+const { assertAdmin, assertAdminOrSelf } = require("@/services/route-guards");
 
 
 /**
@@ -16,11 +16,7 @@ router.get("/",
     passport.authenticate("jwt", { session: false }),
     assertAdmin,
     async (req, res) => {
-        // if(!req.user.admin)
-        //     return res.status(403).send();
-
-        console.log(req.user);
-        const users = await User.find().select("email admin theme");
+        const users = await Users.find().select("-__v -password");
         return res.send(users);
     });
 
@@ -33,12 +29,12 @@ router.get("/",
  */
 router.get("/:id",
     passport.authenticate("jwt", { session: false }),
-    assertAdmin,
+    assertAdminOrSelf,
     async (req, res) => {
-        const user = await User.findOne({ id: req.params._id }).select(
-            "email admin theme"
-        );
-        res.send(user);
+        const user = await Users.findOne({ id: req.params._id }).select(
+            "-__v -password"
+        ).lean();
+        res.send({...user});
     });
 
 /**
@@ -56,19 +52,22 @@ router.post(
             async (err, user, info) => {
                 try {
                     if (err || !user) {
-                        return res.status(400).json({message: "Invalid password or user not found"});
+                        return res.status(400).json({ message: "Invalid password or user not found" });
                     }
-  
+
                     req.login(
                         user,
                         { session: false },
                         async (error) => {
                             if (error) return next(error);
-  
+
                             const body = { _id: user._id, email: user.email, admin: user.admin, theme: user.theme };
                             const token = jwt.sign({ user: body }, secret);
-  
-                            return res.json({ token });
+
+                            let reponseUser = { ...req.user.toObject() };
+                            delete reponseUser.password;
+                            delete reponseUser.__v;
+                            return res.json({ token, user: reponseUser });
                         }
                     );
                 } catch (error) {
@@ -79,27 +78,24 @@ router.post(
     }
 );
 
-//TODO: route name
 /**
- * Post /v1/users/signup
+ * Post /v1/users
  * @summary Registers a user
  * @tags users
  * @return {object} 201 - Success response
  * @return {object} 400 - Bad request response
  */
 router.post(
-    "/signup",
+    "/",
     passport.authenticate("signup", { session: false }),
     async (req, res, next) => {
 
-        res.json({
-            message: "Signup successful",
-            user: req.user
-        });
+        return res.status(201).json(
+            req.user
+        );
     }
 );
 
-// TODO: params
 /**
  * Patch /v1/users/{id}
  * @summary Partially update a user by id
@@ -110,11 +106,11 @@ router.post(
  * @return {object} 401 - not authorized
  */
 router.patch("/:id", passport.authenticate("jwt", { session: false }),
-    assertAdmin, 
+    assertAdminOrSelf,
     async function (req, res) {
-    
+
         try {
-            const user = await User.findById(req.params.id);
+            const user = await Users.findById(req.params.id);
             if (user === null) {
                 res.status(404);
                 res.send({ message: "User with ID " + req.params.id + " does not exist" });
@@ -122,10 +118,17 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
 
             const oldUser = user.toObject();
             const newUserData = req.body;
-            const id = req.params._id;
+            if(!oldUser.admin) {
+                delete req.body.admin; // don't allow user to make himself admin
+            }
+            delete oldUser._id;
+            delete newUserData._id;
 
-            await User.updateOne({ ...oldUser, ...newUserData, id });
-            res.send(await User.findById(req.params.id).select("email admin theme"));
+            console.log(oldUser);
+            console.log(newUserData);
+            await Users.findByIdAndUpdate(req.params.id, { ...oldUser, ...newUserData});
+
+            res.send(await Users.findById(req.params.id).select("-__v -password"));
         } catch (e) {
             console.log(e);
             res.status(400);
@@ -143,20 +146,20 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
  * @return {object} 400 - Bad request response
  * @return {object} 404 - user id not found
  */
-router.put("/:id", 
+router.put("/:id",
     passport.authenticate("jwt", { session: false }),
     assertAdmin,
     async (req, res) => {
         try {
-            const user = await User.findById(req.params.id);
+            const user = await Users.findById(req.params.id);
             if (user === null) {
                 res.status(404);
                 res.send({ message: "User with ID " + req.params.id + " does not exist" });
             }
             const newUserData = req.body;
             const id = req.params._id;
-            await User.updateOne({ ...newUserData, id });
-            res.send(await User.findById(req.params.id).select("email admin theme"));
+            await Users.updateOne({ ...newUserData, id });
+            res.send(await Users.findById(req.params.id).select("email admin theme"));
         } catch (e) {
             console.log(e);
             res.status(400);
@@ -172,24 +175,25 @@ router.put("/:id",
  * @return {object} 404 - user id not found
  * @return {object} 403 - no permission
  */
-router.delete("/:id", 
+router.delete("/:id",
     passport.authenticate("jwt", { session: false }),
+    assertAdminOrSelf,
     async (req, res) => {
-    // TODO: only admin can delete any user, other users only themselves
-        if(!req.user.admin || req.user._id !== req.params.id)
-            return res.status(403).send();
 
-        const user = await User.findByIdAndDelete(req.params.id).select(
-            "-uploadedMedias -__v",
-        );
-        console.log(user);
+        const user = await Users.findById(req.params.id);
+        // await Users.deleteOne({ _id: req.params.id });
+        user.deleteOne();
+
+        // const user = await Users.findOneAndDelete({_id: req.params.id}).select(
+        //     "-uploadedMedias -__v",
+        // );
 
         if (user === null) {
             res.status(404);
-            res.send({ message: "User with ID " + req.params.id + " does not exist" });
+            return res.send({ message: "User with ID " + req.params.id + " does not exist" });
         }
 
-        res.send(user);
+        return res.send(user);
     });
 
 

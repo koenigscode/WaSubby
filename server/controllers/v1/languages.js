@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Language = require("../../schemas/languages.js");
 const passport = require("passport");
-const assertAdmin = require("@/services/assert-admin");
+const {assertAdmin} = require("@/services/route-guards");
 
 
 /**
@@ -72,17 +72,17 @@ router.put("/:code",
             const language = await Language.findOne({code: req.params.code});
             if (language === null) {
                 res.status(404);
-                res.send({ message: "Language with code " + req.params.code + " does not exist" });
+                return res.send({ message: "Language with code " + req.params.code + " does not exist" });
             }
 
             const newLanguageData = req.body;
             const id = req.params._id;
             await Language.updateOne({...newLanguageData, id });
-            res.send(await Language.findOne({code: req.params.code}).select("-__v"));
+            return res.send(await Language.findOne({code: req.params.code}).select("-__v"));
         } catch (e) {
             console.log(e);
             res.status(400);
-            res.send();
+            return res.send();
         }
     });
 
