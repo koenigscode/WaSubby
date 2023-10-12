@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const User = require("@/schemas/users.js");
+const User = require("../../schemas/users.js");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const secret = process.env.JWT_SECRET || "TESTING";
-const assertAdmin = require("@/services/assert-admin");
+const assertAdmin = require("../../services/assert-admin");
 
 
 /**
@@ -133,6 +133,7 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
         }
     });
 
+
 // TODO: params
 /**
  * Put /v1/users/{id}
@@ -174,13 +175,19 @@ router.put("/:id",
 router.delete("/:id", 
     passport.authenticate("jwt", { session: false }),
     async (req, res) => {
-    // TODO: only admin can delete any user, other users only themselves
-        if(!req.user.admin || req.user._id !== req.params.id)
+        
+        // TODO: only admin can delete any user, other users only themselves
+        if(!req.user.admin && req.user._id !== req.params.id)
             return res.status(403).send();
 
-        const user = await User.findByIdAndDelete(req.params.id).select(
-            "-uploadedMedias -__v",
-        );
+        let user = null;
+        try {
+            user = await User.findByIdAndDelete(req.params.id).select(
+                "-uploadedMedias -__v",
+            );
+        } catch(err) {
+            return res.status(404).send({message: `User with ID ${req.params.id} not found`});
+        }
         console.log(user);
 
         if (user === null) {
@@ -190,5 +197,7 @@ router.delete("/:id",
 
         res.send(user);
     });
+
+
 
 module.exports = router;

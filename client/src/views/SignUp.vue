@@ -6,8 +6,8 @@
                 <form @submit.prevent="signup()">
                     <label>Sign Up</label>
                     <!-- <input type="text" v-model="name" placeholder="Enter Name" /> -->
-                    <input type="text" v-model="email" placeholder="Enter E-Mail" />
-                    <input type="password" v-model="password" placeholder="Enter password" />
+                    <input type="text" v-model="email" required placeholder="Enter E-Mail" />
+                    <input type="password" v-model="password" required placeholder="Enter password" />
                     <button type="submit">Sign Up</button>
                 </form>
             </div>
@@ -35,12 +35,17 @@ export default {
           password: this.password
         })
         if (res.status === 200) {
-          this.$router.push({ name: 'Login' })
+          this.$bvToast.toast('You can login now.', {
+            title: 'Sign-up successful',
+            autoHideDelay: 5000,
+            variant: 'success',
+            appendToast: true
+          })
+          this.alert = null
         }
       } catch (err) {
         this.alert = err.response.data.message
       }
-      // TODO: show error/success message
     }
   }
 }
@@ -55,7 +60,7 @@ export default {
     align-items: center;
     min-height: 100vh;
     font-family: "Jost", sans-serif;
-    background: linear-gradient(to bottom, #000428, #004e92);
+    background: linear-gradient(to bottom, var(--account-dark), var(--account-light));
 }
 
 .main {
@@ -86,7 +91,7 @@ export default {
     justify-content: center;
     display: block;
     color: #fff;
-    background: #436998;
+    background: var(--button);
     font-size: 1em;
     font-weight: bold;
     margin-top: 20px;

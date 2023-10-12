@@ -15,9 +15,12 @@ const Subtitle = require("./schemas/subtitles");
 const expressJSDocSwagger = require("express-jsdoc-swagger");
 const passport = require("passport");
 const fileUpload = require("express-fileupload");
+const methodOverride = require("method-override");
 require("./passport.js"); // local passport config
 
 const app = express();
+//HTTP method overriding
+app.use(methodOverride("X-HTTP-Method-Override"));
 app.use(fileUpload());
 const apiDocsRoute = "/api-docs";
 
