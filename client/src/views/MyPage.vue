@@ -1,6 +1,9 @@
 <template>
     <div> <b-alert variant="danger" :show="alert !== null">{{ alert }}</b-alert>
         <div class="my-page">
+          <div class="image-logo">
+            <img src="../assets/waSubbyLogo.svg">
+          </div>
             <div class="main">
                 <form>
                     <label>My Page</label>
@@ -9,9 +12,8 @@
                     <div class="theme">
                         Preffered Theme
                         <b-dropdown id="dropdown-right" right text="Select" variant="primary" class="m-2">
-                            <b-dropdown-item href="#">Dark</b-dropdown-item>
-                            <b-dropdown-item href="#">Light</b-dropdown-item>
-                            <b-dropdown-item href="#">Random</b-dropdown-item>
+                            <b-dropdown-item @click="setSelectedTheme('dark')" href="#">Dark</b-dropdown-item>
+                            <b-dropdown-item @click="setSelectedTheme('light-theme')" href="#">Light</b-dropdown-item>
                         </b-dropdown>
                     </div>
                     <div class="row align-items-center">
@@ -19,7 +21,7 @@
                             <b-button type="submit">Save</b-button>
                         </div>
                         <form @submit.prevent="deleteAccount()" class="col-6">
-                            <b-button varient="danger" type="submit">Delete</b-button>
+                            <b-button variant="danger" type="submit">Delete</b-button>
                         </form>
                     </div>
                 </form>
@@ -30,16 +32,24 @@
 
 <script>
 import axios from 'axios'
+
 export default {
   name: 'MyPage',
   data: function () {
     return {
       alert: null,
       email: '',
-      password: ''
+      password: '',
+      selectedTheme: 'light'
     }
   },
   methods: {
+    setSelectedTheme(theme) {
+      this.selectedTheme = theme
+
+      // Save the selected theme in local storage
+      localStorage.setItem('selectedTheme', theme)
+    },
     deleteAccount: async function () {
       try {
         const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/delete-account`, {
@@ -67,6 +77,11 @@ export default {
       } catch (err) {
         this.alert = err.response.data.message
       }
+    }
+  },
+  computed: {
+    themeClass() {
+      return this.selectedTheme === 'dark' ? 'dark-theme' : 'light-theme'
     }
   }
 }

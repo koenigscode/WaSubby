@@ -110,7 +110,7 @@ export default {
     border-radius: 5px;
     transition: 0.5s;
     cursor: pointer;
-    background: black;
+    background: var(--button);
 }
 
 .terminate-button {
