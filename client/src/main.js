@@ -27,6 +27,12 @@ Vue.prototype.$httpClient.interceptors.request.use(
 
 Vue.prototype.$isChrome = window.chrome !== undefined
 
+// Check if the user has a selected theme in local storage and set the class accordingly.
+const selectedTheme = localStorage.getItem('selectedTheme')
+if (selectedTheme) {
+  document.documentElement.classList.add(selectedTheme)
+}
+
 new Vue({
   router,
   render: function (h) { return h(App) }

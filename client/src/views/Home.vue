@@ -2,7 +2,7 @@
   <div id="app">
     <section>
       <div class="reveal">
-        <img src="../source/languagesBG.svg" />
+        <img src="../assets/languagesBG.svg" />
       </div>
     </section>
     <section class="example">
@@ -36,22 +36,22 @@ export default {
         {
           variantId: 2001,
           languageName: 'Korean',
-          videoSource: 'client/src/source/KoreanExample.mp4'
+          videoSource: 'client/src/assets/KoreanExample.mp4'
         },
         {
           variantId: 2002,
           languageName: 'German',
-          videoSource: '../source/GermanExample.mp4' // Corrected video source
+          videoSource: '../assets/GermanExample.mp4' // Corrected video source
         },
         {
           variantId: 2003,
           languageName: 'Russian',
-          videoSource: '../source/RussianExample.mp4' // Corrected video source
+          videoSource: '../assets/RussianExample.mp4' // Corrected video source
         },
         {
           variantId: 2004,
           languageName: 'Swedish',
-          videoSource: '../source/SwedishExample.mp4' // Corrected video source
+          videoSource: '../assets/SwedishExample.mp4' // Corrected video source
         }
       ]
     }
