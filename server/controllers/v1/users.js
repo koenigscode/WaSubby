@@ -219,8 +219,6 @@ router.delete("/",
         res.send(user);
     });
 
-<<<<<<< HEAD
-=======
 /**
  * Delete /v1/users/
  * @summary Delete every users
@@ -249,7 +247,6 @@ router.delete("/",
         res.send(user);
     });
 
->>>>>>> 3501fa6 (Fix merge conflicts)
     
 
 
