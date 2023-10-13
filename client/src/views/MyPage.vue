@@ -112,6 +112,7 @@ export default {
     justify-content: center;
     display: block;
     color: #fff;
+    background: var(--button-light);
     font-size: 1em;
     font-weight: bold;
     margin-top: 20px;

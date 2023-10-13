@@ -57,12 +57,12 @@ section{
   align-items: center;
 }
 section:nth-child(1) {
-  background-image: url('../source/Without-Languages.png');
+  background-image: url('../assets/Without-Languages.png');
   background-size: cover;
   min-height: 100vh;
 }
 section:nth-child(2) {
-  background-image: url('../source/starsBackground.svg');
+  background-image: url('../assets/starsBackground.svg');
   background-size: cover;
 }
 
