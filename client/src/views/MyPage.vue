@@ -41,7 +41,8 @@ export default {
       alert: null,
       email: '',
       password: '',
-      selectedTheme: 'light'
+      selectedTheme: 'light',
+      userId: localStorage.getItem('UserId')
     }
   },
   methods: {
@@ -53,9 +54,12 @@ export default {
     },
     deleteAccount: async function () {
       try {
-        const response = await this.$httpClient.delete('/v1/users/:id')
+        const response = await this.$httpClient.delete(`/v1/users/${this.userId}`)
         if (response.status === 200) {
           console.log('Your account is now deleted')
+          localStorage.removeItem('Authorization')
+          localStorage.removeItem('UserId')
+          this.$router.push({ name: 'Home' })
         }
       } catch (err) {
         this.alert = err.response.data.message

@@ -32,6 +32,7 @@ export default {
         })
         if (response.data.token) {
           localStorage.setItem('Authorization', response.data.token)
+          localStorage.setItem('UserId', response.data.id)
           this.email = response.data.email
           this.$router.push({ name: 'home' })
           this.$router.push({ name: 'MyPage' })
