@@ -5,9 +5,6 @@
         <h1>ERROR 404</h1>
         <h2>Page Not Found</h2>
         </div>
-        <div class="victory">
-            <h3>😮‍💨 Avoided point deduction 😮‍💨</h3>
-        </div>
     </div>
 </template>
 <style scoped>

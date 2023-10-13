@@ -104,7 +104,9 @@ section:nth-child(2) {
   background-image: url('../assets/starsBackground.svg');
   background-size: cover;
 }
-
+.col h3{
+  font-weight: bold;
+}
 .reveal{
   position: relative;
   transform: translateY(150px);

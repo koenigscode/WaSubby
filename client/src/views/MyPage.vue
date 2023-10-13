@@ -1,10 +1,12 @@
 <template>
     <div> <b-alert variant="danger" :show="alert !== null">{{ alert }}</b-alert>
         <div class="my-page">
+          <div class="col-5">
           <div class="image-logo">
-            <img src="../assets/waSubbyLogo.svg">
+            <img src="../assets/waSubbyLogo.svg" width="500" height="900">
           </div>
-            <div class="main">
+          </div>
+          <div class="col-7 main-mypage">
                 <form>
                     <label>My Page</label>
                     <!-- Email is set as uneditable since it does not make sense to change the email of an account -->
@@ -19,13 +21,23 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-6">
-                            <b-button type="submit">Save</b-button>
+                            <button type="submit">Save</button>
                         </div>
                         <form @submit.prevent="deleteAccount()" class="col-6">
-                            <b-button variant="danger" type="submit">Delete</b-button>
+                            <button v-b-modal.modal-1 type="submit">Delete</button>
+                            <b-modal id="modal-1" title="🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭😭">
+                              <p class="my-4">
+                                It's sad to say goodbye but we hope you had a nice experience using our service.
+                                Our team would like to thank you for using our service and hope to see you again!!
+                              </p>
+                              <p class="my-4">
+                                Tack! 감사합니다! Danke! Спасибо!
+                              </p>
+                            </b-modal>
                         </form>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
@@ -98,18 +110,21 @@ export default {
     background: linear-gradient(to bottom, var(--account-dark), var(--account-light));
 }
 
-.main {
+.main-mypage {
     width: 48%;
     height: 500px;
     overflow: hidden;
     margin-right: 10px;
     border-radius: 10px;
     box-shadow: 5px 20px 50px #00072D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.main input {
-    width: 40%;
-    height: 40px;
+.main-mypage input {
+    width: 80%;
+    height: auto;
     background: #fbfaf5;
     justify-content: center;
     display: flex;
@@ -120,14 +135,14 @@ export default {
     border-radius: 5px;
 }
 
-.main button {
-    width: 30%;
+.main-mypage button {
+    width: 70%;
     height: 40px;
     margin: 10px auto;
     justify-content: center;
     display: block;
     color: #fff;
-    background: var(--button-light);
+    background: var(--button);
     font-size: 1em;
     font-weight: bold;
     margin-top: 20px;
@@ -150,5 +165,17 @@ label {
 
 .theme {
     color: white;
+}
+
+.image-logo {
+  text-align: left;
+}
+
+.image-logo img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  height: auto;
 }
 </style>
