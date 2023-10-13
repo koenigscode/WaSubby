@@ -158,7 +158,7 @@ router.post("/:id/subtitles", function (req, res) {
  * @return {object} 200 - Success response
  * @return {object} 401 - not authorized
  */
-router.delete("/", assertAdmin, async (req, res) => {
+router.delete("/delete-all-media", assertAdmin, async (req, res) => {
     try {
         const deletedMedias = await Media.find({}).lean();
         const result = await Media.deleteMany({});
