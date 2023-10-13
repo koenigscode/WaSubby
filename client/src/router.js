@@ -6,7 +6,7 @@ import Login from './views/Login.vue'
 import MyPage from './views/MyPage.vue'
 import MediaPlayer from './views/MediaPlayer.vue'
 import AdminPage from './views/AdminPage.vue'
-
+import Error404 from './views/Error404.vue'
 Vue.use(Router)
 
 function loginGuard(to, from, next) {
@@ -59,6 +59,11 @@ export default new Router({
       path: '/admin',
       name: 'Admin',
       component: AdminPage
+    },
+    {
+      path: '*',
+      name: '404',
+      component: Error404
     }
   ]
 })
