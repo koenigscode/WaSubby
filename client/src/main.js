@@ -35,6 +35,11 @@ Vue.config.errorHandler = function (err, vm, info) {
     router.push('/login')
   }
 }
+// Check if the user has a selected theme in local storage and set the class accordingly.
+const selectedTheme = localStorage.getItem('selectedTheme')
+if (selectedTheme) {
+  document.documentElement.classList.add(selectedTheme)
+}
 
 new Vue({
   router,

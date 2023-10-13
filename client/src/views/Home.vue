@@ -1,52 +1,91 @@
 <template>
-  <body id="app">
+  <div id="app">
     <section>
       <div class="reveal">
-        <img src="../source/languagesBG.svg" />
+        <img src="../assets/languagesBG.svg" />
       </div>
     </section>
     <section class="example">
       <div class="reveal">
         <div class="col">
-          <video width="600px" height="1080px" controls="controls" class="corner">
-            <source src="../source/KoreanExample.mp4">
-          </video>
-          </div>
+          <video width="600px" height="1080px" controls="controls" class="corner" :src="getVideoSource"></video>
         </div>
-        <div class="col">
-          <div class="reveal">
+      </div>
+      <div class="col">
+        <div class="reveal">
           <h3>Try Our Service!</h3>
           <div class="buttons">
-            <b-button pill varient="success">Korean</b-button>
-            <b-button pill>German</b-button>
-            <b-button pill>Russian</b-button>
-            <b-button pill>Swedish</b-button>
-          </div>
+            <b-button pill @click="selectLanguage('Korean')">Korean</b-button>
+            <b-button pill @click="selectLanguage('German')">German</b-button>
+            <b-button pill @click="selectLanguage('Russian')">Russian</b-button>
+            <b-button pill @click="selectLanguage('Swedish')">Swedish</b-button>
           </div>
         </div>
+      </div>
     </section>
-  </body>
+  </div>
 </template>
 
 <script>
-function reveal() {
-  const reveals = document.querySelectorAll('.reveal')
+export default {
+  data() {
+    return {
+      example: 'Languages',
+      selectedLanguage: 'Korean',
+      variants: [
+        {
+          variantId: 2001,
+          languageName: 'Korean',
+          videoSource: 'client/src/assets/KoreanExample.mp4'
+        },
+        {
+          variantId: 2002,
+          languageName: 'German',
+          videoSource: '../assets/GermanExample.mp4' // Corrected video source
+        },
+        {
+          variantId: 2003,
+          languageName: 'Russian',
+          videoSource: '../assets/RussianExample.mp4' // Corrected video source
+        },
+        {
+          variantId: 2004,
+          languageName: 'Swedish',
+          videoSource: '../assets/SwedishExample.mp4' // Corrected video source
+        }
+      ]
+    }
+  },
+  methods: {
+    reveal() {
+      const reveals = document.querySelectorAll('.reveal')
 
-  for (let i = 0; i < reveals.length; i++) {
-    const windowHeight = window.innerHeight
-    const elementTop = reveals[i].getBoundingClientRect().top
-    const elementVisible = 150
+      for (let i = 0; i < reveals.length; i++) {
+        const windowHeight = window.innerHeight
+        const elementTop = reveals[i].getBoundingClientRect().top
+        const elementVisible = 150
 
-    if (elementTop < windowHeight - elementVisible) {
-      reveals[i].classList.add('active')
-    } else {
-      reveals[i].classList.remove('active')
+        if (elementTop < windowHeight - elementVisible) {
+          reveals[i].classList.add('active')
+        } else {
+          reveals[i].classList.remove('active')
+        }
+      }
+    },
+    selectLanguage(languageName) {
+      this.selectedLanguage = languageName
+    }
+  },
+  mounted() {
+    window.addEventListener('scroll', this.reveal)
+  },
+  computed: {
+    getVideoSource() {
+      const selectedVariant = this.variants.find((variant) => variant.languageName === this.selectedLanguage)
+      return selectedVariant ? selectedVariant.videoSource : ''
     }
   }
 }
-
-window.addEventListener('scroll', reveal)
-
 </script>
 
 <style>
@@ -57,12 +96,12 @@ section{
   align-items: center;
 }
 section:nth-child(1) {
-  background-image: url('../source/Without-Languages.png');
+  background-image: url('../assets/Without-Languages.png');
   background-size: cover;
   min-height: 100vh;
 }
 section:nth-child(2) {
-  background-image: url('../source/starsBackground.svg');
+  background-image: url('../assets/starsBackground.svg');
   background-size: cover;
 }
 
