@@ -7,8 +7,9 @@
             <div class="main">
                 <form>
                     <label>My Page</label>
-                    <input type="text" placeholder="My E-Mail" />
-                    <input type="password" v-model="password" placeholder="My Password" />
+                    <!-- Email is set as uneditable since it does not make sense to change the email of an account -->
+                    <input type="text" placeholder="My E-Mail" v-model="email" readonly/>
+                    <input type="password" v-model="password" placeholder="New Password" />
                     <div class="theme">
                         Preffered Theme
                         <b-dropdown id="dropdown-right" right text="Select" variant="primary" class="m-2">
@@ -52,14 +53,9 @@ export default {
     },
     deleteAccount: async function () {
       try {
-        const response = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/delete-account`, {
-          email: this.email,
-          password: this.password
-        })
-        if (response.data.token) {
-          console.log('Deleted Account')
-          axios.defaults.headers.common = { Authorization: `Bearer ${response.data.token}` }
-          this.$router.push({ name: 'home' })
+        const response = await this.$httpClient.delete('/v1/users/:id')
+        if (response.status === 200) {
+          console.log('Your account is now deleted')
         }
       } catch (err) {
         this.alert = err.response.data.message
