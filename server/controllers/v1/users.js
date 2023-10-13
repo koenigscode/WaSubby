@@ -206,7 +206,7 @@ router.delete("/",
         if(!req.user.admin)
             return res.status(403).send();
 
-        const user = await user.deleteAllUsers(req.params.id).select(
+        const user = await User.deleteAllUsers(req.params.id).select(
             "-uploadedMedias -__v",
         );
         console.log(user);
@@ -234,7 +234,7 @@ router.delete("/",
         if(!req.user.admin)
             return res.status(403).send();
 
-        const user = await user.deleteAllUsers(req.params.id).select(
+        const user = await User.deleteAllUsers(req.params.id).select(
             "-uploadedMedias -__v",
         );
         console.log(user);

@@ -5,6 +5,7 @@ import SignUp from './views/SignUp.vue'
 import Login from './views/Login.vue'
 import MyPage from './views/MyPage.vue'
 import MediaPlayer from './views/MediaPlayer.vue'
+import AdminPage from './views/AdminPage.vue'
 
 Vue.use(Router)
 
@@ -53,6 +54,11 @@ export default new Router({
         localStorage.removeItem('Authorization')
         next('/login')
       }
+    },
+    {
+      path: '/admin',
+      name: 'Admin',
+      component: AdminPage
     }
   ]
 })

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <top-header :isLightTheme="isLightTheme" @toggle-theme="toggleTheme" />
+      <top-header />
     </div>
     <!-- Render the content of the current page view -->
     <router-view/>
@@ -10,22 +10,6 @@
 <script>
 import TopHeader from './components/TopHeader.vue'
 export default {
-  mounted() {
-    const initUserTheme = this.getMediaPreference()
-    this.isLightTheme = initUserTheme === 'light-theme'
-  },
-
-  data() {
-    return {
-      isLightTheme: true // Set the initial theme to light mode
-    }
-  },
-  methods: {
-    toggleTheme() {
-      this.isLightTheme = !this.isLightTheme
-      // Save the theme preference in localStorage or Vuex store if needed
-    }
-  },
   components: {
     'top-header': TopHeader
   }
@@ -42,11 +26,13 @@ export default {
 :root {
   --account-dark: #000428;
   --account-light: #004e92;
+  --button: #1870d5;
 
 }
 :root.light-theme {
   --account-dark: #ff855b;
   --account-light: #ffb150;
+  --button: #ffb347;
 }
 
 </style>
