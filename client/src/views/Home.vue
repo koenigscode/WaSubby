@@ -8,7 +8,7 @@
     <section class="example">
       <div class="reveal">
         <div class="col">
-          <video width="600px" height="1080px" controls="controls" class="corner" :src="getVideoSource"></video>
+          <video controls="controls" class="corner" :src="getVideoSource" width="400" height="300"></video>
         </div>
       </div>
       <div class="col">
@@ -36,22 +36,22 @@ export default {
         {
           variantId: 2001,
           languageName: 'Korean',
-          videoSource: 'client/src/assets/KoreanExample.mp4'
+          videoSource: require('../assets/KoreanExample.mp4')
         },
         {
           variantId: 2002,
-          languageName: 'German',
-          videoSource: '../assets/GermanExample.mp4' // Corrected video source
+          languageName: 'German'
+          // videoSource: require('../assets/GermanExample.mp4') // Corrected video source
         },
         {
           variantId: 2003,
-          languageName: 'Russian',
-          videoSource: '../assets/RussianExample.mp4' // Corrected video source
+          languageName: 'Russian'
+          // videoSource: require('../assets/RussianExample.mp4') // Corrected video source
         },
         {
           variantId: 2004,
-          languageName: 'Swedish',
-          videoSource: '../assets/SwedishExample.mp4' // Corrected video source
+          languageName: 'Swedish'
+          // videoSource: require('../assets/SwedishExample.mp4') // Corrected video source
         }
       ]
     }
@@ -103,6 +103,7 @@ section:nth-child(1) {
 section:nth-child(2) {
   background-image: url('../assets/starsBackground.svg');
   background-size: cover;
+  min-height: 100vh;
 }
 .col h3{
   font-weight: bold;
@@ -112,6 +113,13 @@ section:nth-child(2) {
   transform: translateY(150px);
   opacity: 0;
   transition: 1s all ease;
+  max-width: 100%;
+  max-height: 100vh;
+}
+
+.reveal img {
+  max-width: 100%;
+  height: auto;
 }
 
 .reveal.active{
@@ -125,12 +133,46 @@ section:nth-child(2) {
   display: flex;
 }
 
+.example .col {
+  max-width: 100%;
+}
+
+.example video {
+  max-width: 100%;
+  height: auto;
+}
+
 .buttons{
   display: flex;
   justify-content: space-between;
   max-width: 400px;
   margin: 0 auto;
   padding: 20px 20px;
+}
+
+.buttons b-button {
+  width: 23%; /* Adjust the percentage as needed */
+  /* Add any additional styling you require */
+}
+
+/* Media query for screens with a maximum width of 768px */
+@media screen and (max-width: 768px) {
+
+  /* Below is the change for the text part */
+  .col h3{
+  font-weight: bold;
+  font-size: medium;
+}
+  /* Below are the layout changes for the buttons */
+  .buttons {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .buttons b-button {
+    width: 100%;
+    margin: 8px 0;
+  }
 }
 
 </style>
