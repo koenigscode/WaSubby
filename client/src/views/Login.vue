@@ -105,4 +105,36 @@ label {
     cursor: pointer;
     transition: 0.5s ease-in-out
 }
+
+@media screen and (max-width: 768px) {
+  .main input {
+    width: 40%;
+    height: 40px;
+    background: #fbfaf5;
+    justify-content: center;
+    display: flex;
+    margin: 20px auto;
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+}
+
+.main button {
+    width: 25%;
+    height: 40px;
+    margin: 10px auto;
+    justify-content: center;
+    display: block;
+    color: #fff;
+    background: var(--button);
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    transition: 0.5s;
+    cursor: pointer;
+}
+}
 </style>

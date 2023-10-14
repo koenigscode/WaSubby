@@ -151,8 +151,7 @@ section:nth-child(2) {
 }
 
 .buttons b-button {
-  width: 23%; /* Adjust the percentage as needed */
-  /* Add any additional styling you require */
+  width: 23%;
 }
 
 /* Media query for screens with a maximum width of 768px */
