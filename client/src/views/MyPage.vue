@@ -11,7 +11,7 @@
                     <label>My Page</label>
                     <!-- Email is set as uneditable since it does not make sense to change the email of an account -->
                     <input type="text" placeholder="My E-Mail" v-model="email" readonly/>
-                    <input type="password" v-model="password" placeholder="New Password" />
+                    <input type="password" v-model="newPassword" placeholder="New Password" />
                     <div class="theme">
                         Preffered Theme
                         <b-dropdown id="dropdown-right" right text="Select" variant="primary" class="m-2">
@@ -21,11 +21,13 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-6">
+                          <form @submit.prevent="updateAccount()">
                             <button type="submit">Save</button>
+                          </form>
                         </div>
                         <form @submit.prevent="deleteAccount()" class="col-6">
                             <button v-b-modal.modal-1 type="submit">Delete</button>
-                            <b-modal id="modal-1" title="🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭😭">
+                            <b-modal id="modal-1" :title="isMobile ? '🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭' : modalTitle">
                               <p class="my-4">
                                 It's sad to say goodbye but we hope you had a nice experience using our service.
                                 Our team would like to thank you for using our service and hope to see you again!!
@@ -44,7 +46,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: 'MyPage',
@@ -53,8 +54,10 @@ export default {
       alert: null,
       email: '',
       password: '',
+      newPassword: '',
       selectedTheme: 'light',
-      userId: localStorage.getItem('UserId')
+      userId: localStorage.getItem('UserId'),
+      modalTitle: '🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭😭'
     }
   },
   methods: {
@@ -79,12 +82,18 @@ export default {
     },
     updateAccount: async function () {
       try {
-        const res = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users/change-info`, {
-          email: this.email,
-          password: this.password
+        const res = await this.$httpClient.patch(`/v1/users/${this.userId}`, {
+          password: this.newPassword // Use the new password
         })
         if (res.status === 200) {
-          this.$router.push({ name: 'Login' })
+          this.$bvToast.toast('Your password is now changed', {
+            title: 'Password Change Successful',
+            autoHideDelay: 5000,
+            variant: 'success',
+            appendToast: true
+          })
+          this.alert = null
+          this.newPassword = '' // Clear the new password field
         }
       } catch (err) {
         this.alert = err.response.data.message
@@ -94,6 +103,9 @@ export default {
   computed: {
     themeClass() {
       return this.selectedTheme === 'dark' ? 'dark-theme' : 'light-theme'
+    },
+    isMobile() {
+      return window.innerWidth <= 768
     }
   }
 }

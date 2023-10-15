@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   name: 'SignUp',
@@ -30,7 +29,7 @@ export default {
   methods: {
     signup: async function () {
       try {
-        const res = await axios.post(`${process.env.VUE_APP_API_ENDPOINT}/users`, {
+        const res = await this.$httpClient.post('/v1/users', {
           email: this.email,
           password: this.password
         })

@@ -138,6 +138,15 @@ label {
 }
 
 @media screen and (max-width: 768px) {
+  .admin-main {
+    width: 80%;
+    height: 400px;
+    overflow: hidden;
+    margin-right: 10px;
+    border-radius: 10px;
+    box-shadow: 5px 20px 50px #00072D;
+    background-image: url("../assets/nuclear.jpg");
+}
   .admin-main button {
     width: 75%;
     height: 40px;
