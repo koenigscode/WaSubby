@@ -181,7 +181,7 @@ router.delete("/:id",
     async (req, res) => {
 
         const user = await Users.findById(req.params.id);
-        user.deleteOne();
+        await user.deleteOne();
 
         if (user === null) {
             res.status(404);
@@ -202,23 +202,13 @@ router.delete("/:id",
 // Probably needs to be fixed!!
 router.delete("/", 
     passport.authenticate("jwt", { session: false }),
+    assertAdmin,
     async (req, res) => {
-        if(!req.user.admin)
-            return res.status(403).send();
+        const users = await Users.find().select("-__v -password");
+        await Users.deleteMany();
 
-        const user = await User.deleteAllUsers(req.params.id).select(
-            "-uploadedMedias -__v",
-        );
-        console.log(user);
-
-        if (user === null) {
-            res.status(404);
-            res.send({ message: "There are no users" });
-        }
-
-        res.send(user);
+        return res.send(users);
     });
-
 
     
 

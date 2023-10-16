@@ -147,8 +147,50 @@ router.post("/", async (req, res) => {
  * @return {object} 404 - mediaId not found
  * @return {object} 401 - Not authorized
  */
-router.post("/:id/subtitles", function (req, res) {
-    res.status(501).send("TODO:");
+router.post("/:fileHash/subtitles",  async function (req, res) {
+    if (!req.files || !req.files.subtitles) {
+        return res.status(400).json({message: "No file uploaded"});
+    }
+    
+    const media = await Media.findOne({fileHash: req.params.fileHash});
+    if (media === null) {
+        res.status(404);
+        return res.send({ message: "Media with hash " + req.params.id + " does not exist" });
+    }
+
+    const language = await Language.findOne({code: req.body.languageCode});
+    if (language === null) {
+        res.status(404);
+        return res.send({ message: "Language with code " + req.body.languageCode + " does not exist" });
+    }
+
+    const subtitles = req.files.subtitles;
+
+    if (subtitles.mimetype !== "text/vtt") {
+        return res.status(400).json({message: "File not in vtt format"});
+    }
+
+    const filePath = path.join(
+        "__dirname",
+        "..",
+        "/data",
+        `/${req.params.fileHash}`,
+        `/${req.body.languageName}.vtt`
+    );
+    console.log(path.resolve(filePath));
+
+    subtitles.mv(filePath, async (err) => {
+        if (err) {
+            return res.status(500).json({message: err});
+        }
+
+        const newSubtitles = new Subtitle({filePath: filePath, language: language._id});
+        await newSubtitles.save();
+        await media.subtitles.push(newSubtitles);
+        await media.save();
+        const result = await Subtitle.findById(newSubtitles._id).populate("language").select("-__v");
+        return res.status(201).send(result.toObject());
+    });
 });
 
 /**

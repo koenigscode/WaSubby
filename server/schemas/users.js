@@ -27,12 +27,6 @@ const userSchema = new Schema({
         },
     ],
 });
-userSchema.pre("save", async function (next) {
-    const hash = await bcrypt.hash(this.password, 10);
-
-    this.password = hash;
-    next();
-});
 
 userSchema.pre("deleteOne", { document: true }, async function (next) {
     // can't just use Media.deleteMany, because we need a document method call
