@@ -38,6 +38,10 @@ Vue.config.errorHandler = function (err, vm, info) {
     errorMessage = err.response.data.message
   }
 
+  if (err.response.status === 403) {
+    errorMessage = 'You do not have permission to perform this action.'
+  }
+
   if (err.code === 'ERR_NETWORK') {
     errorMessage = "It looks like the backend server isn't responding."
   }

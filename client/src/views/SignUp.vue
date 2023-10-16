@@ -33,7 +33,7 @@ export default {
           email: this.email,
           password: this.password
         })
-        if (res.status === 200) {
+        if (res.status === 201) {
           this.$bvToast.toast('You can login now.', {
             title: 'Sign-up successful',
             autoHideDelay: 5000,

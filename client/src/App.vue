@@ -12,9 +12,6 @@ import TopHeader from './components/TopHeader.vue'
 export default {
   components: {
     'top-header': TopHeader
-  },
-  mounted: function () {
-    console.log(this)
   }
 }
 </script>
