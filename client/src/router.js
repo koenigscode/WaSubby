@@ -45,6 +45,7 @@ export default new Router({
     {
       path: '/my-page',
       name: 'MyPage',
+      beforeEnter: loginGuard,
       component: MyPage
     },
     {
@@ -58,6 +59,7 @@ export default new Router({
     {
       path: '/admin',
       name: 'Admin',
+      beforeEnter: loginGuard,
       component: AdminPage
     },
     {
