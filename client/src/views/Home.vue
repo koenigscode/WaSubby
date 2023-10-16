@@ -40,18 +40,18 @@ export default {
         },
         {
           variantId: 2002,
-          languageName: 'German'
-          // videoSource: require('../assets/GermanExample.mp4') // Corrected video source
+          languageName: 'German',
+          videoSource: require('../assets/NotRegistered.mp4') // Correct video source
         },
         {
           variantId: 2003,
-          languageName: 'Russian'
-          // videoSource: require('../assets/RussianExample.mp4') // Corrected video source
+          languageName: 'Russian',
+          videoSource: require('../assets/NotRegistered.mp4') // Correct video source
         },
         {
           variantId: 2004,
           languageName: 'Swedish',
-          videoSource: require('../assets/SwedishExample.mp4') // Corrected video source
+          videoSource: require('../assets/SwedishExample.mp4')
         }
       ]
     }
