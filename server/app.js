@@ -11,6 +11,9 @@ const subtitlesController = require("./controllers/v1/subtitles");
 const languagesController = require("./controllers/v1/languages");
 const expressJSDocSwagger = require("express-jsdoc-swagger");
 const passport = require("passport");
+// body-parser is used to parse form-data into req.body
+// this is used when JSON body is not possible. e.g. a file upload
+const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 const methodOverride = require("method-override");
 require("./passport.js"); // local passport config
@@ -74,6 +77,7 @@ mongoose
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // HTTP request logger
 app.use(morgan("dev"));
 // Enable cross-origin resource sharing for frontend must be registered before api
@@ -91,11 +95,6 @@ app.use("/v1/medias", passport.authenticate("jwt", { session: false }), mediasCo
 app.use("/v1/subtitles", passport.authenticate("jwt", { session: false }), subtitlesController);
 app.use("/v1/languages", languagesController);
 
-// Catch all non-error handler for api (i.e., 404 Not Found)
-app.use("/*", function (req, res) {
-    res.status(404).json({ message: "Not Found" });
-});
-
 // Configuration for serving frontend in production mode
 // Support Vuejs HTML 5 history mode
 app.use(history());
@@ -103,7 +102,8 @@ app.use(history());
 const root = path.normalize(__dirname + "/..");
 const client = path.join(root, "client", "dist");
 app.use(express.static(client));
-app.use("/static", express.static("data"));
+console.log(path.resolve(path.join(__dirname, "/data")));
+app.use("/static", express.static(path.join(__dirname, "/data")));
 
 // Error handler (i.e., when exception is thrown) must be registered last
 const env = app.get("env");

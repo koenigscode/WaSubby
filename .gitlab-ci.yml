@@ -1,4 +1,4 @@
-image: node:14-alpine
+image: $CI_REGISTRY/courses/dit342/2023/group-22-web
 
 # Cache modules in between jobs per-branch
 cache:
@@ -16,22 +16,32 @@ build:
   tags:
     - docker
   script:
+    - apt install g++
     - cd server
-    - npm install --unsafe-perm
+    - rm -rf node_modules
+    - npm install
+    - npm rebuild bcrypt
 
 test:
   stage: test
   tags:
     - docker
+  variables:
+    MONGODB_URI: "mongodb://mongo:27017/serverTestDB"
   services:
     - name: mvertes/alpine-mongo:latest
       alias: mongo
-  variables:
-    MONGODB_URI: "mongodb://mongo:27017/serverTestDB"
   script:
+    - apt install -y procps
     - cd server
     - npm run ci-test
-
+    # this echo, and the 'ls > /dev/null' (in package.json, the newman script)
+    # are needed, otherwise the pipeline gets stucks, even though the tests pass
+    # we tried several things, and spent hours on this, but in the end only
+    # this worked, and with the submission coming closer, we'll keep it at this.
+    # Surprisingly, chaining it with '&& exit 0' instead of 'ls' doesn't work
+    # either, and the pipeline gets stuck again.
+    - echo $?
 deploy:
   stage: deploy
   tags:

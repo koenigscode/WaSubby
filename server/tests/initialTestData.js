@@ -22,12 +22,13 @@ async function insertData() {
 
     await new User({
         email: "admin@admin.com",
-        password: "admin",
+        password: "$2b$10$hMYL8gjfZhRV/m0m5kJEA.ooIrkc11p7VKzE3sUanBaR6zdZeVwYW",
         admin: true,
         theme: "dark",
     }).save();
     console.log("inserted test user");
     await mongoose.disconnect();
+    process.exit(0);
 }
 
 (async function () {

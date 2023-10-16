@@ -47,7 +47,7 @@ router.get("/:id",
                 method: "POST"
             }
         };
-        res.send({ ...user.toObject(), _links });
+        return res.send({ ...user.toObject(), _links });
     });
 
 module.exports = router;

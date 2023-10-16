@@ -79,21 +79,8 @@ export default {
     background-image: url("../assets/nuclear.jpg");
 }
 
-.admin-main input {
-    width: 40%;
-    height: 40px;
-    background: #fbfaf5;
-    justify-content: center;
-    display: flex;
-    margin: 20px auto;
-    padding: 10px;
-    border: none;
-    outline: none;
-    border-radius: 5px;
-}
-
 .admin-main button {
-    width: 30%;
+    width: 50%;
     height: 40px;
     margin: 10px auto;
     display: block;
@@ -148,6 +135,44 @@ label {
 
 .terminated-background {
   background-image: url('../assets/nuclearBg.jpg');
+}
+
+@media screen and (max-width: 768px) {
+  .admin-main {
+    width: 80%;
+    height: 400px;
+    overflow: hidden;
+    margin-right: 10px;
+    border-radius: 10px;
+    box-shadow: 5px 20px 50px #00072D;
+    background-image: url("../assets/nuclear.jpg");
+}
+  .admin-main button {
+    width: 75%;
+    height: 40px;
+    margin: 10px auto;
+    display: block;
+    color: #fff;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-top: 20px;
+    border-radius: 5px;
+    transition: 0.5s;
+    cursor: pointer;
+    background: var(--button);
+}
+
+.terminate-button {
+  width: auto;
+    background: yellow;
+    color: black;
+    font-size: 0.5em;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
 }
 
 </style>

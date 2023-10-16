@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 const dataDir = path.join(path.resolve(__dirname, ".."), "data");
+const whisperCommand = process.env.WHISPER_COMMAND || "whisper-ctranslate2";
 
 /**
  * This class is responsible for transcribing and translating a locally saved media file
@@ -31,7 +32,6 @@ class WhisperJob {
    *
    */
     async execute() {
-        const whisperCommand = process.env.WHISPER_COMMAND || "whisper-ctranslate2";
 
         const transcriptionJob = await spawn(
             whisperCommand,
@@ -40,11 +40,12 @@ class WhisperJob {
 
         const result = []; 
 
-        const regexPattern = /Detected language '([^']+)'/gm;
-        const match = regexPattern.exec(transcriptionJob.toString());
+        const regexPattern = /Detected language (\w+)/;
+        const match = regexPattern.exec(transcriptionJob.toString().replace(/[^\w\s]/gi, ""));
 
         if (match) {
             this.language = match[1];
+            console.log("recognized language: " + this.language);
             this.languageRecognizedCallback(this.language);
 
             // move and rename file to [language].vtt
@@ -108,15 +109,12 @@ class WhisperJob {
    */
     _getWhisperArgs(translate) {
         const whisperModel = process.env.WHISPER_MODEL || "large-v2";
-        const whisperDevice = process.env.WHISPER_DEVICE || "auto";
+        const whisperDevice = process.env.WHISPER_DEVICE || "cpu";
 
         console.log(`Using whisper model ${whisperModel}, device ${whisperDevice}`);
+        console.log("Using whisper command " + process.env.WHISPER_COMMAND);
         
-        let args = [
-            "--output_format",
-            "vtt",
-            "--model",
-            whisperModel,
+        const ctranslate2Options = [ 
             "--vad_filter",
             "True",
             "--condition_on_previous_text",
@@ -126,13 +124,24 @@ class WhisperJob {
             "--max_line_width",
             "35",
             "--max_line_count",
-            "1",
+            "1",];
+
+        let args = [
+            "--output_format",
+            "vtt",
+            "--model",
+            whisperModel,
             "--device",
             whisperDevice,
             "--output_dir",
             path.resolve(path.join(dataDir, this.mediaId, "tmp")),
             this.filePath,
         ];
+
+        if(whisperCommand === "whisper-ctranslate2"){
+            args = [...ctranslate2Options, ...args, ];
+        }
+
         if (translate === true) {
             args = ["--task", "translate", ...args];
         }
