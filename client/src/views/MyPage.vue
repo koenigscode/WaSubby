@@ -190,4 +190,18 @@ label {
   max-width: 100%;
   height: auto;
 }
+/* Media query for screens with a maximum width of 768px */
+@media screen and (max-width: 768px) {
+  .main-mypage {
+    width: 48%;
+    height: 500px;
+    overflow: hidden;
+    margin-right: 10px;
+    border-radius: 10px;
+    box-shadow: 5px 20px 50px #00072D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+}
 </style>
