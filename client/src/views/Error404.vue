@@ -1,13 +1,17 @@
 <template>
     <div>
         <div class="error">
-        <img src="../assets/trapcard.jpg" width="700" height="600"/>
+        <img id="img-404" src="../assets/trapcard.jpg">
         <h1>ERROR 404</h1>
         <h2>Page Not Found</h2>
         </div>
     </div>
 </template>
 <style scoped>
+#img-404 {
+    max-width: 80vw;
+    width: 100vw;
+}
 .error h1 {
     font-weight:bolder
 }
