@@ -184,7 +184,7 @@ router.post("/:fileHash/subtitles",  async function (req, res) {
             return res.status(500).json({message: err});
         }
 
-        const newSubtitles = new Subtitle({filePath: filePath, language: language._id});
+        const newSubtitles = new Subtitle({filePath: `/static/${req.params.fileHash}/${req.body.languageName}.vtt`, language: language._id});
         await newSubtitles.save();
         await media.subtitles.push(newSubtitles);
         await media.save();
