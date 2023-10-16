@@ -3,6 +3,7 @@ const path = require("path");
 const fs = require("fs");
 
 const dataDir = path.join(path.resolve(__dirname, ".."), "data");
+const whisperCommand = process.env.WHISPER_COMMAND || "whisper-ctranslate2";
 
 /**
  * This class is responsible for transcribing and translating a locally saved media file
@@ -31,7 +32,6 @@ class WhisperJob {
    *
    */
     async execute() {
-        const whisperCommand = process.env.WHISPER_COMMAND || "whisper-ctranslate2";
 
         const transcriptionJob = await spawn(
             whisperCommand,
@@ -112,6 +112,7 @@ class WhisperJob {
         const whisperDevice = process.env.WHISPER_DEVICE || "cpu";
 
         console.log(`Using whisper model ${whisperModel}, device ${whisperDevice}`);
+        console.log("Using whisper command " + process.env.WHISPER_COMMAND);
         
         const ctranslate2Options = [ 
             "--vad_filter",
@@ -137,7 +138,7 @@ class WhisperJob {
             this.filePath,
         ];
 
-        if(process.env.WHISPER_COMMAND === "whisper-ctranslate2"){
+        if(whisperCommand === "whisper-ctranslate2"){
             args = [...ctranslate2Options, ...args, ];
         }
 

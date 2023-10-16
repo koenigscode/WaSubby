@@ -1,9 +1,9 @@
 <template>
     <div class="background">
 
-    <div class="mt-5">
-<h1 class="mb-3">Play media</h1>
-        <p v-if="languages.length > 0" class="mb-5"> Supported languages are {{ languages }}</p>
+        <div>
+            <h1 class="mb-3">Play media</h1>
+            <p v-if="languages.length > 0" class="mb-5"> Supported languages are {{ languages }}</p>
             <b-form v-if="!media" @submit="submitFile">
                 <input type="file" ref="file" />
                 <div class="mt-3"> <b-button @click="submitFile">Upload!</b-button></div>
@@ -16,10 +16,11 @@
             </div>
 
             <!-- This has to be a video tag, otherwise we can't display subtitles -->
-            <video id="audio" v-show="media && mediaType === 'audio' && !processing" controls ref="audioplayer" crossorigin="anonymous" preload="metadata">
+            <video id="audio" v-show="media && mediaType === 'audio' && !processing" controls ref="audioplayer"
+                crossorigin="anonymous" preload="metadata">
                 <track kind="captions" v-for="subtitle in subtitles" :key="subtitle.id" :src="subtitle.path"
                     :srclang="subtitle.language.code" :label="subtitle.language.name">
-                </video>
+            </video>
 
             <video id="video" v-show="media && mediaType === 'video' && !processing" controls ref="videoplayer"
                 height="600px" crossorigin="anonymous" preload="metadata">
@@ -123,7 +124,15 @@ export default {
 </script>
 <style scoped>
 .background {
-      background: var(--account-light);
-      color: var(--letter)
+    /* padding-top: 6rem; */
+    margin: 0;
+    background: var(--account-light);
+    color: var(--letter);
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 </style>
