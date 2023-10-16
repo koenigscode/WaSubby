@@ -4,6 +4,7 @@ const Users = require("./schemas/users");
 const JWTstrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 const secret = process.env.JWT_SECRET || "TESTING";
+const bcrypt = require("bcrypt");
 
 passport.use("signup", new LocalStrategy({
     usernameField: "email",
@@ -11,11 +12,12 @@ passport.use("signup", new LocalStrategy({
 }, 
 async (email, password, next) => {
     try {
-        let user = await Users.create({ email, password });
+        const hash = await bcrypt.hash(password, 10);
+        let user = await Users.create({ email, password: hash });
         user = await Users.findById(user._id).select("-__v -password").lean();
         return next(null, user);
     } catch (error) {
-        let err = Error();
+        let err = Error(error);
 
         if(error.code === 11000) {
             err = Error("User with this E-Mail already exists");

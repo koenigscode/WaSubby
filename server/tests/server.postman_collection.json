@@ -1,75 +1,993 @@
 {
-	"info": {
-		"_postman_id": "f7ee95b5-9cb9-442f-a6a9-42de46138872",
-		"name": "server",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "GET /api",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "b58d92ec-5214-450c-adb0-28e068aa71b9",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{host}}/api",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"api"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"id": "05864cff-5cba-4070-bac3-a59328954ebf",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"id": "e9c319be-3306-4fc5-ba34-fcf64391213a",
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"id": "cd185905-a834-4211-8030-583d17702534",
-			"key": "host",
-			"value": "http://localhost:3000",
-			"type": "string"
-		}
-	],
-	"protocolProfileBehavior": {}
+  "info": {
+    "_postman_id": "d7d8704e-f58b-45da-a2e1-58aac88e2131",
+    "name": "server",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9646785",
+    "_collection_link": "https://galactic-astronaut-133044.postman.co/workspace/uni-web-dev~ef83e6f9-0f29-4b2d-bda5-a66a0690aa17/collection/27191917-d7d8704e-f58b-45da-a2e1-58aac88e2131?action=share&source=collection_link&creator=9646785"
+  },
+  "item": [
+    {
+      "name": "Sign Up User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "postman.setEnvironmentVariable(\"userID\", jsonData._id);\r",
+              "\r",
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 6000ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(6000);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"user@user.com\",\n    \"password\": \"user\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/users",
+          "host": ["{{host}}"],
+          "path": ["v1", "users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "postman.setEnvironmentVariable(\"userID\", jsonData.user._id);\r",
+              "postman.setEnvironmentVariable(\"token\", jsonData.token);\r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 1000ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"user@user.com\",\n    \"password\": \"user\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/users/login",
+          "host": ["{{host}}"],
+          "path": ["v1", "users", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Patch Preferred Theme",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 1000ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+              "});\r",
+              "pm.test(\"Response has expected JSON structure\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "    pm.response.to.have.jsonBody({\r",
+              "        \"_id\": \"6527ca20052f67366289ef06\",\r",
+              "        \"email\": \"user@user.com\",\r",
+              "        \"preferredTheme\": \"light\"\r",
+              "    });\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"theme\": \"light\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/users/{{userID}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "users", "{{userID}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login Admin",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "postman.setEnvironmentVariable(\"userID\", jsonData.user._id);\r",
+              "postman.setEnvironmentVariable(\"token\", jsonData.token);\r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"admin\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/users/login",
+          "host": ["{{host}}"],
+          "path": ["v1", "users", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post media",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "postman.setEnvironmentVariable(\"mediaHash\", jsonData.fileHash);\r",
+              "\r",
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "media",
+              "type": "file",
+              "src": "backend-test-2.mp4"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{host}}/v1/medias",
+          "host": ["{{host}}"],
+          "path": ["v1", "medias"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Media",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonData = JSON.parse(responseBody);",
+              "postman.setEnvironmentVariable(\"subtitleHash\", jsonData.subtitles[0]);",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response time is less than 500ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);",
+              "});",
+              "",
+              "// repeat until processing is finished",
+              "if(jsonData.processing) {",
+              "    setTimeout(function() {}, 3000);",
+              "    postman.setNextRequest(request.name);",
+              "}",
+              "console.log(\"media processing: \" + jsonData.processing)"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/medias/{{mediaHash}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "medias", "{{mediaHash}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Subtitles of Media",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/medias/{{mediaHash}}/subtitles",
+          "host": ["{{host}}"],
+          "path": ["v1", "medias", "{{mediaHash}}", "subtitles"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/users/{{userID}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "users", "{{userID}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/users",
+          "host": ["{{host}}"],
+          "path": ["v1", "users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Languages",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});\r",
+              "\r",
+              "var jsonData = JSON.parse(responseBody);\r",
+              "postman.setEnvironmentVariable(\"languageCode\", jsonData[0].code);\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/languages",
+          "host": ["{{host}}"],
+          "path": ["v1", "languages"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Language by language code",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});\r",
+              "\r",
+              "var jsonData = JSON.parse(responseBody);\r",
+              "postman.setEnvironmentVariable(\"languageId\", jsonData._id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/languages/{{languageCode}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "languages", "{{languageCode}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Filter and sort languages",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var _ = require(\"lodash\")\r",
+              "var url = pm.request.url;\r",
+              "var jsonResponse = pm.response.json;\r",
+              "const queryParams = pm.request.url.query.toObject();\r",
+              "\r",
+              "// Log the query parameters\r",
+              "console.log(queryParams);\r",
+              "const sortDirection = pm.request.url.query.get('sort');\r",
+              "const filterParam = pm.request.url.query.get('filter');\r",
+              "\r",
+              "// Log the specific query parameter value\r",
+              "console.log(sortDirection);\r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});\r",
+              "\r",
+              " responseArray = JSON.parse(responseBody);\r",
+              "\r",
+              "if (sortDirection===\"asc\"){\r",
+              "    pm.test('Language names are in ascending order', () => {\r",
+              "        // Use the responseArray here\r",
+              "        var expectedSortedOrder = _.orderBy(responseArray, ['name'],['asc']);\r",
+              "\r",
+              "        pm.expect(responseArray).to.eql(expectedSortedOrder);\r",
+              "    });\r",
+              "} else if (sortDirection===\"desc\"){\r",
+              "    pm.test('Language names are in descending order', () => {\r",
+              "        // Use the responseArray here\r",
+              "        var expectedSortedOrder = _.orderBy(responseArray, ['name'],['desc']);\r",
+              "\r",
+              "        pm.expect(responseArray).to.eql(expectedSortedOrder);\r",
+              "    });\r",
+              "}\r",
+              "\r",
+              "if (filterParam && responseArray.length>0) {\r",
+              "    pm.test(\"The name of the language contains the filter parameter string\", () => {\r",
+              "        _.each(jsonResponse, (item) => {\r",
+              "            const name = item.name.toLowerCase(); // Convert the name to lowercase\r",
+              "            const filter = filterParam.toLowerCase(); // Convert the filter parameter to lowercase\r",
+              "            pm.expect(name).to.include(filter);\r",
+              "        });\r",
+              "    });\r",
+              "} else if (filterParam){\r",
+              "    pm.test(\"Languages array is empty\", function () {\r",
+              "        pm.expect(true).to.be.true;\r",
+              "    });\r",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/languages?sort={{sortDirection}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "languages"],
+          "query": [
+            {
+              "key": "sort",
+              "value": "{{sortDirection}}"
+            },
+            {
+              "key": "filter",
+              "value": "{{languageCode}}",
+              "disabled": true
+            },
+            {
+              "key": "page",
+              "value": "{{pageAmount}}",
+              "disabled": true
+            },
+            {
+              "key": "limit",
+              "value": "{{limit}}",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Patch subtitles",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"language\": \"{{languageId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/subtitles/{{subtitleHash}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "subtitles", "{{subtitleHash}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete all subtitles",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/subtitles",
+          "host": ["{{host}}"],
+          "path": ["v1", "subtitles"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Post subtitles for media",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "subtitles",
+              "type": "file",
+              "src": "English.vtt"
+            },
+            {
+              "key": "languageCode",
+              "value": "en",
+              "type": "text"
+            },
+            {
+              "key": "languageName",
+              "value": "English",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{host}}/v1/medias/{{mediaHash}}/subtitles",
+          "host": ["{{host}}"],
+          "path": ["v1", "medias", "{{mediaHash}}", "subtitles"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update language name",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response has expected JSON structure\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "    pm.response.to.have.jsonBody({\r",
+              "        \"code\": \"en\",\r",
+              "        \"name\": \"English\",\r",
+              "    });\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"American English\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/languages/{{languageCode}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "languages", "{{languageCode}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete media by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response has expected JSON structure\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "    pm.response.to.have.jsonBody({\r",
+              "        \"_id\": \"1\",\r",
+              "        \"fileHash\": \"value\"\r",
+              "    });\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/medias/{{mediaHash}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "medias", "{{mediaHash}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Sign Up User Copy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "postman.setEnvironmentVariable(\"userID\", jsonData._id);\r",
+              "\r",
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 6000ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(6000);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"test@user.com\",\n    \"password\": \"test\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/users",
+          "host": ["{{host}}"],
+          "path": ["v1", "users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login User Copy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "postman.setEnvironmentVariable(\"userID\", jsonData.user._id);\r",
+              "postman.setEnvironmentVariable(\"token\", jsonData.token);\r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 1000ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"test@user.com\",\n    \"password\": \"test\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/users/login",
+          "host": ["{{host}}"],
+          "path": ["v1", "users", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete User by id (Method override)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response has expected JSON structure\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "    pm.response.to.have.jsonBody({\r",
+              "        \"_id\": \"1\",\r",
+              "        \"email\": \"testemail@gmail.com\",\r",
+              "        \"preferredTheme\":\"dark\",\r",
+              "        \"passwordHash\": \"1234\"\r",
+              "    });\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-HTTP-Method-Override",
+            "value": "DELETE",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{host}}/v1/users/{{userID}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "users", "{{userID}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login Admin Copy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "postman.setEnvironmentVariable(\"userID\", jsonData.user._id);\r",
+              "postman.setEnvironmentVariable(\"token\", jsonData.token);\r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"admin\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/users/login",
+          "host": ["{{host}}"],
+          "path": ["v1", "users", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});\r",
+              "pm.test(\"Response has expected JSON structure\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "    pm.response.to.have.jsonBody({\r",
+              "        \"admin\": true,\r",
+              "        \"email\": \"testemail@gmail.com\",\r",
+              "        \"password\": \"1234\",\r",
+              "        \"theme\": \"light\",\r",
+              "    });\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"newadmin@newadmin.com\",\r\n    \"password\": \"newadmin\",\r\n    \"theme\": \"light\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{host}}/v1/users/{{userID}}",
+          "host": ["{{host}}"],
+          "path": ["v1", "users", "{{userID}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete all users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "pm.test(\"Response time is less than 500ms\", function () {\r",
+              "    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{host}}/v1/users",
+          "host": ["{{host}}"],
+          "path": ["v1", "users"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "value": "",
+      "type": "string",
+      "disabled": true
+    }
+  ]
 }

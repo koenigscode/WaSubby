@@ -42,6 +42,18 @@ Installs all project dependencies specified in [package.json](./package.json).
 npm install
 ```
 
+## Building and pushing the Docker image
+
+This is not required for running, only for the CI.
+
+This builds the image for amd64 architecture, which is the architecture of the
+GitLab runners, and pushed it into the GitLab registry.
+
+```bash
+docker buildx build --platform linux/amd64 -t registry.git.chalmers.se/courses/dit342/2023/group-22-web --no-cache .
+docker push registry.git.chalmers.se/courses/dit342/2023/group-22-web
+```
+
 ## Start the server with auto-restarts for development
 
 Automatically restarts your server if you save any changes to local files.

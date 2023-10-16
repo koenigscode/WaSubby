@@ -23,9 +23,9 @@ router.patch("/:id", assertAdmin, async (req, res) => {
 
         const oldSubtitles = subtitle.toObject();
         const newSubtitleData = req.body;
-        const id = req.params._id;
+        const id = req.params.id;
 
-        await Subtitle.updateOne({ ...oldSubtitles, ...newSubtitleData, id });
+        await Subtitle.updateOne({ ...oldSubtitles, ...newSubtitleData, _id: id });
         res.send(await Subtitle.findById(req.params.id));
     } catch (e) {
         console.log(e);
