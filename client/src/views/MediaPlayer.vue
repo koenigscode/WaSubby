@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="background">
 
     <div class="mt-5">
 <h1 class="mb-3">Play media</h1>
@@ -121,3 +121,9 @@ export default {
   }
 }
 </script>
+<style scoped>
+.background {
+      background: var(--account-light);
+      color: var(--letter)
+}
+</style>

@@ -50,8 +50,8 @@ export default {
         },
         {
           variantId: 2004,
-          languageName: 'Swedish'
-          // videoSource: require('../assets/SwedishExample.mp4') // Corrected video source
+          languageName: 'Swedish',
+          videoSource: require('../assets/SwedishExample.mp4') // Corrected video source
         }
       ]
     }
