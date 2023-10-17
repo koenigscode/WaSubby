@@ -108,15 +108,15 @@ section {
 }
 
 section:nth-child(1) {
-    background-image: url('../assets/Without-Languages.png');
-    background-size: cover;
-    min-height: 100vh;
+  background-image: var(--background-image-first);
+  background-size: cover;
+  min-height: 100vh;
 }
 
 section:nth-child(2) {
-    background-image: url('../assets/starsBackground.svg');
-    background-size: cover;
-    min-height: 100vh;
+  background-image: var(--background-image-second);
+  background-size: cover;
+  min-height: 100vh;
 }
 
 .col h3 {
