@@ -34,11 +34,11 @@ Vue.config.errorHandler = function (err, vm, info) {
   console.log(err)
   let errorMessage = 'An error has occurred, please try again later'
 
-  if (err.response.data.message) {
+  if (err.response?.data?.message) {
     errorMessage = err.response.data.message
   }
 
-  if (err.response.status === 403) {
+  if (err?.response?.status === 403) {
     errorMessage = 'You do not have permission to perform this action.'
   }
 

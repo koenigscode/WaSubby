@@ -25,21 +25,16 @@ export default {
   },
   methods: {
     login: async function () {
-      try {
-        const response = await this.$httpClient.post('/v1/users/login', {
-          email: this.email,
-          password: this.password
-        })
-        if (response.data.token) {
-          localStorage.setItem('Authorization', response.data.token)
-          localStorage.setItem('UserId', response.data.id)
-          this.email = response.data.email
-          this.$router.push({ name: 'home' })
-          this.$router.push({ name: 'MyPage' })
-        }
-      } catch (err) {
-        console.log(err)
-        this.alert = err.response.data.message
+      const response = await this.$httpClient.post('/v1/users/login', {
+        email: this.email,
+        password: this.password
+      })
+      if (response.data.token) {
+        localStorage.setItem('Authorization', response.data.token)
+        localStorage.setItem('UserId', response.data.id)
+        this.email = response.data.email
+        this.$router.push({ name: 'home' })
+        this.$router.push({ name: 'MyPage' })
       }
     }
   }
