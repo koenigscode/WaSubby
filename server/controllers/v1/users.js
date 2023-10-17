@@ -137,7 +137,6 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
     });
 
 
-// TODO: params
 /**
  * Put /v1/users/{id}
  * @summary Updates a user by id
@@ -148,7 +147,12 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
  */
 router.put("/:id",
     passport.authenticate("jwt", { session: false }),
-    assertAdmin,
+    function(req, res, next) {
+        console.log(req.user._id);
+        console.log(req.params.id);
+        next();
+    }, 
+    assertAdminOrSelf,
     async (req, res) => {
         try {
             const user = await Users.findById(req.params.id);
@@ -157,13 +161,14 @@ router.put("/:id",
                 res.send({ message: "User with ID " + req.params.id + " does not exist" });
             }
             const newUserData = req.body;
-            const id = req.params._id;
-            await Users.updateOne({ ...newUserData, id });
-            res.send(await Users.findById(req.params.id).select("email admin theme"));
+            const id = req.params.id;
+            console.log({...newUserData, id});
+            await Users.updateOne({_id: id}, { ...newUserData});
+            return res.send(await Users.findById(req.params.id).select("email admin theme"));
         } catch (e) {
             console.log(e);
             res.status(400);
-            res.send();
+            return res.send();
         }
     });
 

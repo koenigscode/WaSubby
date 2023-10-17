@@ -248,7 +248,6 @@ router.delete("/:fileHash", async (req, res) => {
  * @return {object} 403 - no permission
  */
 router.delete("/:mediaId/subtitles/:subtitlesId", async (req, res) => {
-    // TODO: only allow if user owns media or is admin
     const media = await Media.findById(req.params.mediaId);
     if (media==null){
         res.status(404);

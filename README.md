@@ -91,7 +91,7 @@ The system - called WaSubby - will **transcribe video and audio files** from aro
 
 ### Entity-Relationship (ER) Diagram
 
-![ER Diagram](./images/er_diagram.png)
+![ER Diagram](./images/WaSubbyER.jpg)
 
 ## Teaser (MS3)
 

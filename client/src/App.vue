@@ -30,7 +30,7 @@ export default {
   --letter: white;
 
 }
-:root.light-theme {
+:root.light {
   --account-dark: #ff855b;
   --account-light: #ffb150;
   --button: #ffb347;

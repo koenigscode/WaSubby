@@ -76,7 +76,6 @@ class WhisperJob {
             });
             result.push({language: "English", path: `/static/${this.mediaId}/English.vtt`,});
 
-            // TODO: delete source file
             return result;
         }
 
@@ -96,7 +95,6 @@ class WhisperJob {
             recursive: true,
             force: true,
         });
-        // TODO: delete source file
 
         result.push({language: "English", path: `/static/${this.mediaId}/English.vtt`,});
         return result;
