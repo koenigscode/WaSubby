@@ -14,7 +14,7 @@ router.get("/:id",
     passport.authenticate("jwt", { session: false }),
     assertAdminOrSelf,
     async (req, res) => {
-        const user = await Users.findOne({ id: req.params._id }).select(
+        const user = await Users.findOne({ id: req.params.id }).select(
             "-__v -password"
         );
         const _links = {
