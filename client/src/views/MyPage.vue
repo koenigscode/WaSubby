@@ -80,11 +80,12 @@ export default {
       showSaveButton: false,
       showDiscardButton: false,
       userId: localStorage.getItem('UserId'),
-      modalTitle: '🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭😭'
+      modalTitle: '🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭😭',
+      links: {}
     }
   },
-  mounted() {
-    this.getUser()
+  async mounted() {
+    await this.getUser()
   },
   methods: {
     setSelectedTheme(theme) {
@@ -118,67 +119,57 @@ export default {
       this.showPassword = !this.showPassword
     },
     editAccount: async function () {
-      try {
-        const response = await this.$httpClient.put(`v1/users/${this.userId}`, {
-          theme: this.newTheme,
-          email: this.newEmail,
-          password: this.password
-        })
-        if (response.status === 200) {
-          console.log('Successfully changed account settings')
-          await this.getUser()
-          location.reload()
-        }
-      } catch (err) {
-        this.alert = err.response.data.message
+    //   try {
+      const response = await this.$httpClient.put(`v1/users/${this.userId}`, {
+        theme: this.newTheme,
+        email: this.newEmail,
+        password: this.password
+      })
+      if (response.status === 200) {
+        console.log('Successfully changed account settings')
+        await this.getUser()
+        location.reload()
       }
+    //   } catch (err) {
+      // this.alert = err.response.data.message
+    //   }
     },
     deleteAccount: async function () {
-      try {
-        const response = await this.$httpClient.delete(`/v1/users/${this.userId}`)
-        if (response.status === 200) {
-          console.log('Your account is now deleted')
-          localStorage.removeItem('Authorization')
-          localStorage.removeItem('UserId')
-          this.$router.push({ name: 'home' })
-        }
-      } catch (err) {
-        this.alert = err.response.data.message
+    //   try {
+      const response = await this.$httpClient.delete(this.links['delete-account'].href)
+      if (response.status === 200) {
+        console.log('Your account is now deleted')
+        localStorage.removeItem('Authorization')
+        localStorage.removeItem('UserId')
+        this.$router.push({ name: 'home' })
       }
     },
     getUser: async function () {
-      try {
-        console.log('getUser')
-        const res = await this.$httpClient.get(`/v2/users/${this.userId}`)
+      console.log('getUser')
+      const res = await this.$httpClient.get(`/v2/users/${this.userId}`)
 
-        if (res.status === 200) {
-          console.log(res)
-          this.email = res.data.email
-          this.setSelectedTheme(res.data.theme)
-          this.alert = null
-          this.newEmail = res.data.email
-        }
-      } catch (err) {
-        this.alert = err.reponse.data.message
+      if (res.status === 200) {
+        console.log(res)
+        this.email = res.data.email
+        this.setSelectedTheme(res.data.theme)
+        this.alert = null
+        this.newEmail = res.data.email
+        this.links = res.data._links
       }
     },
     updateTheme: async function () {
-      try {
-        const res = await this.$httpClient.patch(`/v1/users/${this.userId}`, {
-          theme: this.newTheme
+      const res = await this.$httpClient.patch(`/v1/users/${this.userId}`, {
+        theme: this.newTheme
+      })
+      if (res.status === 200 && this.newTheme != null) {
+        this.$bvToast.toast('Your theme is now changed', {
+          title: 'Theme Change Successful',
+          autoHideDelay: 5000,
+          variant: 'success',
+          appendToast: true
         })
-        if (res.status === 200 && this.newTheme != null) {
-          this.$bvToast.toast('Your theme is now changed', {
-            title: 'Theme Change Successful',
-            autoHideDelay: 5000,
-            variant: 'success',
-            appendToast: true
-          })
-          this.alert = null
-          location.reload()
-        }
-      } catch (err) {
-        this.alert = err.response.data.message
+        this.alert = null
+        location.reload()
       }
     }
   },

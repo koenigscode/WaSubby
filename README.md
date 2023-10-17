@@ -6,7 +6,7 @@
 
 - [Client Requirements](./client/README.md#Requirements)
 - [Server Requirements](./server/README.md#Requirements)
-  - **Make sure to install `whisper-ctranslate2`**!
+  - **Make sure to install `whisper-ctranslate2 or another whisper cli`**!
 
 ## Known limitations
 
@@ -22,8 +22,9 @@
 - Some common media types aren't supported, because either the browser
   can't display them (missing codec), or whisper doesn't support it.
   If in doubt, just convert it to mp4 (or mp3 for audio) and use that.
-- When using an audio file as media, the video player will still be shown, but it will be empty (so only audio is playing).
+- When using an audio file as media, the video player might still be shown, but it will be empty (so only audio is playing).
   This is because the HTML `<audio>` element doesn't support showing subtitle text tracks, so using a `<video>` is a workaround for that.
+- The `.gitlab-ci.yml` and npm test scripts are a mess. This is because we had troubles with newman. The tests would all pass, but then the CI is stuck. See the `gitlab-ci.yml` for more infromation
 
 ## Getting started
 
@@ -73,13 +74,20 @@ The system - called WaSubby - will **transcribe video and audio files** from aro
 ### Pages
 
 - **Home Page**
-  - Landing Page, introduces the service
-- **User Account Page**
-  - Users can set their favorite theme (The theme is based on the language) and preferred font size.
-- **Signup Page, Login Page**
+  - Landing Page, which introduces the service and shows a quick demo.
+- **My Page**
+  - Users can see their info, update their email/password, and set a light or dark theme.
+- **Signup Page and Login Page**
+  - Allows users to register or login.
 - **Media Player Page**
   - Transcribes and shows media (video or audio files)
-  - If the subtitles for the source language + translation are already generated (stored on the server), the video starts playing with those, otherwise, the user gets feedback (e.g. spinner, progress bar) that the subtitles are being generated
+  - If the subtitles for the source language + translation are already generated (stored on the server), the video starts playing with those, otherwise, the user gets feedback (e.g. spinner, progress bar) that the subtitles are being generated.
+  - Also allows the user to upload subtitles for an existing media file.
+- **Admin page**
+  - Can be accessed by going to /admin
+  - Has option to delete all users and all media files
+- **404 page**
+  - Shown if the user tries to access a page that doesn't exist.
 
 ### Entity-Relationship (ER) Diagram
 

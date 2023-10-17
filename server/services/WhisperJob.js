@@ -110,7 +110,7 @@ class WhisperJob {
         const whisperDevice = process.env.WHISPER_DEVICE || "cpu";
 
         console.log(`Using whisper model ${whisperModel}, device ${whisperDevice}`);
-        console.log("Using whisper command " + process.env.WHISPER_COMMAND);
+        console.log("Using whisper command " + whisperCommand);
         
         const ctranslate2Options = [ 
             "--vad_filter",

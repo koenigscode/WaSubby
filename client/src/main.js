@@ -7,6 +7,8 @@ import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+let app = null
+
 Vue.use(BootstrapVue)
 
 Vue.config.productionTip = false
@@ -28,13 +30,33 @@ Vue.prototype.$httpClient.interceptors.request.use(
 Vue.prototype.$isChrome = window.chrome !== undefined
 
 Vue.config.errorHandler = function (err, vm, info) {
+  console.log('Central error handler:')
   console.log(err)
-  console.log(err.response.status)
+  let errorMessage = 'An error has occurred, please try again later'
+
+  if (err.response?.data?.message) {
+    errorMessage = err.response.data.message
+  }
+
+  if (err?.response?.status === 403) {
+    errorMessage = 'You do not have permission to perform this action.'
+  }
+
+  if (err.code === 'ERR_NETWORK') {
+    errorMessage = "It looks like the backend server isn't responding."
+  }
+
+  app.context.$bvToast.toast(errorMessage, {
+    title: 'Error',
+    variant: 'danger',
+    solid: true
+  })
   if (err.response && err.response.status === 401) {
     localStorage.removeItem('Authorization')
     router.push('/login')
   }
 }
+
 // Check if the user has a selected theme in local storage and set the class accordingly.
 const selectedTheme = localStorage.getItem('selectedTheme')
 if (selectedTheme) {
@@ -43,5 +65,8 @@ if (selectedTheme) {
 
 new Vue({
   router,
-  render: function (h) { return h(App) }
+  render: function (h) {
+    app = h(App)
+    return app
+  }
 }).$mount('#app')

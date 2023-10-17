@@ -9,7 +9,7 @@
 </template>
 <style scoped>
 #img-404 {
-    max-width: 80vw;
+    max-width: 60vw;
     width: 100vw;
 }
 .error h1 {

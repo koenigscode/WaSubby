@@ -2,7 +2,7 @@
     <div class="background">
 
         <div>
-            <h1 class="mb-3">Play media</h1>
+            <h1 class="my-3">Play media</h1>
             <p v-if="languages.length > 0" class="mb-5"> Supported languages are {{ languages }}</p>
             <b-form v-if="!media" @submit="submitFile">
                 <input type="file" ref="file" />
@@ -23,10 +23,27 @@
             </video>
 
             <video id="video" v-show="media && mediaType === 'video' && !processing" controls ref="videoplayer"
-                height="600px" crossorigin="anonymous" preload="metadata">
+                crossorigin="anonymous" preload="metadata">
                 <track kind="captions" v-for="subtitle in subtitles" :key="subtitle.id" :src="subtitle.path"
                     :srclang="subtitle.language.code" :label="subtitle.language.name">
             </video>
+
+            <div v-show="media && !processing">
+                <div class="d-flex flex-column align-items-center upload-sub-container">
+                <h2 class="mb-3">Upload New Subtitle</h2>
+                <b-form id="subtitleForm" @submit="submitSubtitles">
+                    <input type="file" ref="subtitleUpload" />
+                    <div>Language:
+                        <b-form-select id="language-select" size="sm" v-model="selectedSubUploadLang"
+                            :options="languageData.map(lang => lang.name)"></b-form-select>
+                    </div>
+                    <div class="mt-3">
+                        <b-button @click="submitSubtitles">Upload Subtitle</b-button>
+                    </div>
+                </b-form>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -34,17 +51,38 @@
 <script>
 import fixSubs from '@/subtitle-fix'
 export default {
-  data: () => ({ mediaHash: null, media: null, mediaType: null, subtitles: [], processing: false, languages: '' }),
+  data: () => ({ mediaHash: null, media: null, mediaType: null, subtitles: [], processing: false, languages: '', languageData: [], selectedSubUploadLang: 'English' }),
   async mounted() {
-    fixSubs()
+    fixSubs(2)
     const res = await this.$httpClient.get('/v1/languages')
     this.languages = res.data.map(lang => lang.name).join(', ')
+    this.languageData = res.data
   },
   updated: function () {
-    fixSubs()
+    fixSubs(this.subtitles.length)
     this.showAllSubs()
   },
   methods: {
+    async submitSubtitles() {
+      console.log('submitting subtitles')
+
+      const formData = new FormData()
+      formData.append('subtitles', this.$refs.subtitleUpload.files[0])
+      formData.append('languageName', this.selectedSubUploadLang)
+      console.log(this.selectedSubUploadLang)
+      console.log(this.languageData.filter(lang => lang.name === this.selectedSubUploadLang)[0])
+      formData.append('languageCode', this.languageData.filter(lang => lang.name === this.selectedSubUploadLang)[0].code)
+      const headers = { 'Content-Type': 'multipart/form-data' }
+
+      await this.$httpClient.post(`/v1/medias/${this.mediaHash}/subtitles`, formData, { headers })
+      await this.loadSubtitles()
+      this.$bvToast.toast('Subtitle added!', {
+        title: 'Success',
+        autoHideDelay: 5000,
+        variant: 'success',
+        appendToast: true
+      })
+    },
     async submitFile() {
       this.media = this.$refs.file.files[0]
 
@@ -123,6 +161,15 @@ export default {
 }
 </script>
 <style scoped>
+#language-select {
+    max-width: 7rem;
+}
+
+#subtitleForm {
+    width: 100%;
+    max-width: 80vw;
+}
+
 .background {
     /* padding-top: 6rem; */
     margin: 0;
@@ -135,4 +182,15 @@ export default {
     align-items: center;
     flex-direction: column;
 }
+
+video {
+    width: 100%;
+    max-width: 95vw;
+}
+
+.upload-sub-container {
+    padding-top: 10rem;
+    padding-bottom: 10rem;
+}
+
 </style>
