@@ -1,29 +1,39 @@
 <template>
-  <div id="app">
-    <section>
-      <div class="reveal">
-        <img src="../assets/languagesBG.svg" />
-      </div>
-    </section>
-    <section class="example">
-      <div class="reveal">
-        <div class="col">
-          <video controls="controls" class="corner" :src="getVideoSource" width="400" height="300"></video>
-        </div>
-      </div>
-      <div class="col">
-        <div class="reveal">
-          <h3>Try Our Service!</h3>
-          <div class="buttons">
-            <b-button pill @click="selectLanguage('Korean')">Korean</b-button>
-            <b-button pill @click="selectLanguage('German')">German</b-button>
-            <b-button pill @click="selectLanguage('Russian')">Russian</b-button>
-            <b-button pill @click="selectLanguage('Swedish')">Swedish</b-button>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+    <div id="app">
+        <section>
+            <div class="reveal">
+                <img src="../assets/languagesBG.svg" />
+            </div>
+        </section>
+        <section class="example">
+            <div class="reveal">
+                <div class="col">
+                    <video controls="controls" class="corner" :src="getVideoSource" width="400" height="300"></video>
+                </div>
+            </div>
+            <div class="col">
+                <div class="reveal">
+                    <h3>Try Our Service!</h3>
+                    <div class="buttons container-fluid">
+                        <div class="row">
+                        <div class="col-lg-3 col-12">
+                            <b-button pill @click="selectLanguage('Korean')">Korean</b-button>
+                        </div>
+                        <div class="col-lg-3 col-12">
+                            <b-button pill @click="selectLanguage('German')">German</b-button>
+                        </div>
+                        <div class="col-lg-3 col-12">
+                            <b-button pill @click="selectLanguage('Russian')">Russian</b-button>
+                        </div>
+                        <div class="col-lg-3 col-12">
+                            <b-button pill @click="selectLanguage('Swedish')">Swedish</b-button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </template>
 
 <script>
@@ -90,89 +100,80 @@ export default {
 </script>
 
 <style>
-section{
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 section:nth-child(1) {
-  background-image: url('../assets/Without-Languages.png');
-  background-size: cover;
-  min-height: 100vh;
+    background-image: url('../assets/Without-Languages.png');
+    background-size: cover;
+    min-height: 100vh;
 }
+
 section:nth-child(2) {
-  background-image: url('../assets/starsBackground.svg');
-  background-size: cover;
-  min-height: 100vh;
+    background-image: url('../assets/starsBackground.svg');
+    background-size: cover;
+    min-height: 100vh;
 }
-.col h3{
-  font-weight: bold;
+
+.col h3 {
+    font-weight: bold;
 }
-.reveal{
-  position: relative;
-  transform: translateY(150px);
-  opacity: 0;
-  transition: 1s all ease;
-  max-width: 100%;
-  max-height: 100vh;
+
+.reveal {
+    position: relative;
+    transform: translateY(150px);
+    opacity: 0;
+    transition: 1s all ease;
+    max-width: 100%;
+    max-height: 100vh;
 }
 
 .reveal img {
-  max-width: 100%;
-  height: auto;
+    max-width: 100%;
+    height: auto;
 }
 
-.reveal.active{
-  transform: translateY(0);
-  opacity: 1;
+.reveal.active {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .example {
-  align-items: center;
-  justify-content: left;
-  display: flex;
+    align-items: center;
+    justify-content: left;
+    display: flex;
 }
 
 .example .col {
-  max-width: 100%;
+    max-width: 100%;
 }
 
 .example video {
-  max-width: 100%;
-  height: auto;
+    max-width: 100%;
+    height: auto;
 }
 
-.buttons{
-  display: flex;
-  justify-content: space-between;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px 20px;
-}
-
-.buttons b-button {
-  width: 23%;
+.buttons {
+    margin: 0 auto;
+    padding: 20px 20px;
+    max-width: 30rem;
 }
 
 /* Media query for screens with a maximum width of 768px */
 @media screen and (max-width: 768px) {
 
-  /* Below is the change for the text part */
-  .col h3{
-  font-weight: bold;
-  font-size: medium;
-}
-  /* Below are the layout changes for the buttons */
-  .buttons {
-    flex-direction: column;
-    text-align: center;
-  }
+    /* Below is the change for the text part */
+    .col h3 {
+        font-weight: bold;
+        font-size: medium;
+    }
 
-  .buttons b-button {
-    width: 100%;
-    margin: 8px 0;
-  }
-}
-
-</style>
+    .buttons button {
+        /* width: 100%; */
+        margin-bottom: 0.5rem;
+    }
+}</style>

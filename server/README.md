@@ -30,7 +30,9 @@ Optional: Learn how to create such a project template in this [tutorial](https:/
 
 You need [whisper-ctranslate2](https://github.com/Softcatala/whisper-ctranslate2) installed.
 
-We encountered some issues with this on Windows. If you are using Windows, we recommend using the Windows Subsystem for Linux and installing whisper-ctranslate2, this project and the other requirments there.
+Otherwise, you can also install another whisper cli with the same functionality.
+The CI, for example, uses whisper. If you decide not to use whisper-ctranslate2,
+then make sure to set the `WHISPER_COMMAND` environment variable to the whisper command.
 
 The first video transcription will take longer, as the language model needs to be downloaded.
 
@@ -42,18 +44,6 @@ Installs all project dependencies specified in [package.json](./package.json).
 npm install
 ```
 
-## Building and pushing the Docker image
-
-This is not required for running, only for the CI.
-
-This builds the image for amd64 architecture, which is the architecture of the
-GitLab runners, and pushed it into the GitLab registry.
-
-```bash
-docker buildx build --platform linux/amd64 -t registry.git.chalmers.se/courses/dit342/2023/group-22-web --no-cache .
-docker push registry.git.chalmers.se/courses/dit342/2023/group-22-web
-```
-
 ## Start the server with auto-restarts for development
 
 Automatically restarts your server if you save any changes to local files.
@@ -62,7 +52,7 @@ Automatically restarts your server if you save any changes to local files.
 npm run dev
 ```
 
-You can also run `npm run fast-dev`, which is which is faster, but less accurate.
+Or use `npm run fast-dev` to use a faster (but less accurate) whisper model.
 
 ## Start the server
 
@@ -78,7 +68,8 @@ Starts a new server on another port (default `3001`) and runs the `server` postm
 npm test
 ```
 
-> The test database is dropped before each test execution. Adjust your tests to support this clean state.
+`npm test` will use `whisper-ctranslate2` (which we recommend) per default,
+and `npm run ci-test` will use `whisper` (intended for the CI)
 
 ## Postman Tests
 
@@ -87,6 +78,18 @@ We use the API testing tool Postman to define example HTTP requests and test ass
 - [Set up Postman for your project](./docs/POSTMAN.md)
 
 > Remember to **export and commit** any test changes back to `tests/server.postman_collection.json` and make sure `npm test` succeeds for your final submission!
+
+## Building and pushing the Docker image
+
+This is not required for running, only for the CI.
+
+This builds the image for amd64 (you might use arm etc.) architecture, which is the architecture of the
+GitLab runners, and pushes it into the GitLab registry.
+
+```bash
+docker buildx build --platform linux/amd64 -t registry.git.chalmers.se/courses/dit342/2023/group-22-web --no-cache .
+docker push registry.git.chalmers.se/courses/dit342/2023/group-22-web
+```
 
 ## Error Handling
 

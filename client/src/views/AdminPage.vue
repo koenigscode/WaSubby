@@ -13,7 +13,7 @@
                 </b-card>
              </b-collapse>
              <form @submit.prevent="deleteAllMedias()">
-             <b-button size="lg" variant="danger">DELETE ALL MEDIAS</b-button>
+             <b-button type="submit" size="lg" variant="danger">DELETE ALL MEDIAS</b-button>
              </form>
             </div>
         </div>
@@ -31,23 +31,23 @@ export default {
   },
   methods: {
     deleteAllAccounts: async function () {
-      try {
-        const response = await this.$httpClient.delete('/v1/users/')
-        if (response.status === 200) {
-          console.log('Deleted all accounts')
-        }
-      } catch (err) {
-        this.alert = err.response.data.message
+      const response = await this.$httpClient.delete('/v1/users/')
+      if (response.status === 200) {
+        console.log('Deleted all accounts')
+        this.$bvToast.toast('Deleted all accounts', {
+          title: 'Success',
+          variant: 'success'
+        })
       }
     },
     deleteAllMedias: async function () {
-      try {
-        const response = await this.$httpClient.delete('/v1/medias/')
-        if (response.status === 200) {
-          console.log('Deleted all medias')
-        }
-      } catch (err) {
-        this.alert = err.response.data.message
+      const response = await this.$httpClient.delete('/v1/medias/')
+      if (response.status === 200) {
+        console.log('Deleted all medias')
+        this.$bvToast.toast('Deleted all medias', {
+          title: 'Success',
+          variant: 'success'
+        })
       }
     },
 

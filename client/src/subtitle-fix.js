@@ -21,7 +21,6 @@ function fixSubs(maxCueLines = 2) {
       const observer = new ResizeObserver((entries) => {
         const height = entries[0].contentRect.height
         const controlsHeight = 72
-        const maxCueLines = 4
         rule.style.setProperty(
           'top',
             `calc(${Math.floor(
