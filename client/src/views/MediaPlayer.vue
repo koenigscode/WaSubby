@@ -185,7 +185,7 @@ export default {
 
 video {
     width: 100%;
-    max-width: 95vw;
+    max-width: 1200px;
 }
 
 .upload-sub-container {
