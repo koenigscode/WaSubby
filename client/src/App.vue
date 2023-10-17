@@ -28,6 +28,8 @@ export default {
   --account-light: #004e92;
   --button: #1870d5;
   --letter: white;
+  --background-image-first: url('./assets/Without-Languages.png');
+  --background-image-second: url('./assets/starsBackground.svg');
 
 }
 :root.light {
@@ -35,6 +37,8 @@ export default {
   --account-light: #ffb150;
   --button: #ffb347;
   --letter: black;
+  --background-image-first: url('./assets/Without-Languages(LM).png');
+  --background-image-second: url('./assets/starsBackground(LM).svg');
 }
 
 </style>
