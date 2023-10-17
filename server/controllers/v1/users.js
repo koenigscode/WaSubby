@@ -148,6 +148,11 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
  */
 router.put("/:id",
     passport.authenticate("jwt", { session: false }),
+    function(req, res, next) {
+        console.log(req.user._id);
+        console.log(req.params.id);
+        next();
+    }, 
     assertAdminOrSelf,
     async (req, res) => {
         try {

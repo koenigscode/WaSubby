@@ -5,8 +5,8 @@
       <div class="col-7 main-mypage">
         <form>
           <label>My Page</label>
-          <!-- Email is set as uneditable since it does not make sense to change the email of an account -->
-          <input type="text" :value="newEmail" :placeholder="email" />
+          <input type="text" :placeholder="showPassword ? '' : email" v-model="newEmail" @input="showPasswordField" />
+          <input v-if="showPassword" type="password" v-model="password" placeholder="New Password" />
           <div class="theme">
             Current Theme
             <b-dropdown id="dropdown-right" right :text="selectedTheme" variant="primary" class="m-2">
@@ -17,20 +17,32 @@
           <div class="row align-items-center">
             <div class="col-6">
               <form @submit.prevent="updateTheme">
-                <b-button type="submit" variant="success" class="w-auto">
-                  <span id="apply-button">Apply</span>
+                <b-button type="submit" v-show="showUpdateButton" variant="success" class="w-auto">
+                  <span id="apply-button">Update Theme</span>
+                </b-button>
+              </form>
+              <form @submit.prevent="edit">
+                <b-button
+    type="submit"
+    variant="secondary"
+    class="w-auto"
+  >
+    <span>Edit</span>
+  </b-button>
+  </form>
+  <form @submit.prevent="updateTheme">
+                <b-button type="submit" v-show="showSaveButton" variant="success" class="w-auto">
+                  <span >Save changes</span>
                 </b-button>
               </form>
               <form @submit.prevent="editAccount">
                 <b-button
-  type="submit"
-  variant="secondary"
-  class="w-auto"
-  :disabled="isEditButtonDisabled"
-  :class="{ 'disabled': isEditButtonDisabled }"
->
-  <span>Edit</span>
-</b-button>
+    type="submit"
+    variant="secondary"
+    class="w-auto"
+  >
+    <span>Edit</span>
+  </b-button>
               </form>
             </div>
             <form @submit.prevent="deleteAccount" class="col-6">
@@ -65,7 +77,10 @@ export default {
       email: '',
       password: '',
       newTheme: '',
+      showPassword: false, // Initialize to false
       selectedTheme: 'light',
+      showUpdateButton: true,
+      showSaveButton: false,
       userId: localStorage.getItem('UserId'),
       modalTitle: '🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭😭'
     }
@@ -80,6 +95,19 @@ export default {
       // Save the selected theme in local storage
       localStorage.setItem('selectedTheme', theme)
     },
+    edit() {
+      // Show the password field when the user starts typing in the email field
+      this.showPasswordField = true
+      this.showPassword = true
+      this.showSaveButton = true
+    },
+    showPasswordField() {
+      // Show the password field when the user starts typing in the email field
+      this.showPassword = true
+    },
+    toggleEdit() {
+      this.showPassword = !this.showPassword
+    },
     editAccount: async function () {
       try {
         const response = await this.$httpClient.put(`v1/users/${this.userId}`, {
@@ -88,6 +116,7 @@ export default {
         })
         if (response.status === 200) {
           console.log('Successfully changed account settings')
+          await this.getUser()
           location.reload()
         }
       } catch (err) {
@@ -109,6 +138,7 @@ export default {
     },
     getUser: async function () {
       try {
+        console.log('getUser')
         const res = await this.$httpClient.get(`/v2/users/${this.userId}`)
 
         if (res.status === 200) {
@@ -116,6 +146,7 @@ export default {
           this.email = res.data.email
           this.selectedTheme = res.data.theme
           this.alert = null
+          this.newEmail = res.data.email
         }
       } catch (err) {
         this.alert = err.reponse.data.message
@@ -264,9 +295,14 @@ label {
 }
 
 /* Add this CSS rule to style the disabled button */
-.b-button.disabled {
-  background-color: #ccc; /* Set the background color to gray */
-  color: #777; /* Set the text color to a darker shade */
+.custom-button {
+  background-color: gray; /* Set the background color to gray when enabled */
+  color: #fff; /* Set the text color */
+}
+
+.custom-button.disabled {
+  background-color: #ccc; /* Set the background color to gray when disabled */
+  color: #777; /* Set the text color to a darker shade when disabled */
   pointer-events: none; /* Disable pointer events for the button when it's disabled */
 }
 
