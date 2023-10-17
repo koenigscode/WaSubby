@@ -27,7 +27,7 @@ router.get("/:id",
                 method: "GET"
             },
             "delete-account": {
-                href: `/v1/users${user._id}`,
+                href: `/v1/users/${user._id}`,
                 method: "DELETE"
             },
             "udpate": {
