@@ -45,7 +45,7 @@ const options = {
     // Expose Open API JSON Docs documentation in `apiDocsPath` path.
     exposeApiDocs: false,
     // Open API JSON Docs endpoint.
-    apiDocsPath: "/v1/api-docs",
+    apiDocsPath: "/api-docs",
     // Set non-required fields as nullable by default
     notRequiredAsNullable: false,
     // You can customize your UI options.
@@ -99,13 +99,9 @@ app.use("/v1/languages", languagesController);
 // Support Vuejs HTML 5 history mode
 app.use(history());
 // Serve static assets
-const root = path.normalize(__dirname + "/..");
-const client = path.join(root, "client", "dist");
-app.use(express.static(client));
 console.log(path.resolve(path.join(__dirname, "/data")));
 app.use("/static", express.static(path.join(__dirname, "/data")));
 
-// Error handler (i.e., when exception is thrown) must be registered last
 const env = app.get("env");
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, next) {

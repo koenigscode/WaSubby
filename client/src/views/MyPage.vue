@@ -1,48 +1,57 @@
 <template>
-    <div> <b-alert variant="danger" :show="alert !== null">{{ alert }}</b-alert>
-        <div class="my-page">
-          <div class="col-5">
-          <div class="image-logo">
-            <img src="../assets/waSubbyLogo.svg" width="500" height="900">
+  <div>
+    <b-alert variant="danger" :show="alert !== null">{{ alert }}</b-alert>
+    <div class="my-page d-flex align-items-center justify-content-center">
+      <div class="col-7 main-mypage">
+        <form>
+          <label>My Page</label>
+          <!-- Email is set as uneditable since it does not make sense to change the email of an account -->
+          <input type="text" :value="newEmail" :placeholder="email" />
+          <div class="theme">
+            Current Theme
+            <b-dropdown id="dropdown-right" right :text="selectedTheme" variant="primary" class="m-2">
+              <b-dropdown-item @click="setSelectedTheme('dark')" href="#">Dark</b-dropdown-item>
+              <b-dropdown-item @click="setSelectedTheme('light-theme')" href="#">Light</b-dropdown-item>
+            </b-dropdown>
           </div>
-          </div>
-          <div class="col-7 main-mypage">
-                <form>
-                    <label>My Page</label>
-                    <!-- Email is set as uneditable since it does not make sense to change the email of an account -->
-                    <input type="text" placeholder="My E-Mail" v-model="email" readonly/>
-                    <input type="password" v-model="newPassword" placeholder="New Password" />
-                    <div class="theme">
-                        Preffered Theme
-                        <b-dropdown id="dropdown-right" right text="Select" variant="primary" class="m-2">
-                            <b-dropdown-item @click="setSelectedTheme('dark')" href="#">Dark</b-dropdown-item>
-                            <b-dropdown-item @click="setSelectedTheme('light-theme')" href="#">Light</b-dropdown-item>
-                        </b-dropdown>
-                    </div>
-                    <div class="row align-items-center">
-                        <div class="col-6">
-                          <form @submit.prevent="updateAccount()">
-                            <button type="submit">Save</button>
-                          </form>
-                        </div>
-                        <form @submit.prevent="deleteAccount()" class="col-6">
-                            <button v-b-modal.modal-1 type="submit">Delete</button>
-                            <b-modal id="modal-1" :title="isMobile ? '🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭' : modalTitle">
-                              <p class="my-4">
-                                It's sad to say goodbye but we hope you had a nice experience using our service.
-                                Our team would like to thank you for using our service and hope to see you again!!
-                              </p>
-                              <p class="my-4">
-                                Tack! 감사합니다! Danke! Спасибо!
-                              </p>
-                            </b-modal>
-                        </form>
-                    </div>
-                </form>
-
+          <div class="row align-items-center">
+            <div class="col-6">
+              <form @submit.prevent="updateTheme">
+                <b-button type="submit" variant="success" class="w-auto">
+                  <span id="apply-button">Apply</span>
+                </b-button>
+              </form>
+              <form @submit.prevent="editAccount">
+                <b-button
+  type="submit"
+  variant="secondary"
+  class="w-auto"
+  :disabled="isEditButtonDisabled"
+  :class="{ 'disabled': isEditButtonDisabled }"
+>
+  <span>Edit</span>
+</b-button>
+              </form>
             </div>
-        </div>
+            <form @submit.prevent="deleteAccount" class="col-6">
+              <b-button variant="danger" type="submit" class="w-auto">
+                <span>Delete Account</span>
+              </b-button>
+              <b-modal id="modal-1" :title="isMobile ? '🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭😭' : modalTitle">
+                <p class="my-4">
+                  It's sad to say goodbye, but we hope you had a nice experience using our service.
+                  Our team would like to thank you for using our service and hope to see you again!!
+                </p>
+                <p class="my-4">
+                  Tack! 감사합니다! Danke! Спасибо!
+                </p>
+              </b-modal>
+            </form>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -52,20 +61,38 @@ export default {
   data: function () {
     return {
       alert: null,
+      newEmail: 'your@email.com',
       email: '',
       password: '',
-      newPassword: '',
+      newTheme: '',
       selectedTheme: 'light',
       userId: localStorage.getItem('UserId'),
       modalTitle: '🤨🤨☹️☹️😢😢😢🥹🥹🥹😭😭😭😭😭'
     }
   },
+  mounted() {
+    this.getUser()
+  },
   methods: {
     setSelectedTheme(theme) {
       this.selectedTheme = theme
-
+      this.newTheme = theme
       // Save the selected theme in local storage
       localStorage.setItem('selectedTheme', theme)
+    },
+    editAccount: async function () {
+      try {
+        const response = await this.$httpClient.put(`v1/users/${this.userId}`, {
+          theme: this.newTheme,
+          email: this.newEmail
+        })
+        if (response.status === 200) {
+          console.log('Successfully changed account settings')
+          location.reload()
+        }
+      } catch (err) {
+        this.alert = err.response.data.message
+      }
     },
     deleteAccount: async function () {
       try {
@@ -80,20 +107,34 @@ export default {
         this.alert = err.response.data.message
       }
     },
-    updateAccount: async function () {
+    getUser: async function () {
+      try {
+        const res = await this.$httpClient.get(`/v2/users/${this.userId}`)
+
+        if (res.status === 200) {
+          console.log(res)
+          this.email = res.data.email
+          this.selectedTheme = res.data.theme
+          this.alert = null
+        }
+      } catch (err) {
+        this.alert = err.reponse.data.message
+      }
+    },
+    updateTheme: async function () {
       try {
         const res = await this.$httpClient.patch(`/v1/users/${this.userId}`, {
-          password: this.newPassword // Use the new password
+          theme: this.newTheme
         })
-        if (res.status === 200) {
-          this.$bvToast.toast('Your password is now changed', {
-            title: 'Password Change Successful',
+        if (res.status === 200 && this.newTheme != null) {
+          this.$bvToast.toast('Your theme is now changed', {
+            title: 'Theme Change Successful',
             autoHideDelay: 5000,
             variant: 'success',
             appendToast: true
           })
           this.alert = null
-          this.newPassword = '' // Clear the new password field
+          location.reload()
         }
       } catch (err) {
         this.alert = err.response.data.message
@@ -103,6 +144,10 @@ export default {
   computed: {
     themeClass() {
       return this.selectedTheme === 'dark' ? 'dark-theme' : 'light-theme'
+    },
+    isEditButtonDisabled() {
+      // Disable the "Edit" button if the email field is empty or unchanged
+      return !this.newEmail || this.newEmail === this.email
     },
     isMobile() {
       return window.innerWidth <= 768
@@ -115,7 +160,7 @@ export default {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: right;
+    justify-content: center;
     align-items: center;
     min-height: 100vh;
     font-family: "Jost", sans-serif;
@@ -139,6 +184,7 @@ export default {
     height: auto;
     background: #fbfaf5;
     justify-content: center;
+    align-items: center;
     display: flex;
     margin: 20px auto;
     padding: 10px;
@@ -175,6 +221,18 @@ label {
     transition: 0.5s ease-in-out
 }
 
+.image-logo {
+  text-align: left;
+}
+
+.image-logo img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  height: auto;
+}
+
 .theme {
     color: white;
 }
@@ -190,6 +248,7 @@ label {
   max-width: 100%;
   height: auto;
 }
+
 /* Media query for screens with a maximum width of 768px */
 @media screen and (max-width: 768px) {
   .main-mypage {
@@ -203,5 +262,13 @@ label {
     align-items: center;
     justify-content: center;
 }
+
+/* Add this CSS rule to style the disabled button */
+.b-button.disabled {
+  background-color: #ccc; /* Set the background color to gray */
+  color: #777; /* Set the text color to a darker shade */
+  pointer-events: none; /* Disable pointer events for the button when it's disabled */
+}
+
 }
 </style>

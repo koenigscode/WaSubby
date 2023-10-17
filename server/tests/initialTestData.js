@@ -3,8 +3,6 @@ const mongoURI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/WaSubby";
 const mongoose = require("mongoose");
 const User = require("../schemas/users");
 const Language = require("../schemas/languages");
-const Media = require("../schemas/medias");
-const Subtitle = require("../schemas/subtitles");
 
 async function insertData() {
     await mongoose.connect(mongoURI);

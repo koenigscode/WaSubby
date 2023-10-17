@@ -137,7 +137,6 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
     });
 
 
-// TODO: params
 /**
  * Put /v1/users/{id}
  * @summary Updates a user by id
@@ -148,7 +147,7 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
  */
 router.put("/:id",
     passport.authenticate("jwt", { session: false }),
-    assertAdmin,
+    assertAdminOrSelf,
     async (req, res) => {
         try {
             const user = await Users.findById(req.params.id);
