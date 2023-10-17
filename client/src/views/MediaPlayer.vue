@@ -23,12 +23,13 @@
             </video>
 
             <video id="video" v-show="media && mediaType === 'video' && !processing" controls ref="videoplayer"
-                height="600px" crossorigin="anonymous" preload="metadata">
+                crossorigin="anonymous" preload="metadata">
                 <track kind="captions" v-for="subtitle in subtitles" :key="subtitle.id" :src="subtitle.path"
                     :srclang="subtitle.language.code" :label="subtitle.language.name">
             </video>
 
-            <div v-show="media && !processing" class="my-5">
+            <div v-show="media && !processing">
+                <div class="d-flex flex-column align-items-center upload-sub-container">
                 <h2 class="mb-3">Upload New Subtitle</h2>
                 <b-form id="subtitleForm" @submit="submitSubtitles">
                     <input type="file" ref="subtitleUpload" />
@@ -40,6 +41,7 @@
                         <b-button @click="submitSubtitles">Upload Subtitle</b-button>
                     </div>
                 </b-form>
+                </div>
             </div>
 
         </div>
@@ -180,4 +182,15 @@ export default {
     align-items: center;
     flex-direction: column;
 }
+
+video {
+    width: 100%;
+    max-width: 95vw;
+}
+
+.upload-sub-container {
+    padding-top: 10rem;
+    padding-bottom: 10rem;
+}
+
 </style>
