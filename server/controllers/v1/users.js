@@ -137,7 +137,6 @@ router.patch("/:id", passport.authenticate("jwt", { session: false }),
     });
 
 
-// TODO: params
 /**
  * Put /v1/users/{id}
  * @summary Updates a user by id

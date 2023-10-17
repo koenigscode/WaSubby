@@ -17,7 +17,6 @@ router.get("/", async (req, res) => {
     if (req.query.limit && req.query.page){
         const page = parseInt(req.query.page);
         const limit = parseInt(req.query.limit);
-        const totalCount = await Language.countDocuments();
         const languages = await Language.find().select("-__v").skip((page-1)*limit).limit(limit);
         return res.send(languages);
     }
