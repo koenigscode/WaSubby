@@ -1,5 +1,9 @@
 # WaSubby / Group 22
 
+WaSubby, built as part of a university project, is a web app that allows the user to transcribe video or audio files in their original language and translates the generated subtitles into English as well. The media can then be watched/listened to with the subtitles in both languages, which can be used for learning a new language.
+
+The backend uses OpenAI whisper, an AI-powered library for media file transcription.
+
 <img src="images/logo.png" width="60%">
 
 ## Requirements
